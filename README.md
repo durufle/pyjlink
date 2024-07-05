@@ -1,6 +1,6 @@
 # pyjlink
 
-[![Build Status](https://travis-ci.org/square/pylink.svg?branch=master)](https://travis-ci.org/square/pylink)
+[![Build Status]()
 
 Python interface for the SEGGER J-Link.
 

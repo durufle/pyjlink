@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import behave
-import pylink
+import pyjlink
 
 import time
 
@@ -36,7 +36,7 @@ def step_enable_rtt(context, block_address):
             jlink.rtt_get_num_up_buffers()
             jlink.rtt_get_num_down_buffers()
             break
-        except pylink.errors.JLinkRTTException as e:
+        except pyjlink.errors.JLinkRTTException as e:
             time.sleep(0.1)
 
     assert jlink.rtt_get_num_up_buffers() > 0

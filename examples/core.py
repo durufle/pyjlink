@@ -4,6 +4,10 @@
 #
 # License: MIT
 
+"""
+basic core example
+"""
+
 import pyjlink
 
 try:

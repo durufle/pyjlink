@@ -12,12 +12,12 @@ This module provides functions for unlocking a locked device.
    Unlocking a device results in a mass-erase.  Do not unlock a device if you
    do not want it be erased.
 
-.. automodule:: pylink.unlockers
+.. automodule:: pyjlink.unlockers
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pylink.unlockers.unlock_kinetis
+.. automodule:: pyjlink.unlockers.unlock_kinetis
     :members:
     :undoc-members:
     :show-inheritance:

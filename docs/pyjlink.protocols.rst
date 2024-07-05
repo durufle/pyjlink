@@ -15,7 +15,7 @@ Serial Wire Debug (SWD)
 
 This subsection defines the classes and methods needed to use the SWD protocol.
 
-.. automodule:: pylink.protocols.swd
+.. automodule:: pyjlink.protocols.swd
     :members:
     :undoc-members:
     :show-inheritance:

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink
+import pyjlink
 
 import behave
 
@@ -34,8 +34,8 @@ def create_jlink(context):
       ``JLink``
     """
     context.log = StringIO.StringIO()
-    context.jlink = pylink.JLink(log=context.log.write,
-                                 detailed_log=context.log.write)
+    context.jlink = pyjlink.JLink(log=context.log.write,
+                                  detailed_log=context.log.write)
 
     emulators = context.jlink.connected_emulators()
     if len(emulators) > 0:

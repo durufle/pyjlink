@@ -16,17 +16,17 @@ Installation
 Basic Installation
 ------------------
 
-Installing PyLink with **pip**:
+Installing PyJLink with **pip**:
 
 .. code:: bash
 
-   $ pip install pyjlink-stm
+   $ pip install ragnarok-pyjlink
 
 Or use **easy_install**:
 
 .. code:: bash
 
-   $ easy_install pyjlink-stm
+   $ easy_install ragnarok-pyjlink
 
 Building From Source
 --------------------
@@ -36,7 +36,7 @@ run:
 
 .. code:: bash
 
-   $ python setup.py install
+   $ python -m build
 
 This will give you the tip of **master** (the development branch).  While we
 strive for this to be stable at all times, some bugs may be introduced, so it is
@@ -45,7 +45,7 @@ best to check out a release branch first before installing.
 .. code:: bash
 
    $ git checkout release-major.minor
-   $ python setup.py install
+   $ python -m build
 
 External Dependencies
 ---------------------
@@ -53,7 +53,7 @@ External Dependencies
 In order to use this library, the
 `J-Link Software and Development Pack <https://www.segger.com/downloads/jlink>`__
 provided by SEGGER is required.  Once you have a copy of the development pack,
-you can start using PyLink.  PyLink will automatically find the library if you
+you can start using PyJLink.  PyjLink will automatically find the library if you
 installed it using one of the installers available from SEGGER's site, but for
 best results, you should also do one of the following depending on your
 operating system:

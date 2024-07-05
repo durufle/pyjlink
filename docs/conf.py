@@ -36,7 +36,6 @@ import pyjlink  # noqa
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
-    'sphinxcontrib.napoleon',
     'sphinxarg.ext'
 ]
 
@@ -59,7 +58,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'PyJLink'
 author = pyjlink.__author__
-copyright = u'2024, STMMicroelectronics'
+copyright = u'2024, Laurent Woolcap'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -75,7 +74,7 @@ release = str(pyjlink.__version__)
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -145,7 +144,7 @@ html_theme_path = [
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
-html_title = u'PyLink'
+html_title = u'PyJLink'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 html_short_title = 'Python wrapper for the J-Link SDK.'
@@ -157,7 +156,7 @@ html_short_title = 'Python wrapper for the J-Link SDK.'
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = os.path.join('assets', 'square.ico')
+# html_favicon = os.path.join('assets', 'square.ico')
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -240,7 +239,7 @@ html_show_copyright = True
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pylinkdoc'
+htmlhelp_basename = 'pyjlinkdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 

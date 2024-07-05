@@ -3,9 +3,9 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
-from . import enums
 
 from ctypes import *
+from . import enums
 
 
 class JLinkConnectInfo(Structure):

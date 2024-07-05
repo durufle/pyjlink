@@ -10,8 +10,8 @@ Connecting to an Emulator
 
 .. code:: python
 
-   >>> import pylink
-   >>> jlink = pylink.JLink()
+   >>> import pyjlink
+   >>> jlink = pyjlink.JLink()
    >>> jlink.open(123456789)
    >>> jlink.product_name
    J-Trace Cortex-M
@@ -74,5 +74,5 @@ Unlocking a Device
 
 .. code:: python
 
-   >>> pylink.unlock(jlink, 'Kinetis')
+   >>> pyjlink.unlock(jlink, 'Kinetis')
    True

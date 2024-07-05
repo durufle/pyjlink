@@ -11,14 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import collections
+import time
 from .. import decorators
 from .. import enums
 from ..protocols import swd
 from .. import registers
-
-import collections
-import time
 
 
 Identity = collections.namedtuple('Identity', ['version_code', 'part_no'])
@@ -32,7 +30,8 @@ class KinetisException(Exception):
 
 
 def unlock_kinetis_identified(identity, flags):
-    """Checks whether the given flags are a valid identity.
+    """
+    Checks whether the given flags are a valid identity.
 
     Args:
       identity (Identity): the identity to validate against
@@ -100,7 +99,8 @@ def unlock_kinetis_read_until_ack(jlink, address):
 
 
 def unlock_kinetis_swd(jlink):
-    """Unlocks a Kinetis device over SWD.
+    """
+    Unlocks a Kinetis device over SWD.
 
     Steps Involved in Unlocking:
       1.  Verify that the device is configured to read/write from the CoreSight
@@ -142,14 +142,14 @@ def unlock_kinetis_swd(jlink):
     See Also:
       `Kinetis Docs <nxp.com/files/32bit/doc/ref_manual/K12P48M50SF4RM.pdf>`
     """
-    SWDIdentity = Identity(0x2, 0xBA01)
+    swd_identity = Identity(0x2, 0xBA01)
     jlink.power_on()
     jlink.coresight_configure()
 
     # 1. Verify that the device is configured properly.
     flags = registers.IDCodeRegisterFlags()
     flags.value = jlink.coresight_read(0x0, False)
-    if not unlock_kinetis_identified(SWDIdentity, flags):
+    if not unlock_kinetis_identified(swd_identity, flags):
         return False
 
     # 2. Check for errors.
@@ -226,7 +226,8 @@ UNLOCK_METHODS[enums.JLinkInterfaces.SWD] = unlock_kinetis_swd
 
 
 def unlock_kinetis_jtag(jlink):
-    """Unlocks a Kinetis device over JTAG.
+    """
+    Unlocks a Kinetis device over JTAG.
 
     Note:
       Currently not implemented.
@@ -240,7 +241,7 @@ def unlock_kinetis_jtag(jlink):
     Raises:
       NotImplementedError: always.
     """
-    JTAGIdentity = Identity(0x4, 0xBA0)
+    jtag_identity = Identity(0x4, 0xBA0)
     raise NotImplementedError('Unlock Kinetis over JTAG is not implemented.')
 
 
@@ -249,7 +250,8 @@ UNLOCK_METHODS[enums.JLinkInterfaces.JTAG] = unlock_kinetis_jtag
 
 @decorators.async_decorator
 def unlock_kinetis(jlink):
-    """Unlock for Freescale Kinetis K40 or K60 device.
+    """
+    Unlock for Freescale Kinetis K40 or K60 device.
 
     Args:
       jlink (JLink): an instance of a J-Link that is connected to a target.

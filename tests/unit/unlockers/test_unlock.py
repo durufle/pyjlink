@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.unlockers as unlock
+import pyjlink.unlockers as unlock
 
 import mock
 
@@ -64,7 +64,7 @@ class TestUnlock(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             unlock.unlock(jlink, 'dsafdsafdas')
 
-    @mock.patch('pylink.unlockers.unlock_kinetis')
+    @mock.patch('pyjlink.unlockers.unlock_kinetis')
     def test_unlock_supported(self, mock_unlock):
         """Tests calling `unlock()` with a supported MCU.
 

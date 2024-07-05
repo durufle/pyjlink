@@ -14,7 +14,7 @@
 
 import utility
 
-import pylink
+import pyjlink
 
 import behave
 
@@ -51,9 +51,9 @@ def step_connect_device(context, device):
     try:
         jlink = context.jlink
         jlink.connect(str(device))
-        jlink.set_reset_strategy(pylink.JLinkResetStrategyCortexM3.NORMAL)
-    except pylink.JLinkException as e:
-        if e.code == pylink.JLinkGlobalErrors.VCC_FAILURE:
+        jlink.set_reset_strategy(pyjlink.JLinkResetStrategyCortexM3.NORMAL)
+    except pyjlink.JLinkException as e:
+        if e.code == pyjlink.JLinkGlobalErrors.VCC_FAILURE:
             context.scenario.skip(reason='Target is not powered.')
         elif e.code == pylink.JLinkGlobalErrors.NO_CPU_FOUND:
             context.scenario.skip(reason='Target core not found.')
@@ -71,9 +71,9 @@ def step_target_interface(context, interface):
       ``None``
     """
     if interface.lower() == 'jtag':
-        context.jlink.set_tif(pylink.enums.JLinkInterfaces.JTAG)
+        context.jlink.set_tif(pyjlink.enums.JLinkInterfaces.JTAG)
     elif interface.lower() == 'swd':
-        context.jlink.set_tif(pylink.enums.JLinkInterfaces.SWD)
+        context.jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
     else:
         assert False, 'Unknown interface: %s' % interface
 
@@ -244,7 +244,7 @@ def step_flash_firmware_bytestream_retries(context, retries):
             res = jlink.flash(context.data, 0)
             if res >= 0:
                 break
-        except pylink.JLinkException as e:
+        except pyljink.JLinkException as e:
             retries = retries - 1
 
     assert retries >= 0
@@ -277,7 +277,7 @@ def step_flash_firmware_retries(context, firmware, retries):
                 break
             else:
                 retries = retries - 1
-        except pylink.JLinkException as e:
+        except pyjlink.JLinkException as e:
             sys.stderr.write('%s%s' % (str(e), os.linesep))
             retries = retries - 1
 
@@ -297,7 +297,7 @@ def step_new_jlink_not_connected(context):
     Returns:
       ``None``
     """
-    jlink_a, jlink_b = context.jlink, pylink.JLink()
+    jlink_a, jlink_b = context.jlink, pyjlink.JLink()
 
     assert not jlink_b.opened()
     assert jlink_a.opened() != jlink_b.opened()
@@ -347,11 +347,11 @@ def step_connection_open_jlink(context):
       ``None``
     """
     serial_no = context.jlink.serial_number
-    new_jlink = pylink.JLink()
+    new_jlink = pyjlink.JLink()
 
     try:
         new_jlink.open(serial_no=serial_no)
-    except pylink.JLinkException as e:
+    except pyjlink.JLinkException as e:
         pass
     else:
         assert False

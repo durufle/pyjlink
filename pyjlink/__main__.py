@@ -77,14 +77,14 @@ class Command(six.with_metaclass(CommandMeta)):
         Returns:
           An instance of a ``JLink``.
         """
-        jlink = pylink.JLink()
+        jlink = pyjlink.JLink()
         jlink.open(args.serial_no, args.ip_addr)
 
         if hasattr(args, 'tif') and args.tif is not None:
             if args.tif.lower() == 'swd':
-                jlink.set_tif(pylink.JLinkInterfaces.SWD)
+                jlink.set_tif(pyjlink.JLinkInterfaces.SWD)
             else:
-                jlink.set_tif(pylink.JLinkInterfaces.JTAG)
+                jlink.set_tif(pyjlink.JLinkInterfaces.JTAG)
 
         if hasattr(args, 'device') and args.device is not None:
             jlink.connect(args.device)
@@ -221,7 +221,7 @@ class FlashCommand(Command):
         Returns:
           ``None``
         """
-        kwargs = {'path': args.file[0], 'addr': args.addr, 'on_progress': pylink.util.flash_progress_callback}
+        kwargs = {'path': args.file[0], 'addr': args.addr, 'on_progress': pyjlink.util.flash_progress_callback}
 
         jlink = self.create_jlink(args)
         _ = jlink.flash_file(**kwargs)
@@ -263,7 +263,7 @@ class UnlockCommand(Command):
         """
         jlink = self.create_jlink(args)
         mcu = args.name[0].lower()
-        if pylink.unlock(jlink, mcu):
+        if pyjlink.unlock(jlink, mcu):
             print('Successfully unlocked device!')
         else:
             print('Failed to unlock device!')
@@ -412,7 +412,7 @@ class EmulatorCommand(Command):
         Returns:
           ``None``
         """
-        jlink = pylink.JLink()
+        jlink = pyjlink.JLink()
 
         if args.test:
             if jlink.test():
@@ -420,11 +420,11 @@ class EmulatorCommand(Command):
             else:
                 print('Self-test failed.')
         elif args.list is None or args.list in ['usb', 'ip']:
-            host = pylink.JLinkHost.USB_OR_IP
+            host = pyjlink.JLinkHost.USB_OR_IP
             if args.list == 'usb':
-                host = pylink.JLinkHost.USB
+                host = pyjlink.JLinkHost.USB
             elif args.list == 'ip':
-                host = pylink.JLinkHost.IP
+                host = pyjlink.JLinkHost.IP
 
             emulators = jlink.connected_emulators(host)
             for (index, emulator) in enumerate(emulators):
@@ -447,7 +447,7 @@ class EmulatorCommand(Command):
             device = args.supported[0]
             try:
                 index = jlink.get_device_index(device)
-            except pylink.errors.JLinkException:
+            except pyjlink.errors.JLinkException:
                 print('%s is not supported :(' % device)
                 return None
 
@@ -507,20 +507,20 @@ class FirmwareCommand(Command):
                 try:
                     # Change to the firmware of the connected DLL.
                     jlink.update_firmware()
-                except pylink.JLinkException as e:
+                except pyjlink.JLinkException as e:
                     # On J-Link versions < 5.0.0, an exception will be thrown as
                     # the connection will be lost, so we have to re-establish.
                     jlink = self.create_jlink(args)
 
                 print('Firmware Downgraded: %s' % jlink.firmware_version)
         elif args.upgrade:
-            if not jlink.firmware_outdated():
+            if not jlink.firmware_outdated:
                 print('DLL firmware is not newer than J-Link firmware.')
             else:
                 try:
                     # Upgrade the firmware.
                     jlink.update_firmware()
-                except pylink.JLinkException as e:
+                except pyjlink.JLinkException as e:
                     # On J-Link versions < 5.0.0, an exception will be thrown as
                     # the connection will be lost, so we have to re-establish.
                     jlink = self.create_jlink(args)
@@ -547,11 +547,11 @@ def create_parser():
       An instance of an ``argparse.ArgumentParser`` that parses all the
       commands supported by the PyLink CLI.
     """
-    parser = argparse.ArgumentParser(prog=pylink.__title__,
-                                     description=pylink.__description__,
-                                     epilog=pylink.__copyright__)
+    parser = argparse.ArgumentParser(prog=pyjlink.__title__,
+                                     description=pyjlink.__description__,
+                                     epilog=pyjlink.__copyright__)
     parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + pylink.__version__)
+                        version='%(prog)s ' + pyjlink.__version__)
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help='increase output verbosity')
 
@@ -603,7 +603,7 @@ def main(args=None):
             # Python 3.7 added support for subparsers being required.  Emulate
             # Python 2 error here for consistent behavior.
             parser.error('too few arguments')
-    except pylink.JLinkException as e:
+    except pyjlink.JLinkException as e:
         sys.stderr.write('Error: %s%s' % (str(e), os.linesep))
         return 1
 

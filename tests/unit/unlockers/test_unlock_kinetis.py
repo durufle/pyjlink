@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.enums as enums
-import pylink.protocols.swd as swd
-import pylink.unlockers as unlock
+import pyjlink.enums as enums
+import pyjlink.protocols.swd as swd
+import pyjlink.unlockers as unlock
 
 import mock
 

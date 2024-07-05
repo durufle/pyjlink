@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink
+import pyjlink
 
 import os
 import subprocess
@@ -20,17 +20,19 @@ import sys
 
 
 def root_dir():
-    """Retrives the root testing directory.
+    """
+    Retrieves the root testing directory.
 
     Returns:
       The root testing directory.
     """
-    dirname = os.path.abspath(os.path.dirname(__file__))
-    return os.path.abspath(os.path.join(dirname, os.pardir))
+    dir_name = os.path.abspath(os.path.dirname(__file__))
+    return os.path.abspath(os.path.join(dir_name, os.pardir))
 
 
 def firmware_path(firmware):
-    """Returns the path to given firmware, provided it exists.
+    """
+    Returns the path to given firmware, provided it exists.
 
     Args:
       firmware (str): the firmware to search for
@@ -55,7 +57,8 @@ def firmware_path(firmware):
 
 
 def flash(jlink, firmware):
-    """Flashes the given firmware to the target.
+    """
+    Flashes the given firmware to the target.
 
     Args:
       jlink (JLink): the connected ``JLink`` instance
@@ -68,7 +71,8 @@ def flash(jlink, firmware):
 
 
 def flash_k21(jlink, firmware):
-    """Flashes the given firmware onto K21.
+    """
+    Flashes the given firmware onto K21.
 
     Args:
       jlink (JLink): the connected ``JLink`` instance
@@ -78,10 +82,10 @@ def flash_k21(jlink, firmware):
       The number of bytes flashed.
     """
     jlink.power_on()
-    jlink.set_reset_strategy(pylink.enums.JLinkResetStrategyCortexM3.RESETPIN)
+    jlink.set_reset_strategy(pyjlink.enums.JLinkResetStrategyCortexM3.RESETPIN)
     jlink.reset()
 
-    if not pylink.unlock_kinetis(jlink):
+    if not pyjlinkpyjlink.unlock_kinetis(jlink):
         jlink.power_off()
         return -1
 

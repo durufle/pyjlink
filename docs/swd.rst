@@ -33,10 +33,10 @@ Once enabled, you can begin reading data from the target.
 Serial Wire Methods
 -------------------
 
-.. automodule:: pylink.jlink
+.. automodule:: pyjlink.jlink
     :noindex:
 
-    .. autoclass:: pylink.jlink.JLink
+    .. autoclass:: pyjlink.jlink.JLink
         :noindex:
         :members: swd_read8, swd_read16, swd_read32, swd_write, swd_write8,
                   swd_write16, swd_write32, swd_sync, swo_start, swo_enable,
@@ -50,7 +50,7 @@ Examples
 Serial Wire Viewer
 ~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../examples/swv.py
+.. literalinclude:: ../examples/swd.py
     :name: swv-py
     :language: python
     :linenos:

@@ -4,17 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 version= "0.0.0"
-name = "pyjlink"
+name = "ragnarok-pyjlink"
 authors = [
-    {name = "Laurent Bonnet", email = "laurent.bonnet@stm.com"}
+    {name = "Laurent Woolcap", email = "laurent.woolcap@free.fr"}
 ]
 description = ""
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
 dependencies = [
-    "six",
-
+    "six"
 ]
 
 classifiers = [
@@ -31,12 +30,12 @@ classifiers = [
 ]
 
 [project.scripts]
-stmloader = "pyjlink.__main__:main"
+pyjlink = "pyjlink.__main__:main"
 
 [project.urls]
-Home = "https://github.com/durufle/stm32boot"
-BugTracker = "https://github.com/durufle/stm32boot/issues"
-SourceCode = "https://github.com/durufle/stm32boot"
+Home = "https://github.com/durufle/pyjlink"
+BugTracker = "https://github.com/durufle/pyjlink/issues"
+SourceCode = "https://github.com/durufle/pyjlink"
 
 [tool.setuptools.packages.find]
 exclude = ['tests*', 'venv*', 'docs*', 'examples*']
@@ -45,7 +44,7 @@ exclude = ['tests*', 'venv*', 'docs*', 'examples*']
 include-package-data = true
 
 [tool.pylint.master]
-ignore="conf.py, ceval_stm32l4xx.py"
+ignore="conf.py"
 
 [tool.pylint.format]
 max-line-length = 120

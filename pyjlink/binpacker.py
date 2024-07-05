@@ -3,7 +3,9 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
-
+"""
+binpacker module
+"""
 import ctypes
 import math
 
@@ -33,7 +35,8 @@ def pack_size(value):
 
 
 def pack(value, nbits=None):
-    """Packs a given value into an array of 8-bit unsigned integers.
+    """
+    Packs a given value into an array of 8-bit unsigned integers.
 
     If ``nbits`` is not present, calculates the minimal number of bits required
     to represent the given ``value``.  The result is little endian.

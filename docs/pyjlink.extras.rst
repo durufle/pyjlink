@@ -50,7 +50,7 @@ Util
 
 This submodule provides different utility functions.
 
-.. automodule:: pylink.util
+.. automodule:: pyjlink.util
     :members:
     :undoc-members:
     :show-inheritance:

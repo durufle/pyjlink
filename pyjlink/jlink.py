@@ -1031,7 +1031,8 @@ class JLink(object):
           ir_post (int): sum of instruction register length of all JTAG devices in the JTAG chain, following the actual
           one, that J-Link shall communicate with
 
-          dr_post (int): Number of JTAG devices in the JTAG chain, following the actual one, J-Link shall communicate with
+          dr_post (int): Number of JTAG devices in the JTAG chain, following the actual one, J-Link shall communicate
+                         with
 
           ir_len (int): instruction register length of the actual device that J-Link shall communicate with
 
@@ -1715,7 +1716,7 @@ class JLink(object):
         Raises:
           JLinkException: if the given interface is invalid or unsupported.
         """
-        if not ((1 << interface) & self.supported_tif()):
+        if not (1 << interface) & self.supported_tif():
             raise errors.JLinkException('Unsupported target interface: %s' % interface)
 
         # The return code here is actually *NOT* the previous set interface, it

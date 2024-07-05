@@ -1,10 +1,7 @@
-PyLink: Control your J-Link with Python
-=======================================
+PyJLink: Control your J-Link with Python
+========================================
 
-PyLink is a Python package that enables you to control your J-Link from Python.
-This library was developed at `Square <http://squareup.com>`_ to enable us to
-leverage our J-Link as a part of our test infrastructure, which was written in
-Python.
+PyJLink is a Python package that enables you to control your J-Link from Python.
 
 Getting started is as simple as:
 

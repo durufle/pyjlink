@@ -1,7 +1,7 @@
 # Examples
 
 This directory contains examples for different scripts and applications that
-can be developed using `pylink`.
+can be developed using `pyjlink`.
 
 ## Current Examples
 

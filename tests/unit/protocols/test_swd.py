@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.protocols.swd as swd
-import pylink.util
+import pyjlink.protocols.swd as swd
+import pyjlink.util
 
 import mock
 
@@ -24,39 +24,22 @@ class TestSerialWireDebug(unittest.TestCase):
     """Tests the `protocols.swd` submodule."""
 
     def setUp(self):
-        """Called before each test.
-
-        Performs setup.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Called before each test.
         """
         pass
 
     def tearDown(self):
-        """Called after each test.
+        """
+        Called after each test.
 
         Performs teardown.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
         """
         pass
 
     def test_swd_response_ack(self):
-        """Tests creating an ACK response.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests creating an ACK response.
         """
         response = swd.Response(swd.Response.STATUS_ACK)
         self.assertTrue(response.ack())
@@ -65,13 +48,8 @@ class TestSerialWireDebug(unittest.TestCase):
         self.assertFalse(response.invalid())
 
     def test_swd_response_wait(self):
-        """Tests creating a WAIT response.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests creating a WAIT response.
         """
         response = swd.Response(swd.Response.STATUS_WAIT)
         self.assertTrue(response.wait())
@@ -80,13 +58,8 @@ class TestSerialWireDebug(unittest.TestCase):
         self.assertFalse(response.invalid())
 
     def test_swd_response_fault(self):
-        """Tests creating a FAULT response.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests creating a FAULT response.
         """
         response = swd.Response(swd.Response.STATUS_FAULT)
         self.assertTrue(response.fault())
@@ -95,13 +68,8 @@ class TestSerialWireDebug(unittest.TestCase):
         self.assertFalse(response.invalid())
 
     def test_swd_response_invalid(self):
-        """Tests creating an invalid response.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests creating an invalid response.
         """
         response = swd.Response(swd.Response.STATUS_INVALID)
         self.assertTrue(response.invalid())
@@ -110,17 +78,12 @@ class TestSerialWireDebug(unittest.TestCase):
         self.assertFalse(response.ack())
 
     def test_swd_read_request_initialize(self):
-        """Tests creating a SWD Read Request.
+        """
+        Tests creating a SWD Read Request.
 
         When a SWD Read Request is created, there is a structure specifying
         what the underlying bits should look like.  This test verifies a
         number of different valid bitfields.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
         """
         values = [165, 141, 149, 189, 165]
         for (index, value) in enumerate(values):
@@ -133,13 +96,8 @@ class TestSerialWireDebug(unittest.TestCase):
             self.assertEqual(value, request.value)
 
     def test_swd_read_request_send_nack(self):
-        """Tests sending a SWD Read Request that is NACK'd.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests sending a SWD Read Request that is NACK'd.
         """
         request = swd.ReadRequest(0, True)
 
@@ -174,13 +132,8 @@ class TestSerialWireDebug(unittest.TestCase):
         mock_jlink.swd_read32.assert_any_call(ack + 3)  # data read
 
     def test_swd_read_request_send_ack(self):
-        """Tests sending a SWD Read Request that is ACK'd.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests sending a SWD Read Request that is ACK'd.
         """
         request = swd.ReadRequest(0, True)
 
@@ -215,17 +168,12 @@ class TestSerialWireDebug(unittest.TestCase):
         mock_jlink.swd_read32.assert_any_call(ack + 3)  # data read
 
     def test_swd_read_request_send_ack_parity_mismatch(self):
-        """Tests sending a SWD Request that is ACK'd, but the parity is wrong.
+        """
+        Tests sending a SWD Request that is ACK'd, but the parity is wrong.
 
         When a SWD Read Request reads data from the target, their is a parity
         field that is set, and can be is to verify that the data is valid.  In
         this test, the parity check fails.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
         """
         request = swd.ReadRequest(0, True)
 
@@ -261,17 +209,12 @@ class TestSerialWireDebug(unittest.TestCase):
         mock_jlink.swd_read32.assert_any_call(ack + 3)  # data read
 
     def test_swd_write_request_initialize(self):
-        """Tests creating a SWD Write Request.
+        """
+        Tests creating a SWD Write Request.
 
         When a SWD Write Request is created, there is a structure specifying
         what the underlying bits should look like.  This test verifies a number
         of different valid bitfields.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
         """
         data = 4
         values = [129, 169, 177, 153]
@@ -285,16 +228,11 @@ class TestSerialWireDebug(unittest.TestCase):
             self.assertEqual(value, request.value)
 
     def test_swd_write_request_send(self):
-        """Tests sending a SWD Read Request.
-
-        Args:
-          self (TestSerialWireDebug): the `TestSerialWireDebug` instance
-
-        Returns:
-          `None`
+        """
+        Tests sending a SWD Read Request.
         """
         data = 2
-        parity = pylink.util.calculate_parity(data)
+        parity = pyjlink.util.calculate_parity(data)
         request = swd.WriteRequest(0, True, data)
 
         ack = 2

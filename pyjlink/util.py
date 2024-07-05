@@ -57,9 +57,6 @@ def noop(*args, **kwargs):
     Args:
       args: list of arguments
       kwargs: keyword arguments dictionary
-
-    Returns:
-      ``None``
     """
     pass
 

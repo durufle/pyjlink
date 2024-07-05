@@ -1,62 +1,51 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
-from .. import util
-
+"""
+pyjlink swd protocol module
+"""
 import ctypes
+from .. import util
 
 
 class Response(object):
-    """Response class to hold the response from the send of a SWD request."""
-    STATUS_ACK = (1 << 0)
-    STATUS_WAIT = (1 << 1)
-    STATUS_FAULT = (1 << 2)
+    """
+    Response class to hold the response from the send of a SWD request.
+    """
+    STATUS_ACK = 1 << 0
+    STATUS_WAIT = 1 << 1
+    STATUS_FAULT = 1 << 2
     STATUS_INVALID = -1
 
     def __init__(self, status, data=None):
-        """Initializes the response.
+        """
+        Initializes the response.
 
         Args:
-          self (Response): the ``Response`` instance
           status (int): the status the response exited with
           data (object): the optional data returned from the request
-
-        Returns:
-          ``None``
         """
         self.status = status
         self.data = data
 
-    def ack(self):
-        """Returns whether the response was ACK'd.
-
-        Args:
-          self (Response): the ``Response`` instance
+    def ack(self) -> bool:
+        """
+        Returns whether the response was Acknowledged.
 
         Returns:
-          ``True`` if response was ACK'd, otherwise ``False``.
+          True if response was Acknowledged, otherwise False
         """
         return self.status == self.STATUS_ACK
 
-    def wait(self):
-        """Returns whether the response was a wait.
-
-        Args:
-          self (Response): the ``Response`` instance
+    def wait(self) -> bool:
+        """
+        Returns whether the response was a wait.
 
         Returns:
-          ``True`` if response exited with wait, otherwise ``False``.
+          True if response exited with wait, otherwise False.
         """
         return self.status == self.STATUS_WAIT
 
@@ -86,7 +75,9 @@ class Response(object):
 
 
 class RequestBits(ctypes.LittleEndianStructure):
-    """SWD request bits."""
+    """
+    SWD request bits.
+    """
     _fields_ = [
         ('start',      ctypes.c_uint8, 1),
         ('ap_dp',      ctypes.c_uint8, 1),
@@ -164,7 +155,6 @@ class Request(ctypes.Union):
         Sends the request and receives an ACK for the request.
 
         Args:
-          self (Request): the ``Request`` instance
           jlink (JLink): the ``JLink`` instance to use for write/read
 
         Returns:
@@ -178,24 +168,24 @@ class Request(ctypes.Union):
 
 
 class ReadRequest(Request):
-    """Definition for a SWD (Serial Wire Debug) Read Request."""
+    """
+    Definition for a SWD (Serial Wire Debug) Read Request.
+    """
 
     def __init__(self, address, ap):
-        """Initializes the base class.
+        """
+        Initializes the base class.
 
         Args:
-          self (ReadRequest): the ``ReadRequest`` instance
           address (int): the register index
           ap (bool): ``True`` if this request is to an Access Port Access
               Register, otherwise ``False`` for a Debug Port Access Register
-
-        Returns:
-          ``None``
         """
         super(ReadRequest, self).__init__(address=address, ap=ap)
 
     def send(self, jlink):
-        """Starts the SWD transaction.
+        """
+        Starts the SWD transaction.
 
         Steps for a Read Transaction:
           1.  First phase in which the request is sent.
@@ -233,24 +223,24 @@ class ReadRequest(Request):
 
 
 class WriteRequest(Request):
-    """Definition for a SWD (Serial Wire Debug) Write Request."""
+    """
+    Definition for a SWD (Serial Wire Debug) Write Request.
+    """
 
     def __init__(self, address, ap, data):
-        """Initializes the base class.
+        """
+        Initializes the base class.
 
         Args:
-          self (WriteRequest): the ``WriteRequest`` instance
           address (int): the register index
           ap (bool): ``True`` if this request is to an Access Port Access
-              Register, otherwise ``False`` for a Debug Port Access Register
-
-        Returns:
-          ``None``
+                    Register, otherwise ``False`` for a Debug Port Access Register
         """
         super(WriteRequest, self).__init__(address=address, ap=ap, data=data)
 
     def send(self, jlink):
-        """Starts the SWD transaction.
+        """
+        Starts the SWD transaction.
 
         Steps for a Write Transaction:
           1.  First phase in which the request is sent.
@@ -264,7 +254,6 @@ class WriteRequest(Request):
           4.  Write the data and parity bits.
 
         Args:
-          self (WriteRequest): the ``WriteRequest`` instance
           jlink (JLink): the ``JLink`` instance to use for write/read
 
         Returns:

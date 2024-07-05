@@ -35,27 +35,28 @@ import subprocess
 
 
 class CleanCommand(setuptools.Command):
-    """Custom clean command."""
+    """
+    Custom clean command.
+    """
 
     description = 'clean the project build files'
 
     user_options = []
 
     def initialize_options(self):
-        """Initialize the Command.
+        """
+        Initialize the Command.
 
         Args:
           self (CleanCommand): the ``CleanCommand`` instance
-
-        Returns:
-          ``None``
-        """
+         """
         self.cwd = None
         self.build_dirs = None
         self.build_artifacts = None
 
     def finalize_options(self):
-        """Populate the attributes.
+        """
+        Populate the attributes.
 
         Args:
           self (CleanCommand): the ``CleanCommand`` instance
@@ -68,18 +69,16 @@ class CleanCommand(setuptools.Command):
             os.path.join(self.cwd, 'build'),
             os.path.join(self.cwd, 'htmlcov'),
             os.path.join(self.cwd, 'dist'),
-            os.path.join(self.cwd, 'pylink_square.egg-info')
+            os.path.join(self.cwd, 'pyjlink_square.egg-info')
         ]
         self.build_artifacts = ['.pyc', '.o', '.elf', '.bin']
 
     def run(self):
-        """Runs the command.
+        """
+        Runs the command.
 
         Args:
           self (CleanCommand): the ``CleanCommand`` instance
-
-        Returns:
-          ``None``
         """
         for build_dir in self.build_dirs:
             if os.path.isdir(build_dir):
@@ -135,7 +134,7 @@ class CoverageCommand(setuptools.Command):
           ``None``
         """
         import coverage
-        subprocess.call(['coverage', 'run', '--source', 'pylink', 'setup.py', 'test'])
+        subprocess.call(['coverage', 'run', '--source', 'pyjlink', 'setup.py', 'test'])
         subprocess.call(['coverage', 'report'])
         subprocess.call(['coverage', 'html'])
 
@@ -249,12 +248,12 @@ setuptools.setup(
 
     # Packages and package data.
     packages=[
-        'pylink',
-        'pylink.protocols',
-        'pylink.unlockers'
+        'pyjlink',
+        'pyjlink.protocols',
+        'pyjlink.unlockers'
     ],
     package_data={
-        'pylink': [
+        'pyjlink': [
         ]
     },
 
@@ -274,14 +273,14 @@ setuptools.setup(
 
     # Additional scripts.
     scripts=[
-        os.path.join('examples', 'pylink-rtt'),
-        os.path.join('examples', 'pylink-swv'),
+        os.path.join('examples', 'pyjlink-rtt'),
+        os.path.join('examples', 'pyjlink-swv'),
     ],
 
     # Entry points.
     entry_points={
         'console_scripts': [
-            'pylink = pylink.__main__:main'
+            'pyjlink = pyjlink.__main__:main'
         ]
     },
 

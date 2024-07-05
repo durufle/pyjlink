@@ -3,12 +3,11 @@ coverage == 4.4.1
 psutil >= 5.2.2
 pycodestyle >= 2.3.1
 six~=1.16.0
-sphinx == 1.4.8
-sphinx-argparse == 0.1.15
-sphinx_rtd_theme == 0.2.4
-sphinxcontrib-napoleon == 0.5.3
+sphinx
+sphinx-argparse
+sphinx_rtd_theme
+sphinxcontrib-napoleon
 wheel
 
 mock~=5.1.0
-setuptools~=68.2.0
 pylint

@@ -1,22 +1,15 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from .unlock_kinetis import unlock_kinetis
 
 
-def unlock(jlink, name):
-    """Unlocks a J-Link's target device.
+def unlock(jlink, name) -> bool:
+    """
+    Unlocks a J-Link's target device.
 
     Args:
       jlink (JLink): the connected J-Link device
@@ -24,9 +17,11 @@ def unlock(jlink, name):
 
     Supported Names:
       - Kinetis
+      - freescale,
+      - nxp
 
     Returns:
-      ``True`` if the device was unlocked, otherwise ``False``.
+      True if the device was unlocked, otherwise False.
 
     Raises:
       NotImplementedError: if no unlock method exists for the MCU.

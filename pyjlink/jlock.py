@@ -1,26 +1,17 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 import psutil
-
-import errno
 import tempfile
 import os
 
 
 class JLock(object):
-    """Lockfile for accessing a particular J-Link.
+    """
+    Lockfile for accessing a particular J-Link.
 
     The J-Link SDK does not prevent accessing the same J-Link multiple times
     from the same process or multiple processes.  As a result, a user can
@@ -48,18 +39,15 @@ class JLock(object):
     IPADDR_NAME_FMT = '.pylink-ip-{}.lck'
 
     def __init__(self, serial_no):
-        """Creates an instance of a ``JLock`` and populates the name.
+        """
+        Creates an instance of a ``JLock`` and populates the name.
 
         Note:
           This method may fail if there is no temporary directory in which to
           have the lockfile placed.
 
         Args:
-          self (JLock): the ``JLock`` instance
           serial_no (int): the serial number of the J-Link
-
-        Returns:
-          ``None``
         """
         self.name = self.SERIAL_NAME_FMT.format(serial_no)
         self.acquired = False
@@ -68,27 +56,20 @@ class JLock(object):
         self.path = os.path.join(tempfile.gettempdir(), self.name)
 
     def __del__(self):
-        """Cleans up the lockfile instance if it was acquired.
-
-        Args:
-          self (JLock): the ``JLock`` instance
-
-        Returns:
-          ``None``
+        """
+        Cleans up the lockfile instance if it was acquired.
         """
         self.release()
 
-    def acquire(self):
-        """Attempts to acquire a lock for the J-Link lockfile.
+    def acquire(self) -> bool:
+        """
+        Attempts to acquire a lock for the J-Link lockfile.
 
         If the lockfile exists but does not correspond to an active process,
         the lockfile is first removed, before an attempt is made to acquire it.
 
-        Args:
-          self (Jlock): the ``JLock`` instance
-
         Returns:
-          ``True`` if the lock was acquired, otherwise ``False``.
+          True if the lock was acquired, otherwise False.
 
         Raises:
           OSError: on file errors.
@@ -131,15 +112,12 @@ class JLock(object):
         self.acquired = True
         return True
 
-    def release(self):
-        """Cleans up the lockfile if it was acquired.
-
-        Args:
-          self (JLock): the ``JLock`` instance
+    def release(self) -> bool:
+        """
+        Cleans up the lockfile if it was acquired.
 
         Returns:
-          ``False`` if the lock was not released or the lock is not acquired,
-          otherwise ``True``.
+          False if the lock was not released or the lock is not acquired, otherwise True.
         """
         if not self.acquired:
             return False

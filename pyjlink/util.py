@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Square, Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from . import enums
 
@@ -49,17 +40,19 @@ def is_natural(val) -> bool:
     # return is_integer(val) and (val >= 0)
 
 
-def is_os_64bit():
-    """Returns whether the current running platform is 64bit.
+def is_os_64bit() -> bool:
+    """
+    Returns whether the current running platform is 64bit.
 
     Returns:
-      ``True`` if the platform is 64bit, otherwise ``False``.
+      True if the platform is 64bit, otherwise False.
     """
     return platform.machine().endswith('64')
 
 
 def noop(*args, **kwargs):
-    """No-op.  Does nothing.
+    """
+    No-op.  Does nothing.
 
     Args:
       args: list of arguments
@@ -72,7 +65,8 @@ def noop(*args, **kwargs):
 
 
 def unsecure_hook_dialog(title, msg, flags):
-    """No-op that ignores the dialog.
+    """
+    No-op that ignores the dialog.
 
     Args:
       title (str): title of the unsecure dialog
@@ -91,7 +85,8 @@ def progress_bar(iteration,
                  suffix=None,
                  decs=1,
                  length=100):
-    """Creates a console progress bar.
+    """
+    Creates a console progress bar.
 
     This should be called in a loop to create a progress bar.
 
@@ -132,11 +127,10 @@ def progress_bar(iteration,
         sys.stdout.write('\n')
         sys.stdout.flush()
 
-    return None
-
 
 def flash_progress_callback(action, progress_string, percentage):
-    """Callback that can be used with ``JLink.flash()``.
+    """
+    Callback that can be used with ``JLink.flash()``.
 
     This callback generates a progress bar in the console to show the progress
     of each of the steps of the flash.
@@ -146,20 +140,16 @@ def flash_progress_callback(action, progress_string, percentage):
       progress_string (str): the current step in the progress
       percentage (int): the percent to which the current step has been done
 
-    Returns:
-      ``None``
-
     Note:
       This function ignores the compare action.
     """
     if action.lower() != 'compare':
-        return progress_bar(min(100, percentage), 100, prefix=action)
-
-    return None
+        progress_bar(min(100, percentage), 100, prefix=action)
 
 
 def calculate_parity(n):
-    """Calculates and returns the parity of a number.
+    """
+    Calculates and returns the parity of a number.
 
     The parity of a number is ``1`` if the number has an odd number of ones
     in its binary representation, otherwise ``0``.

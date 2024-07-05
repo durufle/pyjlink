@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+version= "0.0.0"
+name = "pyjlink"
+authors = [
+    {name = "Laurent Bonnet", email = "laurent.bonnet@stm.com"}
+]
+description = ""
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+dependencies = [
+    "six",
+
+]
+
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+stmloader = "pyjlink.__main__:main"
+
+[project.urls]
+Home = "https://github.com/durufle/stm32boot"
+BugTracker = "https://github.com/durufle/stm32boot/issues"
+SourceCode = "https://github.com/durufle/stm32boot"
+
+[tool.setuptools.packages.find]
+exclude = ['tests*', 'venv*', 'docs*', 'examples*']
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.pylint.master]
+ignore="conf.py, ceval_stm32l4xx.py"
+
+[tool.pylint.format]
+max-line-length = 120
+disable = "R0902, R0904, W0612, W0622"
+
+[tool.pytest.ini_options]
+# Only package and test are part of the coverage
+addopts = "--cov=./tests --cov=./stmloader --cov-append"
+

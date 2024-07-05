@@ -1,16 +1,8 @@
-# Copyright 2018 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 import struct
 
 from . import binpacker
@@ -311,7 +303,7 @@ class JLink(object):
         self._initialized = False
 
         if lib is None:
-            lib = library.Library(use_tmpcpy=use_tmpcpy)
+            lib = library.Library(use_tmp_cpy=use_tmpcpy)
 
         if lib.dll() is None:
             raise TypeError('Expected to be given a valid DLL.')
@@ -2546,7 +2538,8 @@ class JLink(object):
 
     @connection_required
     def cpu_halt_reasons(self):
-        """Retrives the reasons that the CPU was halted.
+        """
+        Retrieves the reasons that the CPU was halted.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -2569,7 +2562,8 @@ class JLink(object):
 
     @connection_required
     def jtag_create_clock(self):
-        """Creates a JTAG clock on TCK.
+        """
+        Creates a JTAG clock on TCK.
 
         Note:
           This function only needs to be called once.
@@ -2612,28 +2606,39 @@ class JLink(object):
 
     @connection_required
     def jtag_flush(self):
-        """Flushes the internal JTAG buffer.
+        """
+        Flushes the internal JTAG buffer.
 
         Note:
-          The buffer is automatically flushed when a response from the target
-          is expected, or the buffer is full.  This can be used after a
-          ``memory_write()`` in order to flush the buffer.
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``None``
+          The buffer is automatically flushed when a response from the target is expected, or the buffer is full.
+          This can be used after memory_write() in order to flush the buffer.
         """
         self._dll.JLINKARM_WriteBits()
 
+    @connection_required
+    def jtag_device_id(self, index):
+        """
+        Return the Jtag Id of one connected device.
+        Args:
+            index: Device index
+        """
+        return self._dll.JLINKARM_JTAG_GetDeviceId(index)
+
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @connection_required
+    def jtag_storeraw(self, output, mode, num_bits):
+        """
+        Store a raw data sequence in the output buffer
+        """
+
+        self._dll.JLINKARM_StoreRaw(tdi, mode, num_bits)
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_read8(self, offset):
-        """Gets a unit of ``8`` bits from the input buffer.
+        """
+        Gets a unit of 8 bits from the input buffer.
 
         Args:
-          self (JLink): the ``JLink`` instance
           offset (int): the offset (in bits) from which to start reading
 
         Returns:
@@ -2645,10 +2650,10 @@ class JLink(object):
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_read16(self, offset):
-        """Gets a unit of ``16`` bits from the input buffer.
+        """
+        Gets a unit of 16 bits from the input buffer.
 
         Args:
-          self (JLink): the ``JLink`` instance
           offset (int): the offset (in bits) from which to start reading
 
         Returns:
@@ -2660,10 +2665,10 @@ class JLink(object):
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_read32(self, offset):
-        """Gets a unit of ``32`` bits from the input buffer.
+        """
+        Gets a unit of 32 bits from the input buffer.
 
         Args:
-          self (JLink): the ``JLink`` instance
           offset (int): the offset (in bits) from which to start reading
 
         Returns:
@@ -2674,34 +2679,32 @@ class JLink(object):
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
-    def swd_write(self, output, value, nbits):
-        """Writes bytes over SWD (Serial Wire Debug).
+    def swd_write(self, output, value, numbits):
+        """
+        Writes bytes over SWD (Serial Wire Debug).
 
         Args:
-          self (JLink): the ``JLink`` instance
           output (int): the output buffer offset to write to
           value (int): the value to write to the output buffer
-          nbits (int): the number of bits needed to represent the ``output`` and
-            ``value``
+          numbits (int): the number of bits needed to represent the ``output`` and value
 
         Returns:
           The bit position of the response in the input buffer.
         """
-        pDir = binpacker.pack(output, nbits)
-        pIn = binpacker.pack(value, nbits)
-        bitpos = self._dll.JLINK_SWD_StoreRaw(pDir, pIn, nbits)
-        if bitpos < 0:
-            raise errors.JLinkException(bitpos)
-
-        return bitpos
+        p_output = binpacker.pack(output, numbits)
+        p_input = binpacker.pack(value, numbits)
+        bit_position = self._dll.JLINK_SWD_StoreRaw(p_output, p_input, numbits)
+        if bit_position < 0:
+            raise errors.JLinkException(bit_position)
+        return bit_position
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_write8(self, output, value):
-        """Writes one byte over SWD (Serial Wire Debug).
+        """
+        Writes one byte over SWD (Serial Wire Debug).
 
         Args:
-          self (JLink): the ``JLink`` instance
           output (int): the output buffer offset to write to
           value (int): the value to write to the output buffer
 
@@ -2713,10 +2716,10 @@ class JLink(object):
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_write16(self, output, value):
-        """Writes two bytes over SWD (Serial Wire Debug).
+        """
+        Writes two bytes over SWD (Serial Wire Debug).
 
         Args:
-          self (JLink): the ``JLink`` instance
           output (int): the output buffer offset to write to
           value (int): the value to write to the output buffer
 
@@ -2728,10 +2731,10 @@ class JLink(object):
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_write32(self, output, value):
-        """Writes four bytes over SWD (Serial Wire Debug).
+        """
+        Writes four bytes over SWD (Serial Wire Debug).
 
         Args:
-          self (JLink): the ``JLink`` instance
           output (int): the output buffer offset to write to
           value (int): the value to write to the output buffer
 
@@ -2743,8 +2746,8 @@ class JLink(object):
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_sync(self, pad=False):
-        """Causes a flush to write all data remaining in output buffers to SWD
-        device.
+        """
+        Causes a flush to write all data remaining in output buffers to SWD device.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -2794,7 +2797,6 @@ class JLink(object):
         """Writes bytes to the flash region of a device.
 
         Args:
-          self (JLink): the ``JLink`` instance
           addr (int): starting flash address to write to
           data (list): list of bytes to write
 
@@ -2805,12 +2807,12 @@ class JLink(object):
 
     @connection_required
     def flash_write16(self, addr, data):
-        """Writes halfwords to the flash region of a device.
+        """
+        Writes half-words to the flash region of a device.
 
         Args:
-          self (JLink): the ``JLink`` instance
           addr (int): starting flash address to write to
-          data (list): list of halfwords to write
+          data (list): list of half-words to write
 
         Returns:
           Number of bytes written to flash.
@@ -2819,10 +2821,10 @@ class JLink(object):
 
     @connection_required
     def flash_write32(self, addr, data):
-        """Writes words to the flash region of a device.
+        """
+        Writes words to the flash region of a device.
 
         Args:
-          self (JLink): the ``JLink`` instance
           addr (int): starting flash address to write to
           data (list): list of words to write
 
@@ -2843,7 +2845,6 @@ class JLink(object):
           time, and expect to always read ahead.
 
         Args:
-          self (JLink): the ``JLink`` instance
           addr (int): starting address from which to read
           num_bytes (int): number of bytes to read
 
@@ -2866,12 +2867,8 @@ class JLink(object):
         """
         Returns the number of memory zones supported by the target.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
         Returns:
-          An integer count of the number of memory zones supported by the
-          target.
+          An integer count of the number of memory zones supported by the target.
 
         Raises:
           JLinkException: on error.
@@ -2883,14 +2880,12 @@ class JLink(object):
 
     @connection_required
     def memory_zones(self):
-        """Gets all memory zones supported by the current target.
+        """
+        Gets all memory zones supported by the current target.
 
         Some targets support multiple memory zones.  This function provides the
         ability to get a list of all the memory zones to facilate using the
         memory zone routing functions.
-
-        Args:
-          self (JLink): the ``JLink`` instance
 
         Returns:
           A list of all the memory zones as ``JLinkMemoryZone`` structures.
@@ -2906,7 +2901,6 @@ class JLink(object):
         res = self._dll.JLINK_GetMemZones(buf, count)
         if res < 0:
             raise errors.JLinkException(res)
-
         return list(buf)
 
     @connection_required
@@ -2921,7 +2915,6 @@ class JLink(object):
         ``32``.  If not provided, always reads ``num_units`` bytes.
 
         Args:
-          self (JLink): the ``JLink`` instance
           addr (int): start address to read from
           num_units (int): number of units to read
           zone (str): optional memory zone name to access
@@ -2971,7 +2964,8 @@ class JLink(object):
 
     @connection_required
     def memory_read8(self, addr, num_bytes, zone=None):
-        """Reads memory from the target system in units of bytes.
+        """
+        Reads memory from the target system in units of bytes.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -3272,35 +3266,33 @@ class JLink(object):
         return value
 
     @connection_required
-    def register_write_multiple(self, register_indices, values):
-        """Writes to multiple CPU registers.
+    def register_write_multiple(self, registers, values):
+        """
+        Writes to multiple CPU registers.
 
         Writes the values to the given registers in order.  There must be a
         one-to-one correspondence between the values and the registers
         specified.
 
         Args:
-          self (JLink): the ``JLink`` instance
-          register_indices (list): list of registers to write to
+          registers (list): list of registers to write to
           values (list): list of values to write to the registers
-
-        Returns:
-          ``None``
 
         Raises:
           ValueError: if ``len(register_indices) != len(values)``
           JLinkException: if a register could not be written to or on error
         """
         # TODO: rename 'register_indices' to 'registers'
-        register_indices = register_indices[:]
-        if len(register_indices) != len(values):
+        registers = registers[:]
+        if len(registers) != len(values):
             raise ValueError('Must be an equal number of registers and values')
 
-        num_regs = len(register_indices)
-        for idx, indice in enumerate(register_indices):
-            if isinstance(indice, six.string_types):
-                register_indices[idx] = self._get_register_index_from_name(indice)
-        buf = (ctypes.c_uint32 * num_regs)(*register_indices)
+        num_regs = len(registers)
+        for idx, indices in enumerate(registers):
+            if isinstance(indices, six.string_types):
+                registers[idx] = self._get_register_index_from_name(indices)
+
+        buf = (ctypes.c_uint32 * num_regs)(*registers)
         data = (ctypes.c_uint32 * num_regs)(*values)
 
         # TODO: For some reason, these statuses are wonky, not sure why, might
@@ -3315,10 +3307,10 @@ class JLink(object):
 
     @connection_required
     def ice_register_read(self, register_index):
-        """Reads a value from an ARM ICE register.
+        """
+        Reads a value from an ARM ICE register.
 
         Args:
-          self (JLink): the ``JLink`` instance
           register_index (int): the register to read
 
         Returns:
@@ -3328,16 +3320,13 @@ class JLink(object):
 
     @connection_required
     def ice_register_write(self, register_index, value, delay=False):
-        """Writes a value to an ARM ICE register.
+        """
+        Writes a value to an ARM ICE register.
 
         Args:
-          self (JLink): the ``JLink`` instance
           register_index (int): the ICE register to write to
           value (int): the value to write to the ICE register
           delay (bool): boolean specifying if the write should be delayed
-
-        Returns:
-          ``None``
         """
         self._dll.JLINKARM_WriteICEReg(register_index, int(value), int(delay))
         return None
@@ -3348,11 +3337,8 @@ class JLink(object):
         """
         Returns if the CPU core supports ETM.
 
-        Args:
-          self (JLink): the ``JLink`` instance.
-
         Returns:
-          ``True`` if the CPU has the ETM unit, otherwise ``False``.
+            True if the CPU has the ETM unit, otherwise False
         """
         res = self._dll.JLINKARM_ETM_IsPresent()
         if res == 1:
@@ -3366,7 +3352,6 @@ class JLink(object):
         res = self._dll.JLINKARM_GetDebugInfo(index, ctypes.byref(info))
         if res == 1:
             return False
-
         return True
 
     @connection_required
@@ -3391,9 +3376,6 @@ class JLink(object):
           register_index (int): the register to write to.
           value (int): the value to write to the register.
           delay (bool): boolean specifying if the write should be buffered.
-
-        Returns:
-          ``None``
         """
         self._dll.JLINKARM_ETM_WriteReg(int(register_index), int(value), int(delay))
         return None
@@ -4095,9 +4077,7 @@ class JLink(object):
         return ctypes.string_at(buf).decode()
 
     ###############################################################################
-    #
     # STRACE API
-    #
     ###############################################################################
 
     @connection_required
@@ -4244,7 +4224,8 @@ class JLink(object):
                                  data_mask=None,
                                  access_width=4,
                                  address_range=0):
-        """Sets an event to trigger trace logic when data access is made.
+        """
+        Sets an event to trigger trace logic when data access is made.
 
         Data access corresponds to either a read or write.
 
@@ -4649,14 +4630,12 @@ class JLink(object):
         buf_size = ctypes.c_uint32(num_items)
         buf = (structs.JLinkTraceData * num_items)()
         res = self._dll.JLINKARM_TRACE_Read(buf, int(offset), ctypes.byref(buf_size))
-        if (res == 1):
+        if res == 1:
             raise errors.JLinkException('Failed to read from trace buffer.')
         return list(buf)[:int(buf_size.value)]
 
     ###############################################################################
-    #
     # Serial Wire Output API
-    #
     ###############################################################################
 
     def swo_enabled(self):
@@ -4672,7 +4651,8 @@ class JLink(object):
 
     @connection_required
     def swo_start(self, swo_speed=9600):
-        """Starts collecting SWO data.
+        """
+        Starts collecting SWO data.
 
         Note:
           If SWO is already enabled, it will first stop SWO before enabling it

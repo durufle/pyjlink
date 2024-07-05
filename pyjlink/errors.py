@@ -1,40 +1,28 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from . import enums
-from . import util
 
 
 class JLinkException(enums.JLinkGlobalErrors, Exception):
-    """Generic J-Link exception."""
+    """
+    Generic J-Link exception."""
 
     def __init__(self, code):
-        """Generates an exception by coercing the given ``code`` to an error
+        """
+        Generates an exception by coercing the given ``code`` to an error
         string if is a number, otherwise assumes it is the message.
 
         Args:
-          self (JLinkException): the 'JLinkException' instance
           code (object): message or error code
-
-        Returns:
-          ``None``
         """
         message = code
 
         self.code = None
-
-        if util.is_integer(code):
+        if isinstance(code,int):
             message = self.to_string(code)
             self.code = code
 

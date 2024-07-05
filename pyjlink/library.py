@@ -1,16 +1,8 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from . import util
 
@@ -23,18 +15,18 @@ import tempfile
 
 
 class Library(object):
-    """Wrapper to provide easy access to loading the J-Link SDK DLL.
+    """
+    Wrapper to provide easy access to loading the J-Link SDK DLL.
 
     This class provides a convenience for finding and loading the J-Link DLL
     across multiple platforms, and accounting for the inconsistencies between
     Windows and nix-based platforms.
 
     Attributes:
-      _standard_calls_: list of names of the methods for the API calls that
-        must be converted to standard calling convention on the Windows
-        platform.
-      JLINK_SDK_NAME: name of the J-Link DLL on nix-based platforms.
-      WINDOWS_JLINK_SDK_NAME: name of the J-Link DLL on Windows platforms.
+      '_standard_calls_': list of names of the methods for the API calls that must be converted to standard calling
+                          convention on the Windows platform.
+      'JLINK_SDK_NAME':   name of the J-Link DLL on nix-based platforms.
+      'WINDOWS_JLINK_SDK_NAME': name of the J-Link DLL on Windows platforms.
     """
 
     _standard_calls_ = [
@@ -119,8 +111,8 @@ class Library(object):
 
     @classmethod
     def get_appropriate_windows_sdk_name(cls):
-        """Returns the appropriate JLink SDK library name on Windows depending
-        on 32bit or 64bit Python variant.
+        """
+        Returns the appropriate JLink SDK library name on Windows depending on 32bit or 64bit Python variant.
 
         SEGGER delivers two variants of their dynamic library on Windows:
           - ``JLinkARM.dll`` for 32-bit platform
@@ -140,7 +132,8 @@ class Library(object):
 
     @classmethod
     def find_library_windows(cls):
-        """Loads the SEGGER DLL from the windows installation directory.
+        """
+        Loads the SEGGER DLL from the windows installation directory.
 
         On Windows, these are found either under:
           - ``C:\\Program Files\\SEGGER\\JLink``
@@ -150,8 +143,7 @@ class Library(object):
           cls (Library): the ``Library`` class
 
         Returns:
-          The paths to the J-Link library files in the order that they are
-          found.
+          The paths to the J-Link library files in the order that they are found.
         """
         dll = cls.get_appropriate_windows_sdk_name() + '.dll'
         root = 'C:\\'
@@ -175,7 +167,8 @@ class Library(object):
 
     @classmethod
     def find_library_linux(cls):
-        """Loads the SEGGER DLL from the root directory.
+        """
+        Loads the SEGGER DLL from the root directory.
 
         On Linux, the SEGGER tools are installed under the ``/opt/SEGGER``
         directory with versioned directories having the suffix ``_VERSION``.
@@ -184,8 +177,7 @@ class Library(object):
           cls (Library): the ``Library`` class
 
         Returns:
-          The paths to the J-Link library files in the order that they are
-          found.
+          The paths to the J-Link library files in the order that they are found.
         """
         dll = Library.JLINK_SDK_NAME
         root = os.path.join('/', 'opt', 'SEGGER')
@@ -213,14 +205,15 @@ class Library(object):
 
     @classmethod
     def find_library_darwin(cls):
-        """Loads the SEGGER DLL from the installed applications.
+        """
+        Loads the SEGGER DLL from the installed applications.
 
         This method accounts for the all the different ways in which the DLL
         may be installed depending on the version of the DLL.  Always uses
         the first directory found.
 
-        SEGGER's DLL is installed in one of three ways dependent on which
-        which version of the SEGGER tools are installed:
+        SEGGER's DLL is installed in one of three ways dependent on which which version of the SEGGER tools are
+        installed:
 
         ======== ============================================================
         Versions Directory
@@ -260,16 +253,16 @@ class Library(object):
                     if f.startswith(dll):
                         yield os.path.join(dir_path, f)
 
-    def __init__(self, dllpath=None, use_tmpcpy=True):
-        """Initializes an instance of a ``Library``.
+    def __init__(self, dll_path=None, use_tmp_cpy=True):
+        """
+        Initializes an instance of a ``Library``.
 
-        Loads the default J-Link DLL if ``dllpath`` is ``None``, otherwise
-        loads the DLL specified by the given ``dllpath``.
+        Loads the default J-Link DLL if ``dll_path`` is ``None``, otherwise loads
+        the DLL specified by the given ``dll_path``.
 
         Args:
-          self (Library): the ``Library`` instance
-          dllpath (str): the DLL to load into the library
-          use_tmpcpy (bool): True to load a temporary copy of J-Link DLL
+          dll_path (str): the DLL to load into the library
+          use_tmp_cpy (bool): True to load a temporary copy of J-Link DLL
 
         Returns:
           ``None``
@@ -279,7 +272,7 @@ class Library(object):
         self._path = None
         self._windows = sys.platform.startswith('win')
         self._cygwin = sys.platform.startswith('cygwin')
-        self._use_tmpcpy = use_tmpcpy
+        self._use_tmp_cpy = use_tmp_cpy
         self._temp = None
 
         if self._windows or self._cygwin:
@@ -287,13 +280,14 @@ class Library(object):
         else:
             self._sdk = self.JLINK_SDK_OBJECT
 
-        if dllpath is not None:
-            self.load(dllpath)
+        if dll_path is not None:
+            self.load(dll_path)
         else:
             self.load_default()
 
     def __del__(self):
-        """Cleans up the temporary DLL file created when the lib was loaded.
+        """
+        Cleans up the temporary DLL file created when the lib was loaded.
 
         Args:
           self (Library): the ``Library`` instance
@@ -304,7 +298,8 @@ class Library(object):
         self.unload()
 
     def load_default(self):
-        """Loads the default J-Link SDK DLL.
+        """
+        Loads the default J-Link SDK DLL.
 
         The default J-Link SDK is determined by first checking if ``ctypes``
         can find the DLL, then by searching the platform-specific paths.
@@ -391,7 +386,7 @@ class Library(object):
 
         lib_path = self._path
 
-        if self._use_tmpcpy:
+        if self._use_tmp_cpy:
             # Copy the J-Link DLL to a temporary file.  This will be cleaned up the
             # next time we load a DLL using this library or if this library is
             # cleaned up.

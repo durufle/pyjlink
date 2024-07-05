@@ -81,21 +81,15 @@ class TestDecorators(unittest.TestCase):
         self.assertEqual(4, foo())
 
     def test_async_decorator_join(self):
-        """Tests that the returned object is a thread that can be joined and
-        waited for termination.
-
-        Args:
-          self (TestDecorators): the `TestDecorators` instance
-
-        Returns:
-          `None`
+        """
+        Tests that the returned object is a thread that can be joined and waited for termination.
         """
         @decorators.async_decorator
         def foo():
             return 4
 
-        def callback(exception, result):
-            return result
+        def callback(exception, value):
+            return value
 
         thread = foo(callback=self.callback)
         self.assertTrue(isinstance(thread, threading.Thread))

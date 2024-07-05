@@ -1,16 +1,8 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 import ctypes
 
@@ -86,25 +78,22 @@ class ControlStatusRegisterBits(ctypes.LittleEndianStructure):
     This class holds the different bit masks for the DP Control / Status Register bit assignments.
 
     Attributes:
-      ORUNDETECT: if set, enables overrun detection.
-      STICKYORUN: if overrun is enabled, is set when overrun occurs.
-      TRNMODE: transfer mode for acess port operations.
-      STICKYCMP: is set when a match occurs on a pushed compare or verify
-          operation.
-      STICKYERR: is set when an error is returned by an access port
-          transaction.
-      READOK: is set when the response to a previous access port or ``RDBUFF``
-          was ``OK``.
-      WDATAERR: set to ``1`` if a Write Data Error occurs.
-      MASKLANE: bytes to be masked in pushed compare and verify operations.
-      TRNCNT: transaction counter.
-      RESERVED: reserved.
-      CDBGRSTREQ: debug reset request.
-      CDBGRSTACK: debug reset acknowledge.
-      CDBGPWRUPREQ: debug power-up request.
-      CDBGPWRUPACK: debug power-up acknowledge.
-      CSYSPWRUPREQ: system power-up request
-      CSYSPWRUPACK: system power-up acknowledge.
+      'ORUNDETECT': if set, enables overrun detection.
+      'STICKYORUN': if overrun is enabled, is set when overrun occurs.
+      'TRNMODE': transfer mode for access port operations.
+      'STICKYCMP': is set when a match occurs on a pushed compare or verify operation.
+      'STICKYERR': is set when an error is returned by an access port transaction.
+      'READOK': is set when the response to a previous access port or ``RDBUFF`` was ``OK``.
+      'WDATAERR': set to ``1`` if a Write Data Error occurs.
+      'MASKLANE': bytes to be masked in pushed compare and verify operations.
+      'TRNCNT': transaction counter.
+      'RESERVED': reserved.
+      'CDBGRSTREQ': debug reset request.
+      'CDBGRSTACK': debug reset acknowledge.
+      'CDBGPWRUPREQ': debug power-up request.
+      'CDBGPWRUPACK': debug power-up acknowledge.
+      'CSYSPWRUPREQ': system power-up request
+      'CSYSPWRUPACK': system power-up acknowledge.
 
     See also:
       See the ARM documentation on the significance of these masks
@@ -148,12 +137,11 @@ class SelectRegisterBits(ctypes.LittleEndianStructure):
     """This class holds the different bit masks for the AP Select Register.
 
     Attributes:
-      CTRLSEL: SW-DP debug port address bank select.
-      RESERVED_A: reserved.
-      APBANKSEL: selects the active four-word register window on the current
-          access port.
-      RESERVED_B: reserved.
-      APSEL: selects the current access port.
+      'CTRLSEL': SW-DP debug port address bank select.
+      'RESERVED_A: reserved.
+      'APBANKSEL': selects the active four-word register window on the current access port.
+      'RESERVED_B': reserved.
+      'APSEL': selects the current access port.
     """
     _fields_ = [
         ('CTRLSEL',    ctypes.c_uint32, 1),
@@ -165,10 +153,11 @@ class SelectRegisterBits(ctypes.LittleEndianStructure):
 
 
 class SelectRegisterFlags(ctypes.Union):
-    """Mask for the select register bits.
+    """
+    Mask for the select register bits.
 
     Attributes:
-      value: the value stored in the mask.
+      'value': the value stored in the mask.
     """
     _anonymous_ = ('bit',)
     _fields_ = [
@@ -178,23 +167,19 @@ class SelectRegisterFlags(ctypes.Union):
 
 
 class MDMAPControlRegisterBits(ctypes.LittleEndianStructure):
-    """This class holds the different bit masks for the MDM-AP Control
-    Register.
+    """
+    This class holds the different bit masks for the MDM-AP Control Register.
 
     Attributes:
-      flash_mass_erase: set to cause a mass erase, this is cleared
-          automatically when a mass erase finishes.
-      debug_disable: set to disable debug, clear to allow debug.
-      debug_request: set to force the core to halt.
-      sys_reset_request: set to force a system reset.
-      core_hold_reset: set to suspend the core in reset at the end of reset
-          sequencing.
-      VLLDBGREQ: set to hold the system in reset after the next recovery from
-          VLLSx (Very Low Leakage Stop).
-      VLLDBGACK: set to release a system held in reset following a VLLSx
-          (Very Low Leakage Stop) recovery.
-      VLLSTATACK: set to acknowledge that the DAP LLS (Low Leakage Stop) and
-          VLLS (Very Low Leakage Stop) status bits have read.
+      'flash_mass_erase': set to cause a mass erase, this is cleared automatically when a mass erase finishes.
+      'debug_disable': set to disable debug, clear to allow debug.
+      'debug_request': set to force the core to halt.
+      'sys_reset_request': set to force a system reset.
+      'core_hold_reset': set to suspend the core in reset at the end of reset sequencing.
+      'VLLDBGREQ': set to hold the system in reset after the next recovery from VLLSx (Very Low Leakage Stop).
+      'VLLDBGACK': set to release a system held in reset following a VLLSx (Very Low Leakage Stop) recovery.
+      'VLLSTATACK': set to acknowledge that the DAP LLS (Low Leakage Stop) and VLLS (Very Low Leakage Stop) status bits
+      have read.
     """
     _fields_ = [
         ('flash_mass_erase',  ctypes.c_uint8, 1),
@@ -212,7 +197,7 @@ class MDMAPControlRegisterFlags(ctypes.Union):
     """Mask for the MDM-AP control register bits.
 
     Attributes:
-      value: the value stored in the mask.
+      'value': the value stored in the mask.
     """
     _anonymous_ = ('bit',)
     _fields_ = [
@@ -222,15 +207,13 @@ class MDMAPControlRegisterFlags(ctypes.Union):
 
 
 class MDMAPStatusRegisterBits(ctypes.LittleEndianStructure):
-    """Holds the bit masks for the MDM-AP Status Register.
+    """
+    Holds the bit masks for the MDM-AP Status Register.
 
     Attributes:
-      flash_mass_erase_ack: cleared after a system reset, indicates that a
-          flash mass erase was acknowledged.
-      flash_ready: indicates that flash has been initialized and can be
-          configured.
-      system_security: if set, system is secure and debugger cannot access the
-          memory or system bus.
+      flash_mass_erase_ack: cleared after a system reset, indicates that a flash mass erase was acknowledged.
+      flash_ready: indicates that flash has been initialized and can be configured.
+      system_security: if set, system is secure and debugger cannot access the memory or system bus.
       system_reset: ``1`` if system is in reset, otherwise ``0``.
       mass_erase_enabled: ``1`` if MCU can be mass erased, otherwise ``0``.
       low_power_enabled: ``1`` if low power stop mode is enabled, otherwise ``0``.
@@ -242,9 +225,8 @@ class MDMAPStatusRegisterBits(ctypes.LittleEndianStructure):
       core_sleeping: indicates the core has entered a low power mode.
 
     Note:
-      if ``core_sleeping & !core_deep_sleep``, then the core is in VLPW (very
-      low power wait) mode, otherwise if ``core_sleeping & core_deep_sleep``,
-      then it is in VLPS (very low power stop) mode.
+      if ``core_sleeping & !core_deep_sleep``, then the core is in VLPW (very low power wait) mode, otherwise if
+      ``core_sleeping & core_deep_sleep``, then it is in VLPS (very low power stop) mode.
     """
     _fields_ = [
         ('flash_mass_erase_ack',    ctypes.c_uint32, 1),
@@ -270,7 +252,7 @@ class MDMAPStatusRegisterFlags(ctypes.Union):
     """Mask for the MDM-AP status register bits.
 
     Attributes:
-      value: the value stored in the mask.
+      'value': the value stored in the mask.
     """
     _anonymous_ = ('bit',)
     _fields_ = [

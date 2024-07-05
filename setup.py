@@ -26,7 +26,7 @@ try:
 except ImportError:
     sys.modules['six'] = {}
 
-import pylink
+import pyjlink
 
 import os
 import setuptools
@@ -222,7 +222,7 @@ def long_description():
     cwd = os.path.abspath(os.path.dirname(__file__))
     readme_path = os.path.join(cwd, 'README.md')
     if not os.path.exists(readme_path):
-        return pylink.__long_description__
+        return pyjlink.__long_description__
 
     try:
         import pypandoc
@@ -235,17 +235,17 @@ def long_description():
 
 setuptools.setup(
     # Project information.
-    name='pylink-square',
-    version=pylink.__version__,
+    name='pyjlink',
+    version=pyjlink.__version__,
 
     #  Metadata for upload to PyPI.
-    author=pylink.__author__,
-    author_email=pylink.__author_email__,
-    description=pylink.__description__,
+    author=pyjlink.__author__,
+    author_email=pyjlink.__author_email__,
+    description=pyjlink.__description__,
     long_description=long_description(),
-    license=pylink.__license__,
+    license=pyjlink.__license__,
     keywords='SEGGER J-Link',
-    url=pylink.__url__,
+    url=pyjlink.__url__,
 
     # Packages and package data.
     packages=[

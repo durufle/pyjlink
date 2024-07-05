@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = '1.2.0'
-__title__ = 'pylink'
+__version__ = '0.0.0'
+__title__ = 'pyjlink'
 __author__ = 'Square Embedded Software Team'
-__author_email__ = 'esw-team@squareup.com'
-__copyright__ = 'Copyright 2017 Square, Inc.'
-__license__ = 'Apache 2.0'
-__url__ = 'http://www.github.com/Square/pylink'
-__description__ = 'Python interface for SEGGER J-Link.'
-__long_description__ = '''This module provides a Python implementation of the
-J-Link SDK by leveraging the SDK's DLL.
-'''
+__author_email__ = 'laurent.bonnet@st.com'
+__copyright__ = 'Copyright 2024 STMicroelectronics, Inc.'
+__license__ = 'MIT'
+__url__ = ''
+__description__ = 'Python interface for SEGGER J-Link probe.'
+__long_description__ = '''This module provides a Python implementation of the J-Link SDK by leveraging the SDK's DLL.'''
 
 from .enums import *
 from .errors import *

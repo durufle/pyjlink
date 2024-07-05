@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.enums as enums
-import pylink.util as util
+import pyjlink.enums as enums
+import pyjlink.util as util
 
 import mock
 
@@ -135,7 +135,7 @@ class TestUtil(unittest.TestCase):
                          util.unsecure_hook_dialog('', '', 0))
 
     @mock.patch('sys.stdout', new_callable=StringIO.StringIO)
-    def test_progress_bar(self, stream):
+    def test_progress_bar(self, stream: StringIO):
         """Tests the progress bar calls the appropriate stream functions.
 
         When percent is full, the `progress_bar()` should append a newline to
@@ -159,15 +159,9 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(messages.pop(0) == '')
 
     @mock.patch('sys.stdout', new_callable=StringIO.StringIO)
-    def test_flash_progress_callback(self, stream):
-        """Tests that the callback triggers a progress bar.
-
-        Args:
-          self (TestUtil): the `TestUtil` instance
-          stream (StringIO): the mock output stream
-
-        Returns:
-          `None`
+    def test_flash_progress_callback(self, stream: StringIO):
+        """
+        Tests that the callback triggers a progress bar.
         """
         self.assertEqual(None, util.flash_progress_callback('compare', '', 0))
         self.assertEqual('', stream.getvalue())
@@ -176,26 +170,16 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(len(stream.getvalue()) > 0)
 
     def test_calculate_parity(self):
-        """Tests that the parity is properly calculated.
-
-        Args:
-          self (TestUtil): the `TestUtil` instance
-
-        Returns:
-          `None`
+        """
+        Tests that the parity is properly calculated.
         """
         self.assertEqual(1, util.calculate_parity(1))
         self.assertEqual(1, util.calculate_parity(2))
         self.assertEqual(0, util.calculate_parity(3))
 
     def test_calculate_parity_invalid(self):
-        """Tests that an exception is raised for invalid args to `parity()`.
-
-        Args:
-          self (TestUtil): the `TestUtil` instance
-
-        Returns:
-          `None`
+        """
+        Tests that an exception is raised for invalid args to `parity()`.
         """
         with self.assertRaises(ValueError):
             util.calculate_parity('4')

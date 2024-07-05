@@ -1,16 +1,8 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from . import threads
 
@@ -18,9 +10,9 @@ import functools
 
 
 def async_decorator(func):
-    """Asynchronous function decorator.  Interprets the function as being
-    asynchronous, so returns a function that will handle calling the
-    Function asynchronously.
+    """
+    Asynchronous function decorator.  Interprets the function as being asynchronous, so returns a function that will
+    handle calling the Function asynchronously.
 
     Args:
       func (function): function to be called asynchronously
@@ -34,17 +26,17 @@ def async_decorator(func):
 
     @functools.wraps(func)
     def async_wrapper(*args, **kwargs):
-        """Wraps up the call to ``func``, so that it is called from a separate
-        thread.
+        """
+        Wraps up the call to ``func``, so that it is called from a separate thread.
 
-        The callback, if given, will be called with two parameters,
-        ``exception`` and ``result`` as ``callback(exception, result)``.  If
-        the thread ran to completion without error, ``exception`` will be
-        ``None``, otherwise ``exception`` will be the generated exception that
-        stopped the thread.  Result is the result of the exected function.
+        The callback, if given, will be called with two parameters, ``exception`` and ``result`` as
+        ``callback(exception, result)``.  If
+
+        the thread ran to completion without error, ``exception`` will be ``None``, otherwise ``exception``
+        will be the generated exception that stopped the thread.  Result is the result of the expected function.
 
         Args:
-          callback (function): the callback to ultimately be called
+          call-back (function): the callback to ultimately be called
           args: list of arguments to pass to ``func``
           kwargs: key-word arguments dictionary to pass to ``func``
 
@@ -64,8 +56,8 @@ def async_decorator(func):
             raise TypeError('Expected \'callback\' is not callable.')
 
         def thread_func(*args, **kwargs):
-            """Thread function on which the given ``func`` and ``callback``
-            are executed.
+            """
+            Thread function on which the given ``func`` and ``callback`` are executed.
 
             Args:
               args: list of arguments to pass to ``func``
@@ -81,9 +73,8 @@ def async_decorator(func):
                 exception = e
             return callback(exception, res)
 
-        thread = threads.ThreadReturn(target=thread_func,
-                                      args=args,
-                                      kwargs=kwargs)
+        thread = threads.ThreadReturn(target=thread_func, args=args, kwargs=kwargs)
+
         thread.daemon = True
         thread.start()
         return thread

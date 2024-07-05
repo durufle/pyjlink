@@ -62,4 +62,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    main(jlink_serial=504502376, device="STM32L552ZE")
+    main(jlink_serial=504502376, device="CY8C5868XXXLP")

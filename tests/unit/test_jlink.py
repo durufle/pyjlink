@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.enums as enums
-from pylink.errors import JLinkException, JLinkDataException
-import pylink.jlink as jlink
-import pylink.protocols.swd as swd
-import pylink.structs as structs
-import pylink.unlockers.unlock_kinetis as unlock_kinetis
-import pylink.util as util
+import pyjlink.enums as enums
+from pyjlink.errors import JLinkException, JLinkDataException
+import pyjlink.jlink as jlink
+import pyjlink.protocols.swd as swd
+import pyjlink.structs as structs
+import pyjlink.unlockers.unlock_kinetis as unlock_kinetis
+import pyjlink.util as util
 
 import mock
 
@@ -65,7 +65,7 @@ class TestJLink(unittest.TestCase):
         """
         del self.jlink
 
-    @mock.patch('pylink.jlink.library')
+    @mock.patch('pyjlink.jlink.library')
     def test_jlink_initialize_no_lib(self, mock_lib):
         """TEsts initializing a ``JLink`` without a provided library.
 
@@ -630,7 +630,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_ethernet(self):
         """Tests the J-Link ``open()`` method over Ethernet succeeding.
 
@@ -648,7 +648,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_ethernet_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
         over Ethernet succeeding.
@@ -669,7 +669,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_ethernet_and_serial_number(self):
         """Tests the J-Link ``open()`` method over Ethernet succeeding with
         identification done by serial number.
@@ -687,7 +687,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.dll.JLINKARM_EMU_SelectIP.call_count)
         self.assertEqual(1, self.dll.JLINKARM_EMU_SelectIPBySN.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_ethernet_and_serial_number_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager) over
         Ethernet succeeding with identification done by serial number.
@@ -781,7 +781,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(0, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_serial_number(self):
         """Tests the J-Link ``open()`` method over USB by serial number and
         succeeding.
@@ -797,7 +797,7 @@ class TestJLink(unittest.TestCase):
         self.jlink.open(serial_no=123456789)
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_serial_number_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
         over USB by serial number and succeeding.
@@ -815,7 +815,7 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_Close.assert_called()  # Closed on exit.
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_serial_number_context_manager_manual(self):
         """Tests the J-Link ``open()`` method in context manager
         over USB by serial number and succeeding.
@@ -836,7 +836,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
         self.assertEqual(1, self.dll.JLINKARM_Close.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_dll_failed(self):
         """Tests the J-Link ``open()`` method failing to open the DLL.
 
@@ -856,7 +856,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pylink.jlock.JLock', new=mock.Mock())
+    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
     def test_jlink_open_dll_failed_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
          failing to open the DLL.
@@ -879,7 +879,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pylink.jlock.JLock')
+    @mock.patch('pyjlink.jlock.JLock')
     def test_jlink_open_lock_failed(self, mock_jlock):
         """Tests the J-Link ``open()`` method failing if the lockfile is held.
 
@@ -902,7 +902,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_OpenEx.assert_not_called()
 
-    @mock.patch('pylink.jlock.JLock')
+    @mock.patch('pyjlink.jlock.JLock')
     def test_jlink_open_lock_failed_context_manager(self, mock_jlock):
         """Tests the J-Link ``open()`` method (using context manager)
         failing if the lockfile is held.
@@ -2419,7 +2419,7 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_EMU_COM_IsSupported.return_value = 1
         self.assertTrue(self.jlink.comm_supported())
 
-    @mock.patch('pylink.unlockers.unlock')
+    @mock.patch('pyjlink.unlockers.unlock')
     def test_jlink_unlock_kinetis(self, mock_unlock):
         """Tests calling unlock on a connected Kinetis device.
 

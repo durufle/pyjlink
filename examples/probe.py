@@ -50,7 +50,7 @@ def main(jlink_serial: int, device: str):
     jlink.open(serial_no=jlink_serial)
 
     # Use Serial Wire Debug as the target interface.
-    jlink.set_tif(pyjlinkpyjlink.enums.JLinkInterfaces.SWD)
+    jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
     jlink.connect(device, verbose=True)
     # Set a log file
     jlink.set_log_file("./probe.log")
@@ -62,6 +62,7 @@ def main(jlink_serial: int, device: str):
     print(f"probe features          : {jlink.features}")
     print(f"probe name              : {jlink.product_name}")
     print(f"probe serial number     : {jlink.serial_number}")
+    print(f"probe connected info    : {jlink.connected_emulators()}")
     oem = jlink.oem
     if oem:
         print(f"probe oem               : {jlink.oem}")
@@ -75,4 +76,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    exit(main(504502376, "STM32L552ZE"))
+    exit(main(504502376, "CY8C5868XXXLP"))

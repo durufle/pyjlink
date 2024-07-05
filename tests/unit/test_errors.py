@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.errors as errors
+import pyjlink.errors as errors
 
 import unittest
 

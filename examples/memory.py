@@ -53,11 +53,16 @@ def main(jlink_serial: int, device: str):
     jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
     jlink.connect(device, verbose=True)
 
-    print(f'ARM Id                  : {hex(jlink.core_id()).upper()}')
-    print(f'CPU Id                  : {hex(jlink.core_cpu()).upper()}')
-    print(f'Core Name               : {jlink.core_name()}')
-    print(f'Device Family           : {jlink.device_family()}')
+    print(f'ARM Id                          : {hex(jlink.core_id())}')
+    print(f'CPU Id                          : {hex(jlink.core_cpu())}')
+    print(f'Core Name                       : {jlink.core_name()}')
+    print(f'Device Family                   : {jlink.device_family()}')
+
+    print(f'Read 16 bytes a address 0       : {list(map(hex,jlink.memory_read8(0,16)))}')
+    print(f'Read  8 half-word a address 0   : {list(map(hex,jlink.memory_read16(0,8)))}')
+    print(f'Read  4 word a address 0        : {list(map(hex,jlink.memory_read32(0,4)))}')
+    print(f'Read  2 double a address 0      : {list(map(hex,jlink.memory_read64(0,2)))}')
 
 
 if __name__ == '__main__':
-    exit(main(504502376, "STM32L552ZE"))
+    exit(main(504502376, "CY8C5868XXXLP"))

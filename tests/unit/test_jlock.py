@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pylink.jlock as jlock
+import pyjlink.jlock as jlock
 
 import mock
 

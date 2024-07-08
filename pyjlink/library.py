@@ -24,9 +24,10 @@ class Library(object):
 
     Attributes:
       '_standard_calls_': list of names of the methods for the API calls that must be converted to standard calling
-                          convention on the Windows platform.
+      convention on the Windows platform.
       'JLINK_SDK_NAME':   name of the J-Link DLL on nix-based platforms.
       'WINDOWS_JLINK_SDK_NAME': name of the J-Link DLL on Windows platforms.
+
     """
 
     _standard_calls_ = [

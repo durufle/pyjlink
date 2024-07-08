@@ -1275,8 +1275,7 @@ class JLink(object):
 
         Args:
           self (JLink): the ``JLink`` instance
-          mask (int): bit mask to decide which hardware information words are
-            returned (defaults to all the words).
+          mask (int): bit mask to decide which hardware information words are returned (defaults to all the words).
 
         Returns:
           List of bitfields specifying different states based on their index
@@ -2505,15 +2504,15 @@ class JLink(object):
 
     @connection_required
     def cpu_speed(self, silent=False):
-        """Retrieves the CPU speed of the target.
+        """
+        Retrieves the CPU speed of the target.
 
         If the target does not support CPU frequency detection, this function
         will return ``0``.
 
         Args:
           self (JLink): the ``JLink`` instance
-          silent (bool): ``True`` if the CPU detection should not report errors
-            to the error handler on failure.
+          silent (bool): ``True`` if the CPU detection should not report errors to the error handler on failure.
 
         Returns:
           The measured CPU frequency on success, otherwise ``0`` if the core does
@@ -2578,7 +2577,7 @@ class JLink(object):
 
         Args:
           tms (int): used to determine the state transitions for the Test Access Port (TAP) controller from
-                     its current state
+          its current state
           tdi (int): input data to be transferred in from TDI to TDO
 
           num_bits (int): a number in the range ``[1, 32]`` inclusively specifying the number of meaningful bits in the
@@ -2610,8 +2609,9 @@ class JLink(object):
     def jtag_device_id(self, index):
         """
         Return the Jtag Id of one connected device.
+
         Args:
-            index: Device index
+          index: Device index
         """
         return self._dll.JLINKARM_JTAG_GetDeviceId(index)
 
@@ -2917,8 +2917,7 @@ class JLink(object):
 
         Raises:
           JLinkException: if memory could not be read.
-          ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16``,
-            or ``32``.
+          ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16`` or ``32``.
         """
         buf_size = num_units
         buf = None
@@ -3034,7 +3033,8 @@ class JLink(object):
 
     @connection_required
     def memory_write(self, addr, data, zone=None, nbits=None):
-        """Writes memory to a target system or specific memory zone.
+        """
+        Writes memory to a target system or specific memory zone.
 
         The optional ``zone`` specifies a memory zone to access to write to,
         e.g. ``IDATA``, ``DDATA``, or ``CODE``.
@@ -3054,8 +3054,7 @@ class JLink(object):
 
         Raises:
           JLinkException: on write hardware failure.
-          ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16`` or
-            ``32``.
+          ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16`` or ``32``.
         """
         buf_size = len(data)
         buf = None
@@ -3412,8 +3411,7 @@ class JLink(object):
           self (JLink): the ``JLink`` instance
           reg (int): index of DP/AP register to write
           data (int): data to write
-          ap (bool): ``True`` if writing to an Access Port register, otherwise
-            ``False`` for Debug Port
+          ap (bool): ``True`` if writing to an Access Port register, otherwise ``False`` for Debug Port
 
         Returns:
           Number of repetitions needed until write request accepted.
@@ -3920,7 +3918,8 @@ class JLink(object):
                        read=False,
                        write=False,
                        privileged=False):
-        """Sets a watchpoint at the given address.
+        """
+        Sets a watchpoint at the given address.
 
         This method allows for a watchpoint to be set on an given address or
         range of addresses.  The watchpoint can then be triggered if the data
@@ -3943,20 +3942,16 @@ class JLink(object):
 
         Args:
           self (JLink): the ``JLink`` instance
-          addr_mask (int): optional mask to use for determining which address
-            the watchpoint should be set on
-          data (int): optional data to set the watchpoint on in order to have
-            the watchpoint triggered when the value at the specified address
-            matches the given ``data``
-          data_mask (int): optional mask to use for determining the range of
-            data on which the watchpoint should be triggered
-          access_size (int): if specified, this must be one of ``{8, 16, 32}``
-            and determines the access size for which the watchpoint should
-            trigger
+          addr_mask (int): optional mask to use for determining which address the watchpoint should be set on
+          data (int): optional data to set the watchpoint on in order to have the watchpoint triggered when the value
+          at the specified address matches the given ``data``
+          data_mask (int): optional mask to use for determining the range of data on which the watchpoint
+          should be triggered
+          access_size (int): if specified, this must be one of ``{8, 16, 32}`` and determines the access size for
+          which the watchpoint should trigger
           read (bool): if ``True``, triggers the watchpoint on read events
           write (bool): if ``True``, triggers the watchpoint on write events
-          privileged (bool): if ``True``, triggers the watchpoint on privileged
-            accesses
+          privileged (bool): if ``True``, triggers the watchpoint on privileged accesses
 
         Returns:
           The handle of the created watchpoint.
@@ -4148,8 +4143,7 @@ class JLink(object):
         """
         Reads and returns a number of instructions captured by STRACE.
 
-        The number of instructions must be a non-negative value of at most
-        ``0x10000`` (``65536``).
+        The number of instructions must be a non-negative value of at most ``0x10000`` (``65536``).
 
         Args:
           self (JLink): the ``JLink`` instance.
@@ -4164,8 +4158,7 @@ class JLink(object):
 
         Raises:
           JLinkException: on error.
-          ValueError: if ``num_instructions < 0`` or
-            ``num_instructions > 0x10000``.
+          ValueError: if ``num_instructions < 0`` or ``num_instructions > 0x10000``.
         """
         if num_instructions < 0 or num_instructions > 0x10000:
             raise ValueError('Invalid instruction count.')
@@ -4222,12 +4215,10 @@ class JLink(object):
         Data access corresponds to either a read or write.
 
         Args:
-          self (JLink): the ``JLink`` instance.
           operation (int): one of the operations in ``JLinkStraceOperation``.
           address (int): the address of the load/store data.
           data (int): the data to be compared the event data to.
-          data_mask (int): optional bitmask specifying bits to ignore in
-            comparison.
+          data_mask (int): optional bitmask specifying bits to ignore in comparison.
           access_width (int): optional access width for the data.
           address_range (int): optional range of address to trigger event on.
 
@@ -4606,8 +4597,7 @@ class JLink(object):
 
         Args:
           self (JLink): the ``JLink`` instance.
-          offset (int): the offset from which to start reading from the trace
-            buffer.
+          offset (int): the offset from which to start reading from the trace buffer.
           num_items (int): number of items to read from the trace buffer.
 
         Returns:

@@ -47,4 +47,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2])
+    main(504502376, "CY8C5868XXXLP")

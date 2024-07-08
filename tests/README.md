@@ -15,7 +15,7 @@ actual code is run.
 
 ## Functional Tests
 Functional Tests live under the `functional` directory.  The functional tests
-are implemented using [`behave`](http://pythonhosted.org/behave/), a Behaviour
+are implemented using [`behave`](https://pypi.org/project/behave/), a Behaviour
 Driven Development (BDD) library.
 
 

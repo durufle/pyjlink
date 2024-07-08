@@ -20,9 +20,7 @@ import datetime
 import functools
 import itertools
 import logging
-import math
 import operator
-import sys
 import time
 import six
 
@@ -1218,7 +1216,6 @@ class JLink(object):
 
         return ctypes.string_at(buf).decode()
 
-    @property
     @open_required
     def firmware_outdated(self):
         """
@@ -1242,7 +1239,6 @@ class JLink(object):
         date_firmware = datetime.datetime.strptime(date_firmware, date_format)
         return date_compatible > date_firmware
 
-    @property
     @open_required
     def firmware_newer(self):
         """
@@ -1251,18 +1247,13 @@ class JLink(object):
         Note:
           This is not the same as calling ``not jlink.firmware_outdated()``.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
         Returns:
-          ``True`` if the J-Link's firmware is newer than the one supported by
-          the DLL, otherwise ``False``.
+          True if the J-Link's firmware is newer than the one supported by the DLL, otherwise False.
         """
-        if self.firmware_outdated:
+        if self.firmware_outdated():
             return False
         return self.firmware_version != self.compatible_firmware_version
 
-    @property
     @open_required
     def hardware_info(self, mask=0xFFFFFFFF):
         """Returns a list of 32 integer values corresponding to the bitfields
@@ -1301,7 +1292,6 @@ class JLink(object):
 
         return struct.unpack("32I", buf)
 
-    @property
     @open_required
     def hardware_status(self):
         """
@@ -2633,6 +2623,7 @@ class JLink(object):
         """
 
         self._dll.JLINKARM_StoreRaw(tdi, mode, num_bits)
+
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
     def swd_read8(self, offset):

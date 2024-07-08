@@ -11,13 +11,14 @@ import sys
 
 
 def is_integer(val):
-    """Returns whether the given value is an integer.
+    """
+    Returns whether the given value is an integer.
 
     Args:
       val (object): value to check
 
     Returns:
-      ``True`` if the given value is an integer, otherwise ``False``.
+      True if the given value is an integer, otherwise False.
     """
     try:
         val += 1
@@ -35,9 +36,9 @@ def is_natural(val) -> bool:
     Returns:
       ``True`` if the given value is a natural number, otherwise ``False``.
     """
-    return isinstance(val, int) and val >= 0
+    # return isinstance(val, int) and val >= 0
 
-    # return is_integer(val) and (val >= 0)
+    return is_integer(val) and (val >= 0)
 
 
 def is_os_64bit() -> bool:

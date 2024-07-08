@@ -14,14 +14,12 @@
 # limitations under the License.
 #
 #
-# Example Endianness.
+# Example Endian-ess.
 #
-# This module demonstrates getting the endianess of the target.
+# This module demonstrates getting the endian-ess of the target.
 #
 # Usage: endian.py jlink_serial_number device
-# Author: Ford Peprah
-# Date: October 11th, 2016
-# Copyright: 2016 Square, Inc.
+
 
 import pyjlink
 
@@ -29,7 +27,6 @@ try:
     import StringIO
 except ImportError:
     import io as StringIO
-import sys
 
 
 def main(jlink_serial: int, device: str):

@@ -1,79 +1,54 @@
-# Copyright 2018 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 import pyjlink.enums as enums
 from pyjlink.errors import JLinkException, JLinkDataException
 import pyjlink.jlink as jlink
-import pyjlink.protocols.swd as swd
 import pyjlink.structs as structs
-import pyjlink.unlockers.unlock_kinetis as unlock_kinetis
 import pyjlink.util as util
-
-import mock
 
 try:
     import StringIO
 except ImportError:
     import io as StringIO
 import ctypes
-import itertools
 import unittest
+from unittest.mock import Mock, patch, ANY
 
 
 class TestJLink(unittest.TestCase):
-    """Tests the ``jlink`` submodule."""
+    """
+    Tests the ``jlink`` submodule.
+    """
 
     def setUp(self):
-        """Called before each test.
+        """
+        Called before each test.
 
         Performs setup.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
-        assertRaisesRegexp = getattr(self, 'assertRaisesRegexp', None)
-        self.assertRaisesRegexp = getattr(self, 'assertRaisesRegex', assertRaisesRegexp)
-        self.lib = mock.Mock()
-        self.dll = mock.Mock()
+        assert_raised_regexp = getattr(self, 'assertRaisesRegexp', None)
+        self.assertRaisesRegexp = getattr(self, 'assertRaisesRegex', assert_raised_regexp)
+        self.lib = Mock()
+        self.dll = Mock()
         self.lib.dll.return_value = self.dll
         self.jlink = jlink.JLink(self.lib)
 
     def tearDown(self):
-        """Called after each test.
+        """
+        Called after each test.
 
         Performs teardown.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         del self.jlink
 
-    @mock.patch('pyjlink.jlink.library')
+    @patch('pyjlink.jlink.library')
     def test_jlink_initialize_no_lib(self, mock_lib):
-        """TEsts initializing a ``JLink`` without a provided library.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests initializing a ``JLink`` without a provided library.
         """
         jlink.JLink()
 
@@ -103,17 +78,12 @@ class TestJLink(unittest.TestCase):
         jlink.JLink(self.lib)
 
     def test_jlink_open_required_not_open(self):
-        """Tests calling a method when ``open_required()`` is specified.
+        """
+        Tests calling a method when ``open_required()`` is specified.
 
         This test checks that if we call a method that has specified that
         ``open_required()`` is needed, and we're not open, that a
         ``JLinkException`` is raised.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         self.dll.JLINKARM_IsOpen.return_value = False
 
@@ -144,7 +114,8 @@ class TestJLink(unittest.TestCase):
             my_jlink.update_firmware()
 
     def test_jlink_open_required_is_opened(self):
-        """Tests calling a method when ``open_required()`` is specified.
+        """
+        Tests calling a method when ``open_required()`` is specified.
 
         This test checks that if we call a method that has specified that
         ``open_required()`` is needed, and we're open and have a connected
@@ -166,17 +137,13 @@ class TestJLink(unittest.TestCase):
         my_jlink.update_firmware()
 
     def test_jlink_connection_required_not_connected(self):
-        """Tests calling a method when ``connection_required()`` is specified.
+        """
+        Tests calling a method when ``connection_required()`` is specified.
 
         This test checks that if we call a method that has specified that
         ``connection_required()`` is needed, and we're not connected, that
         an error is raised.
 
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         self.dll.JLINKARM_IsOpen.return_value = True
         self.dll.JLINKARM_EMU_IsConnected.return_value = True
@@ -188,15 +155,10 @@ class TestJLink(unittest.TestCase):
             my_link.cpu_capability(1)
 
     def test_jlink_connection_required_is_connected(self):
-        """Tests calling a method when ``connection_required()`` is specified.
+        """
+        Tests calling a method when ``connection_required()`` is specified.
 
         We should succeed if connected.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         self.dll.JLINKARM_IsOpen.return_value = True
         self.dll.JLINKARM_EMU_IsConnected.return_value = True
@@ -206,13 +168,8 @@ class TestJLink(unittest.TestCase):
         my_link.cpu_capability(1)
 
     def test_jlink_minimum_required(self):
-        """Tests that the minimum required decorator handles versions correctly.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests that the minimum required decorator handles versions correctly.
         """
         self.dll.JLINKARM_GetDLLVersion.return_value = 49801
         with self.assertRaisesRegexp(JLinkException, 'Version'):
@@ -283,7 +240,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        # DLL has not been succesfully opened.  No J-Link connection.
+        # DLL has not been successfully opened.  No J-Link connection.
         self.dll.JLINKARM_IsOpen.return_value = 0
         self.assertFalse(self.jlink.opened())
 
@@ -326,17 +283,12 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(self.jlink.target_connected())
 
     def test_jlink_log_handler(self):
-        """Tests the J-Link ``log_handler`` setter/getter.
+        """
+        Tests the J-Link ``log_handler`` setter/getter.
 
         As long as the DLL is not open, we can set a log handler, which is
         made into a ``ctypes`` function.  Once one is set, it is used for all
         DLL logging.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         def foo():
             return None
@@ -356,17 +308,12 @@ class TestJLink(unittest.TestCase):
         self.assertNotEqual(original_log_handler, log_handler)
 
     def test_jlink_detailed_log_handler(self):
-        """Tests the J-Link ``detailed_log_handler`` setter/getter.
+        """
+        Tests the J-Link ``detailed_log_handler`` setter/getter.
 
         As long as the DLL is not open, we can set a detailed log handler,
         which is made into a ``ctypes`` function.  Once one is set, it is used
         for all DLL detailed logging.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         def foo():
             return None
@@ -386,17 +333,12 @@ class TestJLink(unittest.TestCase):
         self.assertNotEqual(original_log_handler, log_handler)
 
     def test_jlink_error_handler(self):
-        """Tests the J-Link ``error_handler`` setter/getter.
+        """
+        Tests the J-Link ``error_handler`` setter/getter.
 
         As long as the DLL is not open, we can set an error handler which is
-        made into a ``ctypes`` funciton.  Once one is set, it is used for all
+        made into a ``ctypes`` function.  Once one is set, it is used for all
         DLL error logging.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         def foo():
             return None
@@ -416,17 +358,12 @@ class TestJLink(unittest.TestCase):
         self.assertNotEqual(original_error_handler, error_handler)
 
     def test_jlink_warning_handler(self):
-        """Tests the J-Link ``warning_handler`` setter/getter.
+        """
+        Tests the J-Link ``warning_handler`` setter/getter.
 
         As long as the DLL is not open, we can set an warning handler which is
-        made into a ``ctypes`` funciton.  Once one is set, it is used for all
+        made into a ``ctypes`` function.  Once one is set, it is used for all
         DLL warning logging.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         def foo():
             return None
@@ -446,13 +383,8 @@ class TestJLink(unittest.TestCase):
         self.assertNotEqual(original_warning_handler, warning_handler)
 
     def test_jlink_num_connected_emulators(self):
-        """Tests the J-Link ``num_connected_emulators()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``num_connected_emulators()`` method.
         """
         self.dll.JLINKARM_EMU_GetNumDevices.return_value = 1
         self.assertEqual(1, self.jlink.num_connected_emulators())
@@ -461,17 +393,12 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.jlink.num_connected_emulators())
 
     def test_jlink_connected_emulators(self):
-        """Tests the J-Link ``connected_emulators()`` method.
+        """
+        Tests the J-Link ``connected_emulators()`` method.
 
         This method returns a list of ``structs.JLinkConnectInfo`` structures
-        provided that is succeeds, otherwise raises a ``JLinkException``.  The
+        provided that is succeeding, otherwise raises a ``JLinkException``.  The
         returned list may be empty.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         # >= 0, total number of emulators which have been found
         self.dll.JLINKARM_EMU_GetList.return_value = 0
@@ -487,14 +414,14 @@ class TestJLink(unittest.TestCase):
             connected_emulators = self.jlink.connected_emulators()
 
         # < 0, Error
-        self.dll.JLINKARM_EMU_GetList = mock.Mock()
+        self.dll.JLINKARM_EMU_GetList = Mock()
         self.dll.JLINKARM_EMU_GetList.side_effect = [1, -1]
 
         with self.assertRaises(JLinkException):
             connected_emulators = self.jlink.connected_emulators()
 
         # >= 0, total number of emulators which have been found
-        self.dll.JLINKARM_EMU_GetList = mock.Mock()
+        self.dll.JLINKARM_EMU_GetList = Mock()
         self.dll.JLINKARM_EMU_GetList.return_value = 1
 
         connected_emulators = self.jlink.connected_emulators()
@@ -503,13 +430,8 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(isinstance(connected_emulators[0], structs.JLinkConnectInfo))
 
     def test_jlink_get_device_index(self):
-        """Tests the J-Link ``get_device_index()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``get_device_index()`` method.
         """
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
         self.assertEqual(self.jlink.get_device_index("device"), 1)
@@ -519,7 +441,8 @@ class TestJLink(unittest.TestCase):
             self.jlink.get_device_index("device")
 
     def test_jlink_num_supported_devices(self):
-        """Tests the J-Link ``num_supported_devices()`` method.
+        """
+        Tests the J-Link ``num_supported_devices()`` method.
 
         Args:
           self (TestJLink): the ``TestJLink`` instance
@@ -557,28 +480,22 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(isinstance(dev, structs.JLinkDeviceInfo))
 
     def test_jlink_open_unspecified(self):
-        """Tests the J-Link ``open()`` method with an unspecified method.
+        """
+        Tests the J-Link ``open()`` method with an unspecified method.
 
         When opening a connection to an emulator, we need to specify
         by which method we are connecting to the emulator.  If neither USB or
         Ethernet or specified, then we should raise an error.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         with self.assertRaises(AttributeError):
             self.jlink.open()
 
     def test_jlink_open_unspecified_context_manager(self):
-        """Tests the J-Link ``open()`` method (using context manager)
-        with an unspecified method.
+        """
+        Tests the J-Link ``open()`` method (using context manager) with an unspecified method.
 
-        When opening a connection to an emulator, we need to specify
-        by which method we are connecting to the emulator.  If neither USB or
-        Ethernet or specified, then we should raise an error.
+        When opening a connection to an emulator, we need to specify by which method we are connecting to the emulator.
+        If neither USB or Ethernet or specified, then we should raise an error.
 
         Args:
           self (TestJLink): the ``TestJLink`` instance
@@ -630,7 +547,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_ethernet(self):
         """Tests the J-Link ``open()`` method over Ethernet succeeding.
 
@@ -648,7 +565,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_ethernet_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
         over Ethernet succeeding.
@@ -669,7 +586,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_SelectIP.assert_called_once()
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_ethernet_and_serial_number(self):
         """Tests the J-Link ``open()`` method over Ethernet succeeding with
         identification done by serial number.
@@ -687,7 +604,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.dll.JLINKARM_EMU_SelectIP.call_count)
         self.assertEqual(1, self.dll.JLINKARM_EMU_SelectIPBySN.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_ethernet_and_serial_number_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager) over
         Ethernet succeeding with identification done by serial number.
@@ -781,7 +698,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(0, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_serial_number(self):
         """Tests the J-Link ``open()`` method over USB by serial number and
         succeeding.
@@ -797,7 +714,7 @@ class TestJLink(unittest.TestCase):
         self.jlink.open(serial_no=123456789)
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_serial_number_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
         over USB by serial number and succeeding.
@@ -815,7 +732,7 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_Close.assert_called()  # Closed on exit.
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_serial_number_context_manager_manual(self):
         """Tests the J-Link ``open()`` method in context manager
         over USB by serial number and succeeding.
@@ -836,7 +753,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
         self.assertEqual(1, self.dll.JLINKARM_Close.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_dll_failed(self):
         """Tests the J-Link ``open()`` method failing to open the DLL.
 
@@ -856,7 +773,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock', new=mock.Mock())
+    @patch('pyjlink.jlock.JLock', new=Mock())
     def test_jlink_open_dll_failed_context_manager(self):
         """Tests the J-Link ``open()`` method (using context manager)
          failing to open the DLL.
@@ -879,7 +796,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(1, self.dll.JLINKARM_OpenEx.call_count)
 
-    @mock.patch('pyjlink.jlock.JLock')
+    @patch('pyjlink.jlock.JLock')
     def test_jlink_open_lock_failed(self, mock_jlock):
         """Tests the J-Link ``open()`` method failing if the lockfile is held.
 
@@ -890,7 +807,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        mock_lock = mock.Mock()
+        mock_lock = Mock()
         mock_jlock.return_value = mock_lock
         mock_lock.acquire.return_value = False
 
@@ -902,7 +819,7 @@ class TestJLink(unittest.TestCase):
 
         self.dll.JLINKARM_OpenEx.assert_not_called()
 
-    @mock.patch('pyjlink.jlock.JLock')
+    @patch('pyjlink.jlock.JLock')
     def test_jlink_open_lock_failed_context_manager(self, mock_jlock):
         """Tests the J-Link ``open()`` method (using context manager)
         failing if the lockfile is held.
@@ -914,7 +831,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        mock_lock = mock.Mock()
+        mock_lock = Mock()
         mock_jlock.return_value = mock_lock
         mock_lock.acquire.return_value = False
 
@@ -996,7 +913,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        mocked = mock.Mock()
+        mocked = Mock()
         self.jlink.exec_command = mocked
 
         self.jlink.invalidate_firmware()
@@ -1018,7 +935,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(firmware, self.jlink.update_firmware())
 
     def test_jlink_sync_firmware_outdated(self):
-        """Tests syncing the J-Link firmware when it is outdated.
+        """
+        Tests syncing the J-Link firmware when it is outdated.
 
         Args:
           self (TestJLink): the ``TestJLink`` instance
@@ -1026,17 +944,17 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.firmware_newer = mock.Mock()
+        self.jlink.firmware_newer = Mock()
         self.jlink.firmware_newer.return_value = False
 
-        self.jlink.firmware_outdated = mock.Mock()
+        self.jlink.firmware_outdated = Mock()
         self.jlink.firmware_outdated.side_effect = [True, False, True, True]
 
-        self.jlink.invalidate_firmware = mock.Mock()
-        self.jlink.update_firmware = mock.Mock()
+        self.jlink.invalidate_firmware = Mock()
+        self.jlink.update_firmware = Mock()
         self.jlink.update_firmware.side_effect = [JLinkException(''), None]
 
-        self.jlink.open = mock.Mock()
+        self.jlink.open = Mock()
         self.jlink.open.return_value = None
 
         self.dll.JLINKARM_GetSN.return_value = 0xdeadbeef
@@ -1061,17 +979,17 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.firmware_newer = mock.Mock()
+        self.jlink.firmware_newer = Mock()
         self.jlink.firmware_newer.side_effect = [True, False, True, True]
 
-        self.jlink.firmware_outdated = mock.Mock()
+        self.jlink.firmware_outdated = Mock()
         self.jlink.firmware_outdated.return_value = False
 
-        self.jlink.invalidate_firmware = mock.Mock()
-        self.jlink.update_firmware = mock.Mock()
+        self.jlink.invalidate_firmware = Mock()
+        self.jlink.update_firmware = Mock()
         self.jlink.update_firmware.side_effect = [JLinkException(''), None]
 
-        self.jlink.open = mock.Mock()
+        self.jlink.open = Mock()
         self.jlink.open.return_value = None
 
         self.dll.JLINKARM_GetSN.return_value = 0xdeadbeef
@@ -1088,22 +1006,17 @@ class TestJLink(unittest.TestCase):
             self.jlink.sync_firmware()
 
     def test_jlink_sync_firmware_in_sync(self):
-        """Tests syncing the J-Link firmware when it is in sync.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
-        self.jlink.firmware_newer = mock.Mock()
+        Tests syncing the J-Link firmware when it is in sync.
+        """
+        self.jlink.firmware_newer = Mock()
         self.jlink.firmware_newer.return_value = False
 
-        self.jlink.firmware_outdated = mock.Mock()
+        self.jlink.firmware_outdated = Mock()
         self.jlink.firmware_outdated.return_value = False
 
-        self.jlink.invalidate_firmware = mock.Mock()
-        self.jlink.update_firmware = mock.Mock()
+        self.jlink.invalidate_firmware = Mock()
+        self.jlink.update_firmware = Mock()
 
         self.dll.JLINKARM_GetSN.return_value = 0xdeadbeef
 
@@ -1113,14 +1026,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_GetSN.call_count)
 
     def test_jlink_exec_command_error_string(self):
-        """Tests the J-Link ``exec_command()`` when an error string is
-        returned.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``exec_command()`` when an error string is returned.
         """
         def foo(cmd, err_buf, err_buf_len):
             for (index, ch) in enumerate(b'Error!'):
@@ -1173,7 +1080,7 @@ class TestJLink(unittest.TestCase):
           ``None``
         """
         self.dll.JLINKARM_GetDLLVersion.return_value = 50200
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.enable_dialog_boxes()
         self.jlink.exec_command.assert_any_call('SetBatchMode = 0')
         self.jlink.exec_command.assert_any_call('HideDeviceSelection = 0')
@@ -1190,7 +1097,7 @@ class TestJLink(unittest.TestCase):
           ``None``
         """
         self.dll.JLINKARM_GetDLLVersion.return_value = 50200
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.disable_dialog_boxes()
         self.jlink.exec_command.assert_any_call('SilentUpdateFW')
         self.jlink.exec_command.assert_any_call('SuppressInfoUpdateFW')
@@ -1276,7 +1183,7 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(b'DRPost=2' in arg)
         self.assertTrue(b'IRPost=3' in arg)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_failed(self, mock_sleep):
         """Tests J-Link ``connect()`` failing due to hardware issue.
 
@@ -1295,8 +1202,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         with self.assertRaises(JLinkException):
@@ -1307,7 +1214,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_auto(self, mock_sleep):
         """Tests J-Link ``connect()`` with ``auto`` speed.
 
@@ -1326,8 +1233,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         self.assertEqual(None, self.jlink.connect('device', speed='auto'))
@@ -1337,7 +1244,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_adaptive(self, mock_sleep):
         """Tests J-Link ``connect()`` with ``adaptive`` speed.
 
@@ -1356,8 +1263,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         self.assertEqual(None, self.jlink.connect('device', speed='adaptive'))
@@ -1367,7 +1274,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_speed_invalid(self, mock_sleep):
         """Tests J-Link ``connect()`` fails if speed is invalid.
 
@@ -1386,8 +1293,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         with self.assertRaises(TypeError):
@@ -1398,7 +1305,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_speed(self, mock_sleep):
         """Tests J-Link ``connect()`` with a numerical speed.
 
@@ -1417,8 +1324,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         self.jlink.connect('device', speed=10)
@@ -1428,7 +1335,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_verbose(self, mock_sleep):
         """Tests J-Link ``connect()`` with verbose logging.
 
@@ -1447,8 +1354,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_IsHalted.return_value = 0
         self.dll.JLINKARM_DEVICE_GetIndex.return_value = 1
 
-        self.jlink.supported_device = mock.Mock()
-        self.jlink.supported_device.return_value = mock.Mock()
+        self.jlink.supported_device = Mock()
+        self.jlink.supported_device.return_value = Mock()
         self.jlink.supported_device.return_value.name = 'device'
 
         self.jlink.connect('device', speed=10, verbose=True)
@@ -1458,7 +1365,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.dll.JLINKARM_IsHalted.call_count)
         self.assertEqual(1, self.dll.JLINKARM_DEVICE_GetIndex.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_connect_supported_device_not_found(self, mock_sleep):
         """Tests J-Link ``connect()`` when the supported device is not found.
 
@@ -1615,13 +1522,8 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(self.jlink.firmware_outdated())
 
     def test_jlink_firmware_newer(self):
-        """Tests checking if the J-Link firmware is newer.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests checking if the J-Link firmware is newer.
         """
         old = 'J-Trace Cortex-M Rev.3 compiled Mar 30 2015 13:52:25'
         new = 'J-Trace Cortex-M Rev.3 compiled Jun 30 2016 16:58:07'
@@ -1654,7 +1556,7 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_GetHWInfo.return_value = -1
 
         with self.assertRaises(JLinkException):
-            self.jlink.hardware_info
+            self.jlink.hardware_info()
 
     def test_jlink_hardware_info_valid(self):
         """Tests the J-Link ``hardware_info`` property when info is read.
@@ -1667,7 +1569,7 @@ class TestJLink(unittest.TestCase):
         """
         self.dll.JLINKARM_GetHWInfo.return_value = 0
 
-        result = self.jlink.hardware_info
+        result = self.jlink.hardware_info()
         self.assertTrue(all(map(lambda x: x == 0, result)))
 
     def test_jlink_hardware_status_invalid(self):
@@ -1682,24 +1584,20 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_GetHWStatus.return_value = 1
 
         with self.assertRaises(JLinkException):
-            self.jlink.hardware_status
+            self.jlink.hardware_status()
 
     def test_jlink_hardware_status_valid(self):
-        """Tests the J-Link ``hardware_status`` property on successful read.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``hardware_status`` property on successful read.
         """
         self.dll.JLINKARM_GetHWStatus.return_value = 0
 
-        stat = self.jlink.hardware_status
+        stat = self.jlink.hardware_status()
         self.assertTrue(isinstance(stat, structs.JLinkHardwareStatus))
 
     def test_jlink_hardware_version(self):
-        """Tests the J-Link ``hardware_version`` property.
+        """
+        Tests the J-Link ``hardware_version`` property.
 
         Input:
           20330
@@ -2219,19 +2117,15 @@ class TestJLink(unittest.TestCase):
         """
         self.assertEqual(enums.JLinkInterfaces.JTAG, self.jlink.tif)
 
-    def test_jlink_supported_tifs(self):
-        """Tests the J-Link ``supported_tifs`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+    def test_jlink_supported_tif(self):
         """
-        self.assertEqual(0, self.jlink.supported_tifs())
+        Tests the J-Link ``supported_tif`` method.
+        """
+        self.assertEqual(0, self.jlink.supported_tif())
 
     def test_jlink_set_tif_unsupported(self):
-        """Tests that an exception is raised when setting an unsupported TIF.
+        """
+        Tests that an exception is raised when setting an unsupported TIF.
 
         If the target interface is not supported by the J-Link, trying to set
         it will raise an exception.
@@ -2242,22 +2136,17 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.supported_tifs = mock.Mock()
-        self.jlink.supported_tifs.return_value = 0
+        self.jlink.supported_tif = Mock()
+        self.jlink.supported_tif.return_value = 0
 
         with self.assertRaises(JLinkException):
             self.jlink.set_tif(enums.JLinkInterfaces.SPI)
 
     def test_jlink_set_tif_failed(self):
-        """Tests for failing to set the TIF.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
-        self.jlink.supported_tif = mock.Mock()
+        Tests for failing to set the TIF.
+        """
+        self.jlink.supported_tif = Mock()
         self.jlink.supported_tif.return_value = (1 << enums.JLinkInterfaces.JTAG)
 
         self.dll.JLINKARM_TIF_Select.return_value = 1
@@ -2272,8 +2161,8 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.supported_tifs = mock.Mock()
-        self.jlink.supported_tifs.return_value = (1 << enums.JLinkInterfaces.JTAG)
+        self.jlink.supported_tif = Mock()
+        self.jlink.supported_tif.return_value = (1 << enums.JLinkInterfaces.JTAG)
 
         self.dll.JLINKARM_TIF_Select.return_value = 0
         self.assertTrue(self.jlink.set_tif(enums.JLinkInterfaces.JTAG))
@@ -2294,7 +2183,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(1, self.dll.JLINK_EMU_GPIO_GetProps.call_count)
 
-        self.dll.JLINK_EMU_GPIO_GetProps = mock.Mock()
+        self.dll.JLINK_EMU_GPIO_GetProps = Mock()
         self.dll.JLINK_EMU_GPIO_GetProps.side_effect = [1, -1]
 
         with self.assertRaises(JLinkException):
@@ -2419,7 +2308,7 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_EMU_COM_IsSupported.return_value = 1
         self.assertTrue(self.jlink.comm_supported())
 
-    @mock.patch('pyjlink.unlockers.unlock')
+    @patch('pyjlink.unlockers.unlock')
     def test_jlink_unlock_kinetis(self, mock_unlock):
         """Tests calling unlock on a connected Kinetis device.
 
@@ -2430,7 +2319,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        device = mock.Mock()
+        device = Mock()
         device.manufacturer = 'Freescale'
         mock_unlock.side_effect = [True, False]
 
@@ -2504,11 +2393,11 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.power_on()
         self.jlink.exec_command.assert_called_once_with('SupplyPower = 1')
 
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.power_on(default=True)
         self.jlink.exec_command.assert_called_once_with('SupplyPowerDefault = 1')
 
@@ -2521,11 +2410,11 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.power_off()
         self.jlink.exec_command.assert_called_once_with('SupplyPower = 0')
 
-        self.jlink.exec_command = mock.Mock()
+        self.jlink.exec_command = Mock()
         self.jlink.power_off(default=True)
         self.jlink.exec_command.assert_called_once_with('SupplyPowerDefault = 0')
 
@@ -2638,10 +2527,10 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.side_effect = JLinkException(-1)
 
-        self.jlink.halt = mock.Mock()
+        self.jlink.halt = Mock()
 
         self.dll.JLINK_EraseChip.return_value = 0
         self.assertEqual(0, self.jlink.erase())
@@ -2658,10 +2547,10 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.side_effect = JLinkException(-1)
 
-        self.jlink.halt = mock.Mock()
+        self.jlink.halt = Mock()
 
         self.dll.JLINK_EraseChip.return_value = -1
 
@@ -2680,10 +2569,10 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = False
 
-        self.jlink.halt = mock.Mock()
+        self.jlink.halt = Mock()
 
         self.dll.JLINK_EraseChip.return_value = 1
         self.assertEqual(1, self.jlink.erase())
@@ -2717,11 +2606,11 @@ class TestJLink(unittest.TestCase):
         """
         self.dll.JLINKARM_WriteMem.return_value = 0
 
-        self.jlink.power_on = mock.Mock()
-        self.jlink.erase = mock.Mock()
-        self.jlink.memory_write = mock.Mock()
+        self.jlink.power_on = Mock()
+        self.jlink.erase = Mock()
+        self.jlink.memory_write = Mock()
 
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = True
 
         # EndDownload failing
@@ -2741,12 +2630,12 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_WriteMem.return_value = 0
         self.dll.JLINKARM_EndDownload.return_value = 0
 
-        self.jlink.power_on = mock.Mock()
-        self.jlink.erase = mock.Mock()
-        self.jlink.memory_write = mock.Mock()
+        self.jlink.power_on = Mock()
+        self.jlink.erase = Mock()
+        self.jlink.memory_write = Mock()
 
-        self.jlink.halt = mock.Mock()
-        self.jlink.halted = mock.Mock()
+        self.jlink.halt = Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = True
 
         # With a progress callback.
@@ -2776,17 +2665,17 @@ class TestJLink(unittest.TestCase):
         self.jlink.halt.assert_called_once()
 
         # Without power by default
-        self.jlink.power_on = mock.Mock()
+        self.jlink.power_on = Mock()
         self.assertEqual(0, self.jlink.flash([0], 0))
         self.jlink.power_on.assert_not_called()
 
         # With power
-        self.jlink.power_on = mock.Mock()
+        self.jlink.power_on = Mock()
         self.assertEqual(0, self.jlink.flash([0], 0, power_on=True))
         self.jlink.power_on.assert_called_once()
 
         # Without power, explicit
-        self.jlink.power_on = mock.Mock()
+        self.jlink.power_on = Mock()
         self.assertEqual(0, self.jlink.flash([0], 0, power_on=False))
         self.jlink.power_on.assert_not_called()
 
@@ -2801,11 +2690,11 @@ class TestJLink(unittest.TestCase):
         """
         self.dll.JLINK_DownloadFile.return_value = -1
 
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = True
 
-        self.jlink.power_on = mock.Mock()
-        self.jlink.erase = mock.Mock()
+        self.jlink.power_on = Mock()
+        self.jlink.erase = Mock()
 
         with self.assertRaises(JLinkException):
             self.jlink.flash_file('path', 0)
@@ -2821,12 +2710,12 @@ class TestJLink(unittest.TestCase):
         """
         self.dll.JLINK_DownloadFile.return_value = 0
 
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = True
 
-        self.jlink.halt = mock.Mock()
-        self.jlink.power_on = mock.Mock()
-        self.jlink.erase = mock.Mock()
+        self.jlink.halt = Mock()
+        self.jlink.power_on = Mock()
+        self.jlink.erase = Mock()
 
         # With a progress callback.
         self.assertEqual(0, self.jlink.flash_file('path', 0, util.noop))
@@ -2855,12 +2744,12 @@ class TestJLink(unittest.TestCase):
         self.jlink.halt.assert_called_once()
 
         # With power
-        self.jlink.power_on = mock.Mock()
+        self.jlink.power_on = Mock()
         self.assertEqual(0, self.jlink.flash_file('path', 0, power_on=True))
         self.jlink.power_on.assert_called_once()
 
         # Without power
-        self.jlink.power_on = mock.Mock()
+        self.jlink.power_on = Mock()
         self.assertEqual(0, self.jlink.flash_file('path', 0, power_on=False))
         self.jlink.power_on.assert_not_called()
 
@@ -2953,7 +2842,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = False
 
         self.assertEqual(False, self.jlink.restart())
@@ -2967,18 +2856,18 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.halted = mock.Mock()
+        self.jlink.halted = Mock()
         self.jlink.halted.return_value = True
 
         self.assertEqual(True, self.jlink.restart())
         self.dll.JLINKARM_GoEx.called_once_with(0, 0)
 
-        self.dll.JLINKARM_GoEx = mock.Mock()
+        self.dll.JLINKARM_GoEx = Mock()
 
         self.assertEqual(True, self.jlink.restart(10, skip_breakpoints=True))
         self.dll.JLINKARM_GoEx.called_once_with(10, enums.JLinkFlags.GO_OVERSTEP_BP)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_halt_failure(self, mock_sleep):
         """Tests J-Link ``halt()`` failure.
 
@@ -2997,7 +2886,7 @@ class TestJLink(unittest.TestCase):
 
         self.assertEqual(0, mock_sleep.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_jlink_halt_success(self, mock_sleep):
         """Tests J-Link ``halt()`` success.
 
@@ -3423,7 +3312,7 @@ class TestJLink(unittest.TestCase):
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
-        self.jlink.swd_write = mock.Mock()
+        self.jlink.swd_write = Mock()
         self.jlink.swd_write8(0, 0)
         self.jlink.swd_write.assert_called_once_with(0, 0, 8)
 
@@ -3438,7 +3327,7 @@ class TestJLink(unittest.TestCase):
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
-        self.jlink.swd_write = mock.Mock()
+        self.jlink.swd_write = Mock()
         self.jlink.swd_write16(0, 0)
         self.jlink.swd_write.assert_called_once_with(0, 0, 16)
 
@@ -3453,7 +3342,7 @@ class TestJLink(unittest.TestCase):
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
-        self.jlink.swd_write = mock.Mock()
+        self.jlink.swd_write = Mock()
         self.jlink.swd_write32(0, 0)
         self.jlink.swd_write.assert_called_once_with(0, 0, 32)
 
@@ -3484,7 +3373,7 @@ class TestJLink(unittest.TestCase):
           ``None``
         """
         addr = 0xdeadbeef
-        self.jlink.flash_write = mock.Mock()
+        self.jlink.flash_write = Mock()
         self.jlink.flash_write8(addr, [0xFF])
         self.jlink.flash_write.assert_called_with(addr, [0xFF], 8)
 
@@ -3508,7 +3397,8 @@ class TestJLink(unittest.TestCase):
             self.jlink.code_memory_read(0, 1)
 
     def test_jlink_code_memory_read_success(self):
-        """Tests successfully reading code memory.
+        """
+        Tests successfully reading code memory.
 
         Args:
           self (TestJLink): the ``TestJLink`` instance
@@ -3527,7 +3417,7 @@ class TestJLink(unittest.TestCase):
         res = self.jlink.code_memory_read(0, 1)
         self.assertTrue(isinstance(res, list))
         self.assertEqual(1, len(res))
-        self.assertTrue(isinstance(res[0], int))
+        self.assertTrue(isinstance(res[0], bytes))
 
     def test_jlink_num_memory_zones(self):
         """Tests the J-Link ``num_memory_zones()`` method.
@@ -3554,7 +3444,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.num_memory_zones = mock.Mock()
+        self.jlink.num_memory_zones = Mock()
         self.jlink.num_memory_zones.return_value = 0
 
         res = self.jlink.memory_zones()
@@ -3572,7 +3462,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.num_memory_zones = mock.Mock()
+        self.jlink.num_memory_zones = Mock()
         self.jlink.num_memory_zones.return_value = 1
 
         self.dll.JLINK_GetMemZones.return_value = -1
@@ -3589,7 +3479,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.num_memory_zones = mock.Mock()
+        self.jlink.num_memory_zones = Mock()
         self.jlink.num_memory_zones.return_value = 1
         self.dll.JLINK_GetMemZones.return_value = 0
 
@@ -3737,7 +3627,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.memory_read = mock.Mock()
+        self.jlink.memory_read = Mock()
 
         self.jlink.memory_read8(0, 0)
         self.jlink.memory_read.assert_called_with(0, 0, nbits=8, zone=None)
@@ -3926,7 +3816,7 @@ class TestJLink(unittest.TestCase):
         """
         long_word = 0xFFFFFFFF00000000
 
-        self.jlink.memory_write32 = mock.Mock()
+        self.jlink.memory_write32 = Mock()
 
         self.jlink.memory_write64(0, [long_word])
 
@@ -5552,7 +5442,7 @@ class TestJLink(unittest.TestCase):
           ``None``
         """
         self.dll.JLINKARM_SWO_EnableTarget.return_value = -1
-        self.jlink.swo_stop = mock.Mock()
+        self.jlink.swo_stop = Mock()
 
         with self.assertRaises(JLinkException):
             self.jlink.swo_enable(0)
@@ -5639,7 +5529,7 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, val._obj.value)
 
         num_bytes = 1337
-        self.jlink.swo_num_bytes = mock.Mock()
+        self.jlink.swo_num_bytes = Mock()
         self.jlink.swo_num_bytes.return_value = num_bytes
 
         self.dll.JLINKARM_SWO_Control.return_value = 0
@@ -5782,7 +5672,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        self.jlink.swo_flush = mock.Mock()
+        self.jlink.swo_flush = Mock()
 
         num_bytes = 10
 
@@ -5895,7 +5785,7 @@ class TestJLink(unittest.TestCase):
         up = True
         desc = self.jlink.rtt_get_buf_descriptor(buffer_index, up)
 
-        self.dll.JLINK_RTTERMINAL_Control.assert_called_with(enums.JLinkRTTCommand.GETDESC, mock.ANY)
+        self.dll.JLINK_RTTERMINAL_Control.assert_called_with(enums.JLinkRTTCommand.GETDESC, ANY)
         self.assertEqual(buffer_index, desc.BufferIndex)
         self.assertTrue(desc.up)
         self.assertEqual('Terminal 0', desc.name)
@@ -5982,7 +5872,7 @@ class TestJLink(unittest.TestCase):
 
         stat = self.jlink.rtt_get_status()
 
-        self.dll.JLINK_RTTERMINAL_Control.assert_called_with(enums.JLinkRTTCommand.GETSTAT, mock.ANY)
+        self.dll.JLINK_RTTERMINAL_Control.assert_called_with(enums.JLinkRTTCommand.GETSTAT, ANY)
         self.assertEqual(0x1234, stat.NumBytesTransferred)
         self.assertEqual(0x4321, stat.NumBytesRead)
         self.assertTrue(stat.IsRunning)

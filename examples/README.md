@@ -17,8 +17,8 @@ The core information printer prints information about the target core.
 ### Serial Wire Viewer
 
 #### Source
-[Serial Wire Viewer](./swv.py)
-
+[Serial Wire Viewer](./pyjlink-swv.py)
+v
 #### Description
 The serial wire viewer is a tool that uses the Instruction Trace Macrocell
 (ITM) and Serial Wire Output (SWO) to provide an asynchronous method of
@@ -35,10 +35,10 @@ obtaining information from outside the MCU.  This can be used for tracing,
 Tool demonstrating the use of simple trace.
 
 
-### Target Endianness
+### Target Endian-ess
 
 #### Source
-[Target Endianess](./endian.py)
+[Target Endian-ess](./endian.py)
 
 #### Description
 Prints the endian mode of the target hardware.
@@ -56,7 +56,7 @@ Tool for updating J-Links on a Windows platform.
 ### Real Time Transfer (RTT)
 
 #### Source
-[RTT](./rtt.py)
+[RTT](./pyjlink-rtt.py)
 
 #### Description
 Tool for a simple command-line terminal that communicates over RTT.

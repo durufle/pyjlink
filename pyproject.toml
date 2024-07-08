@@ -52,5 +52,5 @@ disable = "R0902, R0904, W0612, W0622"
 
 [tool.pytest.ini_options]
 # Only package and test are part of the coverage
-addopts = "--cov=./tests --cov=./stmloader --cov-append"
+addopts = "--cov=./tests --cov=./pyjlink --cov-append"
 

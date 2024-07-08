@@ -8,6 +8,4 @@ sphinx-argparse
 sphinx_rtd_theme
 sphinxcontrib-napoleon
 wheel
-
-mock~=5.1.0
 pylint

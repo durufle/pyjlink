@@ -1,16 +1,8 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 from platform import platform
 import pyjlink.library as library
@@ -22,7 +14,9 @@ import unittest
 
 
 class TestLibrary(unittest.TestCase):
-    """Unit test for the ``library`` submodule."""
+    """
+    Unit test for the ``library`` submodule.
+    """
 
     def setUp(self):
         """Called before each test.
@@ -123,7 +117,7 @@ class TestLibrary(unittest.TestCase):
         mock_os.walk.return_value = mock_walk(sep)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
@@ -148,7 +142,7 @@ class TestLibrary(unittest.TestCase):
         mock_load_library.assert_called_once()
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
@@ -175,7 +169,7 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(0, mock_load_library.call_count)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
@@ -202,11 +196,11 @@ class TestLibrary(unittest.TestCase):
         mock_load_library.assert_called_once()
 
     @mock.patch('sys.platform', new='windows')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
+    @mock.patch('pyjlink.library.ctypes')
     def test_initialize_windows(self, mock_ctypes, mock_find_library, mock_open):
         """
         Tests creating a library on a Windows machine.
@@ -237,11 +231,11 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('sys.maxsize', new=(2**31-1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
+    @mock.patch('pyjlink.library.ctypes')
     def test_initialize_windows_32bit(self, mock_ctypes, mock_find_library, mock_open):
         """
         Tests creating a library on a Windows machine with 32bit Python.
@@ -272,7 +266,7 @@ class TestLibrary(unittest.TestCase):
         mock_windll.LoadLibrary.assert_called_once()
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
@@ -314,8 +308,8 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='darwin')
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
-    @mock.patch('pylink.library.open', new=mock.MagicMock())
-    @mock.patch('pylink.library.ctypes')
+    @mock.patch('pyjlink.library.open', new=mock.MagicMock())
+    @mock.patch('pyjlink.library.ctypes')
     @mock.patch('os.remove')
     def test_unload_no_library(self, mock_remove, mock_ctypes):
         """
@@ -339,8 +333,8 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
-    @mock.patch('pylink.library.open', new=mock.MagicMock())
-    @mock.patch('pylink.library.ctypes')
+    @mock.patch('pyjlink.library.open', new=mock.MagicMock())
+    @mock.patch('pyjlink.library.ctypes')
     @mock.patch('os.remove')
     def test_unload_windows(self, mock_remove, mock_ctypes):
         """Tests unloading the library on Windows.
@@ -359,8 +353,8 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='darwin')
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
-    @mock.patch('pylink.library.open', new=mock.MagicMock())
-    @mock.patch('pylink.library.ctypes')
+    @mock.patch('pyjlink.library.open', new=mock.MagicMock())
+    @mock.patch('pyjlink.library.ctypes')
     @mock.patch('os.remove')
     def test_unload_darwin_linux(self, mock_remove, mock_ctypes):
         """Tests unloading the library on Darwin and Linux platforms.
@@ -379,7 +373,7 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(None, lib._temp)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
@@ -408,12 +402,12 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(0xDEADBEEF, lib.dll())
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_darwin_4_98_e(self, mock_os, mock_load_library, mock_find_library, mock_open):
         """Tests finding the DLL on Darwin through the SEGGER application for V4.98E-.
 
@@ -438,12 +432,12 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(1, mock_load_library.call_count)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_darwin_5_0_0(self, mock_os, mock_load_library, mock_find_library, mock_open):
         """Tests finding the DLL on Darwin through the SEGGER application for V5.0.0+.
 
@@ -469,12 +463,12 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(1, mock_load_library.call_count)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_darwin_6_0_0(self, mock_os, mock_load_library, mock_find_library, mock_open):
         """Tests finding the DLL on Darwin through the SEGGER application for V6.0.0+.
 
@@ -499,12 +493,12 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(1, mock_load_library.call_count)
 
     @mock.patch('sys.platform', new='darwin')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_darwin_empty(self, mock_os, mock_load_library, mock_find_library, mock_open):
         """Tests finding the DLL on Darwin through the SEGGER application for V6.0.0+.
 
@@ -530,12 +524,12 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('sys.maxsize', new=(2**31 - 1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.ctypes')
+    @mock.patch('pyjlink.library.os')
     def test_windows_4_98_e(self, mock_os, mock_ctypes, mock_find_library, mock_open):
         """Tests finding the DLL on Windows through the SEGGER application for V4.98E-.
 
@@ -571,12 +565,12 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('sys.maxsize', new=(2**31-1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.ctypes')
+    @mock.patch('pyjlink.library.os')
     def test_windows_5_10_0(self, mock_os, mock_ctypes, mock_find_library, mock_open):
         """Tests finding the DLL on Windows through the SEGGER application for V5.0.0+.
 
@@ -612,12 +606,12 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('sys.maxsize', new=(2**31-1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.ctypes')
+    @mock.patch('pyjlink.library.os')
     def test_windows_jlinkarm(self, mock_os, mock_ctypes, mock_find_library, mock_open):
         """Tests finding the DLL on Windows through the SEGGER JLinkARM folder.
 
@@ -657,12 +651,12 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='windows')
     @mock.patch('sys.maxsize', new=(2**31 - 1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
-    @mock.patch('pylink.library.ctypes')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.ctypes')
+    @mock.patch('pyjlink.library.os')
     def test_windows_empty(self, mock_os, mock_ctypes, mock_find_library, mock_open):
         """Tests finding the DLL on Windows through the SEGGER application for V6.0.0+.
 
@@ -703,14 +697,15 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('sys.platform', new='cygwin')
     @mock.patch('sys.maxsize', new=(2**31-1))
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_cygwin(self, mock_os, mock_load_library, mock_find_library, mock_open):
-        """Tests finding the DLL when running within Cygwin.
+        """
+        Tests finding the DLL when running within Cygwin.
 
         Args:
           self (TestLibrary): the ``TestLibrary`` instance
@@ -739,25 +734,22 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(1, mock_load_library.call_count)
 
     @mock.patch('sys.platform', new='linux')
-    @mock.patch('pylink.util.is_os_64bit', return_value=False)
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.util.is_os_64bit', return_value=False)
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_linux_4_98_e(self, mock_os, mock_load_library, mock_find_library, mock_open, mock_is_os_64bit):
-        """Tests finding the DLL on Linux through the SEGGER application for V4.98E-.
+        """
+        Tests finding the DLL on Linux through the SEGGER application for V4.98E-.
 
         Args:
-          self (TestLibrary): the ``TestLibrary`` instance
           mock_os (Mock): a mocked version of the ``os`` module
           mock_load_library (Mock): a mocked version of the library loader
           mock_find_library (Mock): a mocked call to ``ctypes`` find library
           mock_open (Mock): mock for mocking the call to ``open()``
-
-        Returns:
-          ``None``
         """
         mock_find_library.return_value = None
         directories = [
@@ -768,17 +760,17 @@ class TestLibrary(unittest.TestCase):
 
         lib = library.Library()
         lib.unload = mock.Mock()
-        load_library_args, load_libary_kwargs = mock_load_library.call_args
+        load_library_args, load_library_kwargs = mock_load_library.call_args
         self.assertEqual(directories[0], lib._path)
 
     @mock.patch('sys.platform', new='linux2')
-    @mock.patch('pylink.util.is_os_64bit', return_value=False)
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.util.is_os_64bit', return_value=False)
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_linux_6_10_0_32bit(self, mock_os, mock_load_library, mock_find_library, mock_open, mock_is_os_64bit):
         """Tests finding the DLL on Linux through the SEGGER application for V6.0.0+ on 32 bit linux.
 
@@ -818,26 +810,23 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(None, lib._path)
 
     @mock.patch('sys.platform', new='linux2')
-    @mock.patch('pylink.util.is_os_64bit', return_value=True)
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.util.is_os_64bit', return_value=True)
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_linux_6_10_0_64bit(self, mock_os, mock_load_library, mock_find_library, mock_open, mock_is_os_64bit):
-        """Tests finding the DLL on Linux through the SEGGER application for V6.0.0+ on 64 bit linux.
+        """
+        Tests finding the DLL on Linux through the SEGGER application for V6.0.0+ on 64 bits linux.
 
         Args:
-          self (TestLibrary): the ``TestLibrary`` instance
           mock_os (Mock): a mocked version of the ``os`` module
           mock_load_library (Mock): a mocked version of the library loader
           mock_find_library (Mock): a mocked call to ``ctypes`` find library
           mock_open (Mock): mock for mocking the call to ``open()``
           mock_is_os_64bit (Mock): mock for mocking the call to ``is_os_64bit``, returns True
-
-        Returns:
-          ``None``
         """
         mock_find_library.return_value = None
         directories = [
@@ -849,7 +838,7 @@ class TestLibrary(unittest.TestCase):
 
         lib = library.Library()
         lib.unload = mock.Mock()
-        load_library_args, load_libary_kwargs = mock_load_library.call_args
+        load_library_args, load_library_kwargs = mock_load_library.call_args
         self.assertEqual(directories[1], lib._path)
 
         directories = [
@@ -863,12 +852,12 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(None, lib._path)
 
     @mock.patch('sys.platform', new='linux')
-    @mock.patch('pylink.library.open')
+    @mock.patch('pyjlink.library.open')
     @mock.patch('os.remove', new=mock.Mock())
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
-    @mock.patch('pylink.library.os')
+    @mock.patch('pyjlink.library.os')
     def test_linux_empty(self, mock_os, mock_load_library, mock_find_library, mock_open):
         """Tests finding the DLL on Linux through the SEGGER application for V6.0.0+.
 
@@ -898,12 +887,12 @@ class TestLibrary(unittest.TestCase):
     @mock.patch('sys.platform', new='linux')
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('os.remove', new=mock.Mock())
-    @mock.patch('pylink.library.open')
-    @mock.patch('pylink.library.os')
-    @mock.patch('pylink.util.is_os_64bit', return_value=True)
-    @mock.patch('pylink.platform.libc_ver', return_value=('libc', '1.0'))
+    @mock.patch('pyjlink.library.open')
+    @mock.patch('pyjlink.library.os')
+    @mock.patch('pyjlink.util.is_os_64bit', return_value=True)
+    @mock.patch('pyjlink.platform.libc_ver', return_value=('libc', '1.0'))
     @mock.patch('ctypes.util.find_library', return_value='libjlinkarm.so.7')
-    @mock.patch('pylink.library.JLinkarmDlInfo.__init__')
+    @mock.patch('pyjlink.library.JLinkarmDlInfo.__init__')
     @mock.patch('ctypes.cdll.LoadLibrary')
     def test_linux_glibc_unavailable(self, mock_load_library, mock_dlinfo_ctr, mock_find_library,
                                      mock_libc_ver, mock_is_os_64bit, mock_os,  mock_open):
@@ -938,15 +927,16 @@ class TestLibrary(unittest.TestCase):
     @mock.patch('sys.platform', new='linux')
     @mock.patch('tempfile.NamedTemporaryFile', new=mock.Mock())
     @mock.patch('os.remove', new=mock.Mock())
-    @mock.patch('pylink.library.open')
-    @mock.patch('pylink.library.os')
-    @mock.patch('pylink.util.is_os_64bit', return_value=True)
-    @mock.patch('pylink.platform.libc_ver', return_value=('glibc', '2.34'))
+    @mock.patch('pyjlink.library.open')
+    @mock.patch('pyjlink.library.os')
+    @mock.patch('pyjlink.util.is_os_64bit', return_value=True)
+    @mock.patch('pyjlink.platform.libc_ver', return_value=('glibc', '2.34'))
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
     def test_linux_dl_unavailable(self, mock_load_library, mock_find_library, mock_libc_ver,
                                   mock_is_os_64bit, mock_os,  mock_open):
-        """Confirms we successfully fallback to the "search by file name" code path when libdl is
+        """
+        Confirms we successfully fallback to the "search by file name" code path when libdl is
         unavailable despite the host system presenting itself as POSIX (GNU/Linux).
 
         Test case:
@@ -983,7 +973,7 @@ class TestLibrary(unittest.TestCase):
 
     @mock.patch('os.name', new='posix')
     @mock.patch('sys.platform', new='linux')
-    @mock.patch('pylink.platform.libc_ver', return_value=('glibc', '2.34'))
+    @mock.patch('pyjlink.platform.libc_ver', return_value=('glibc', '2.34'))
     @mock.patch('ctypes.util.find_library')
     @mock.patch('ctypes.cdll.LoadLibrary')
     def test_linux_dl_oserror(self, mock_load_library, mock_find_library, mock_libc_ver):

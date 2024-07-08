@@ -9,7 +9,8 @@ from . import enums
 
 
 class JLinkConnectInfo(Structure):
-    """J-Link connection info structure.
+    """
+    J-Link connection info structure.
 
     Attributes:
       'SerialNumber': J-Link serial number.

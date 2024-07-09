@@ -10,7 +10,7 @@ import platform
 import sys
 
 
-class Util(object):
+class Utils(object):
     @staticmethod
     def is_integer(val):
         """
@@ -41,7 +41,7 @@ class Util(object):
         """
         # return isinstance(val, int) and val >= 0
 
-        return Util.is_integer(val) and (val >= 0)
+        return Utils.is_integer(val) and (val >= 0)
 
     @staticmethod
     def is_os_64bit() -> bool:
@@ -144,7 +144,7 @@ class Util(object):
           This function ignores the compare action.
         """
         if action.lower() != 'compare':
-            Util.progress_bar(min(100, percentage), 100, prefix=action)
+            Utils.progress_bar(min(100, percentage), 100, prefix=action)
 
     @staticmethod
     def calculate_parity(n):
@@ -163,7 +163,7 @@ class Util(object):
         Raises:
           ValueError: if ``n`` is less than ``0``.
         """
-        if not Util.is_natural(n):
+        if not Utils.is_natural(n):
             raise ValueError('Expected n to be a positive integer.')
 
         y = 0

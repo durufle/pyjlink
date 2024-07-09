@@ -8,7 +8,7 @@
 pyjlink swd protocol module
 """
 import ctypes
-from .. import util
+from .. import utils
 
 
 class Response(object):
@@ -99,12 +99,10 @@ class Request(ctypes.Union):
     Attributes:
       start: the start bit is always one
       ap_dp: indicates whether the transaction is DP (``0``) or AP (``1``).
-      read_write: indicates if the transaction is a read-access (``1``) or a
-          write-access (``0``).
+      read_write: indicates if the transaction is a read-access (``1``) or avc write-access (``0``).
       address:
-      parity: the parity bit, the bit is used by the target to verify the
-          integrity of the request.  Should be ``1`` if bits ``1-4`` contain an
-          odd number of ``1``s, otherwise ``0``.
+      parity: the parity bit, the bit is used by the target to verify the integrity of the request.  Should be ``1``
+      if bits ``1-4`` contain an odd number of ``1``s, otherwise ``0``.
       stop: the stop bit, should always be zero.
       park: the park bit, should always be one.
       value: the overall value of the request.
@@ -216,7 +214,7 @@ class ReadRequest(Request):
         if status == Response.STATUS_ACK:
             # Check the parity
             parity = jlink.swd_read8(ack + 35) & 1
-            if util.calculate_parity(data) != parity:
+            if utils.Utils.calculate_parity(data) != parity:
                 return Response(-1, data)
 
         return Response(status, data)
@@ -266,5 +264,5 @@ class WriteRequest(Request):
 
         # Write the data and the parity bits.
         jlink.swd_write32(0xFFFFFFFF, self.data)
-        jlink.swd_write8(0xFF, util.calculate_parity(self.data))
+        jlink.swd_write8(0xFF, utils.Utils.calculate_parity(self.data))
         return Response(jlink.swd_read8(ack) & 7)

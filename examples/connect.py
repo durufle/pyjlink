@@ -16,7 +16,8 @@ except ImportError:
 
 
 def main(jlink_serial: int, device: str):
-    """Main function.
+    """
+    Main function.
 
     Args:
       jlink_serial: the J-Link serial number

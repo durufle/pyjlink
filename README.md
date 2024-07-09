@@ -1,13 +1,12 @@
 # pyjlink
 
-[![Build Status](https://travis-ci.org/square/pylink.svg?branch=master)](https://travis-ci.org/square/pylink)
+[![Build Status]()]()
 
 Python interface for the SEGGER J-Link.
 
-
 ## Requirements
 
-- [Python >= 2.7](https://www.python.org/downloads/)
+- [Python >= 3.8](https://www.python.org/downloads/)
 - [GNU ARM Embedded Toolchain](https://launchpad.net/gcc-arm-embedded) (for functional tests)
 - [SEGGER J-Link Tools >= 6.0b](https://www.segger.com/downloads/jlink)
 
@@ -89,8 +88,8 @@ if __name__ == '__main__':
 
 ## Troubleshooting
 
-Should you run into any issues, refer to the documentation, as well as check
-out our [troubleshooting](./TROUBLESHOOTING.md) document.
+Should you run into any issues, refer to the documentation, as well as check  out 
+our [troubleshooting](./TROUBLESHOOTING.md) document.
 
 
 ## Documentation
@@ -116,7 +115,7 @@ $ make html
 First install the development requirements by running:
 
 ```
-$ pip install -r requirements.txt
+$ pip install -r development.txt
 ```
 
 After you've installed the requirements, decide on the development work you

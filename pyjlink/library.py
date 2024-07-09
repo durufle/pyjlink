@@ -4,7 +4,7 @@
 #
 # License: MIT
 
-from . import util
+from . import utils
 
 import ctypes
 import ctypes.util as ctypes_util
@@ -195,7 +195,7 @@ class Library(object):
 
             for file_name in file_names:
                 fpath = os.path.join(directory_name, file_name)
-                if util.is_os_64bit():
+                if utils.Utils.is_os_64bit():
                     if '_x86' not in file_name:
                         yield fpath
                 elif x86_found:

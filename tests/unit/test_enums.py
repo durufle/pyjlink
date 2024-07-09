@@ -5,12 +5,13 @@
 # License: MIT
 
 import pyjlink.enums as enums
-
 import unittest
 
 
 class TestEnums(unittest.TestCase):
-    """Unit test for the `enums` submodule."""
+    """
+    Unit test for the `enums` submodule.
+    """
 
     def setUp(self):
         """Called before each test.

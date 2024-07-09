@@ -1,16 +1,8 @@
-# Copyright 2017 Square, Inc.
+# -*- coding: utf-8 -*-
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# License: MIT
 
 import pyjlink
 import argparse
@@ -18,6 +10,8 @@ import logging
 import os
 import six
 import sys
+
+from pyjlink.utils import Utils
 
 
 class CommandMeta(type):
@@ -221,7 +215,7 @@ class FlashCommand(Command):
         Returns:
           ``None``
         """
-        kwargs = {'path': args.file[0], 'addr': args.addr, 'on_progress': pyjlink.util.flash_progress_callback}
+        kwargs = {'path': args.file[0], 'addr': args.addr, 'on_progress': Utils.flash_progress_callback}
 
         jlink = self.create_jlink(args)
         _ = jlink.flash_file(**kwargs)
@@ -364,7 +358,7 @@ class InfoCommand(Command):
             print('DLL Version: %s' % jlink.version)
             print('Features: %s' % ', '.join(jlink.features))
         elif args.jtag:
-            status = jlink.hardware_status
+            status = jlink.hardware_status()
             print('TCK Pin Status: %d' % status.tck)
             print('TDI Pin Status: %d' % status.tdi)
             print('TDO Pin Status: %d' % status.tdo)
@@ -488,7 +482,8 @@ class FirmwareCommand(Command):
         return self.add_common_arguments(parser, False)
 
     def run(self, args):
-        """Runs the firmware command.
+        """
+        Runs the firmware command.
 
         Args:
           self (FirmwareCommand): the ``FirmwareCommand`` instance
@@ -514,7 +509,7 @@ class FirmwareCommand(Command):
 
                 print('Firmware Downgraded: %s' % jlink.firmware_version)
         elif args.upgrade:
-            if not jlink.firmware_outdated:
+            if not jlink.firmware_outdated():
                 print('DLL firmware is not newer than J-Link firmware.')
             else:
                 try:
@@ -530,7 +525,8 @@ class FirmwareCommand(Command):
 
 
 def commands():
-    """Returns the program commands.
+    """
+    Returns the program commands.
 
     Returns:
       A list of commands.
@@ -568,7 +564,8 @@ def create_parser():
 
 
 def main(args=None):
-    """Main command-line interface entrypoint.
+    """
+    Main command-line interface entrypoint.
 
     Runs the given subcommand or argument that were specified.  If not given a
     ``args`` parameter, assumes the arguments are passed on the command-line.
@@ -598,10 +595,6 @@ def main(args=None):
         if hasattr(args, 'command'):
             args.command(args)
         else:
-            # Python 3 argparse won't create the command attribute and an
-            # AttributeError will be raised if no commands are specified. Note:
-            # Python 3.7 added support for subparsers being required.  Emulate
-            # Python 2 error here for consistent behavior.
             parser.error('too few arguments')
     except pyjlink.JLinkException as e:
         sys.stderr.write('Error: %s%s' % (str(e), os.linesep))

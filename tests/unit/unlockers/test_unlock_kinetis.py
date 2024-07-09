@@ -15,10 +15,8 @@
 import pyjlink.enums as enums
 import pyjlink.protocols.swd as swd
 import pyjlink.unlockers as unlock
-
-import mock
-
 import unittest
+from unittest.mock import Mock, patch
 
 
 class TestUnlockKinetis(unittest.TestCase):
@@ -35,11 +33,12 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        assertRaisesRegexp = getattr(self, 'assertRaisesRegexp', None)
-        self.assertRaisesRegexp = getattr(self, 'assertRaisesRegex', assertRaisesRegexp)
+        assert_raises_regexp = getattr(self, 'assertRaisesRegexp', None)
+        self.assertRaisesRegexp = getattr(self, 'assertRaisesRegex', assert_raises_regexp)
 
     def tearDown(self):
-        """Called after each test.
+        """
+        Called after each test.
 
         Performs teardown.
 
@@ -62,7 +61,7 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.connected.return_value = False
 
         with self.assertRaises(ValueError):
@@ -77,7 +76,7 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
 
         with self.assertRaises(NotImplementedError):
             mock_jlink.tif = enums.JLinkInterfaces.FINE
@@ -104,13 +103,13 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.tif = enums.JLinkInterfaces.JTAG
 
         with self.assertRaisesRegexp(NotImplementedError, 'JTAG'):
             unlock.unlock_kinetis(mock_jlink)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_unlock_kinetis_identify_failed(self, mock_sleep):
         """Tests that unlock Kinetis fails if device fails to identify.
 
@@ -121,13 +120,13 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.tif = enums.JLinkInterfaces.SWD
         for flags in [0, (0x2 << 28), ((0x2 << 28) | (0xBA01 << 12))]:
             mock_jlink.coresight_read.return_value = flags
             self.assertFalse(unlock.unlock_kinetis(mock_jlink))
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_unlock_kinetis_read_fail(self, mock_sleep):
         """Tests unlock Kinetis failing during a read.
 
@@ -141,13 +140,13 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.tif = enums.JLinkInterfaces.SWD
 
         flags = (0x2 << 28) | (0xBA01 << 12) | 1
         mock_jlink.coresight_read.side_effect = [flags, 0xFF]
 
-        mock_jlink.swd_write.return_value = 0   # ACK
+        mock_jlink.swd_write.return_value = 0  # ACK
         mock_jlink.swd_read8.return_value = -1  # Invalid Read
         mock_jlink.swd_read32.return_value = 2  # Data
 
@@ -158,7 +157,7 @@ class TestUnlockKinetis(unittest.TestCase):
         self.assertEqual(1, mock_jlink.set_reset_pin_high.call_count)
         self.assertEqual(0, mock_jlink.reset.call_count)
 
-    @mock.patch('time.sleep')
+    @patch('time.sleep')
     def test_unlock_kinetis_success(self, mock_sleep):
         """Tests unlock Kinetis succesfully unlocking the device.
 
@@ -169,7 +168,7 @@ class TestUnlockKinetis(unittest.TestCase):
         Returns:
           `None`
         """
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.tif = enums.JLinkInterfaces.SWD
 
         flags = (0x2 << 28) | (0xBA01 << 12) | 1
@@ -178,7 +177,7 @@ class TestUnlockKinetis(unittest.TestCase):
         ack = swd.Response.STATUS_ACK
         wait = swd.Response.STATUS_WAIT
 
-        mocked_data = mock.Mock()
+        mocked_data = Mock()
         mocked_data.read_data = [
             0x0,  # Wait
             0x1,  # Ack
@@ -190,22 +189,22 @@ class TestUnlockKinetis(unittest.TestCase):
         ]
 
         mocked_data.status_and_parity_data = [
-            ack,   # Error clearing write request.
-            ack,   # Selecting the MDM-AP Status Register
+            ack,  # Error clearing write request.
+            ack,  # Selecting the MDM-AP Status Register
             wait,  # First poll, wait
-            ack,   # Second poll, continue
-            0x1,   # Parity
-            ack,   # Flash Ready ACK
-            0x0,   # Flash Ready Parity
-            0x1,   # Mass Erase Request
-            ack,   # Erase Command ACK
-            0x1,   # Erase Command Parity
-            ack,   # Erase Command ACK
-            0x0,   # Erase Command Parity
-            ack,   # Flash Erase Command ACK
-            0x1,   # Flash Erase Command Parity
-            ack,   # Flash Erase Command ACK
-            0x0,   # Flash Erase Command Parity
+            ack,  # Second poll, continue
+            0x1,  # Parity
+            ack,  # Flash Ready ACK
+            0x0,  # Flash Ready Parity
+            0x1,  # Mass Erase Request
+            ack,  # Erase Command ACK
+            0x1,  # Erase Command Parity
+            ack,  # Erase Command ACK
+            0x0,  # Erase Command Parity
+            ack,  # Flash Erase Command ACK
+            0x1,  # Flash Erase Command Parity
+            ack,  # Flash Erase Command ACK
+            0x0,  # Flash Erase Command Parity
         ]
 
         # ACK

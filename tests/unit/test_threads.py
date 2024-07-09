@@ -5,7 +5,6 @@
 # License: MIT
 
 import pyjlink.threads as threads
-
 import unittest
 
 

@@ -275,22 +275,20 @@ class JLinkInterfaces(object):
 
 
 class JLinkResetStrategyCortexM3(object):
-    """Target reset strategies for the J-Link.
+    """
+    Target reset strategies for the J-Link.
 
     Attributes:
       NORMAL: default reset strategy, does whatever is best to reset.
       CORE: only the core is reset via the ``VECTRESET`` bit.
       RESETPIN: pulls the reset pin low to reset the core and peripherals.
-      CONNECT_UNDER_RESET: J-Link connects to target while keeping reset
-        active.  This is recommented for STM32 devices.
+      CONNECT_UNDER_RESET: J-Link connects to target while keeping reset active.  This is recommented for STM32 devices.
       HALT_AFTER_BTL: halt the core after the bootloader is executed.
       HALT_BEFORE_BTL: halt the core before the bootloader is executed.
       KINETIS: performs a normal reset, but also disables the watchdog.
-      ADI_HALT_AFTER_KERNEL: sets the ``SYSRESETREQ`` bit in the ``AIRCR`` in
-        order to reset the device.
-      CORE_AND_PERIPHERALS: sets the ``SYSRESETREQ`` bit in the ``AIRCR``, and
-        the ``VC_CORERESET`` bit in the ``DEMCR`` to make sure that the CPU is
-        halted immediately after reset.
+      ADI_HALT_AFTER_KERNEL: sets the ``SYSRESETREQ`` bit in the ``AIRCR`` in order to reset the device.
+      CORE_AND_PERIPHERALS: sets the ``SYSRESETREQ`` bit in the ``AIRCR``, and the ``VC_CORERESET`` bit in the ``DEMCR``
+      to make sure that the CPU is halted immediately after reset.
       LPC1200: reset for LPC1200 devices.
       S3FN60D: reset for Samsung S3FN60D devices.
 

@@ -5,7 +5,6 @@
 # License: MIT
 
 import pyjlink.structs as structs
-
 import ctypes
 import unittest
 

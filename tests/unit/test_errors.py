@@ -6,12 +6,13 @@
 
 
 import pyjlink.errors as errors
-
 import unittest
 
 
 class TestErrors(unittest.TestCase):
-    """Unit test for the `errors` submodule."""
+    """
+    Unit test for the `errors` submodule.
+    """
 
     def setUp(self):
         """

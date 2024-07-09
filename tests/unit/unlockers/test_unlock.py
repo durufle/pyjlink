@@ -14,9 +14,8 @@
 
 import pyjlink.unlockers as unlock
 
-import mock
-
 import unittest
+from unittest.mock import Mock, patch
 
 
 class TestUnlock(unittest.TestCase):
@@ -36,7 +35,8 @@ class TestUnlock(unittest.TestCase):
         pass
 
     def tearDown(self):
-        """Called after each test.
+        """
+        Called after each test.
 
         Performs teardown.
 
@@ -49,7 +49,8 @@ class TestUnlock(unittest.TestCase):
         pass
 
     def test_unlock_unsupported(self):
-        """Tests calling `unlock()` for an unsupported MCU.
+        """
+        Tests calling `unlock()` for an unsupported MCU.
 
         Args:
           self (TestUnlock): the `TestUnlock` instance
@@ -57,14 +58,14 @@ class TestUnlock(unittest.TestCase):
         Returns:
           `None`
         """
-        jlink = mock.Mock()
+        jlink = Mock()
         with self.assertRaises(NotImplementedError):
             unlock.unlock(jlink, 'kinetisf')
 
         with self.assertRaises(NotImplementedError):
             unlock.unlock(jlink, 'dsafdsafdas')
 
-    @mock.patch('pyjlink.unlockers.unlock_kinetis')
+    @patch('pyjlink.unlockers.unlock_kinetis')
     def test_unlock_supported(self, mock_unlock):
         """Tests calling `unlock()` with a supported MCU.
 
@@ -75,7 +76,7 @@ class TestUnlock(unittest.TestCase):
         Returns:
           `None`
         """
-        jlink = mock.Mock()
+        jlink = Mock()
         supported = ['Kinetis', 'kinetis', 'NXP']
         mock_unlock.return_value = True
         for mcu in supported:

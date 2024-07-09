@@ -18,7 +18,8 @@ import behave
 @behave.given('has the license')
 @behave.when('I add the license')
 def step_add_license(context):
-    """Adds a license to the J-Link.
+    """
+    Adds a license to the J-Link.
 
     Args:
       context (Context): the ``Context`` instance
@@ -32,7 +33,8 @@ def step_add_license(context):
 
 @behave.when('I erase the licenses')
 def step_erase_licenses(context):
-    """Erases the J-Link's licenses.
+    """
+    Erases the J-Link's licenses.
 
     Args:
       context (Context): the ``Context`` instance
@@ -46,7 +48,8 @@ def step_erase_licenses(context):
 
 @behave.then('my J-Link should have the license')
 def step_has_license(context):
-    """Asserts the J-Link has the given licenese.
+    """
+    Asserts the J-Link has the given licenese.
 
     Args:
       context (Context): the ``Context`` instance
@@ -63,7 +66,8 @@ def step_has_license(context):
 
 @behave.then('my J-Link should have no licenses')
 def step_no_licenses(context):
-    """Asserts the J-Link has no licenses.
+    """
+    Asserts the J-Link has no licenses.
 
     Args:
       context (Context): the ``Context`` instance

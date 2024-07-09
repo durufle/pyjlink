@@ -5,8 +5,7 @@
 # License: MIT
 
 import pyjlink.enums as enums
-import pyjlink.util as util
-
+from pyjlink.utils import Utils
 try:
     import StringIO
 except ImportError:
@@ -58,12 +57,12 @@ class TestUtil(unittest.TestCase):
         Returns:
           `None`
         """
-        self.assertTrue(util.is_integer(4))
-        self.assertTrue(util.is_integer(0))
-        self.assertTrue(util.is_integer(-1))
+        self.assertTrue(Utils.is_integer(4))
+        self.assertTrue(Utils.is_integer(0))
+        self.assertTrue(Utils.is_integer(-1))
 
-        self.assertFalse(util.is_integer('4'))
-        self.assertFalse(util.is_integer('Stranger Things'))
+        self.assertFalse(Utils.is_integer('4'))
+        self.assertFalse(Utils.is_integer('Stranger Things'))
 
     def test_is_natural(self):
         """T
@@ -75,12 +74,12 @@ class TestUtil(unittest.TestCase):
         Returns:
           `None`
         """
-        self.assertTrue(util.is_natural(4))
-        self.assertTrue(util.is_natural(0))
+        self.assertTrue(Utils.is_natural(4))
+        self.assertTrue(Utils.is_natural(0))
 
-        self.assertFalse(util.is_natural(-1))
-        self.assertFalse(util.is_natural('4'))
-        self.assertFalse(util.is_natural('The 100'))
+        self.assertFalse(Utils.is_natural(-1))
+        self.assertFalse(Utils.is_natural('4'))
+        self.assertFalse(Utils.is_natural('The 100'))
 
     def test_is_os_64bit(self):
         """
@@ -96,16 +95,16 @@ class TestUtil(unittest.TestCase):
         """
         with patch('platform.machine') as mock_machine:
             mock_machine.return_value = 'i386'
-            self.assertFalse(util.is_os_64bit())
+            self.assertFalse(Utils.is_os_64bit())
 
             mock_machine.return_value = ''
-            self.assertFalse(util.is_os_64bit())
+            self.assertFalse(Utils.is_os_64bit())
 
             mock_machine.return_value = 'i686'
-            self.assertFalse(util.is_os_64bit())
+            self.assertFalse(Utils.is_os_64bit())
 
             mock_machine.return_value = 'x86_64'
-            self.assertTrue(util.is_os_64bit())
+            self.assertTrue(Utils.is_os_64bit())
 
     def test_noop(self):
         """
@@ -117,15 +116,15 @@ class TestUtil(unittest.TestCase):
         Returns:
           `None`
         """
-        self.assertEqual(None, util.noop())
-        self.assertEqual(None, util.noop(*range(100)))
-        self.assertEqual(None, util.noop(arg=4))
+        self.assertEqual(None, Utils.noop())
+        self.assertEqual(None, Utils.noop(*range(100)))
+        self.assertEqual(None, Utils.noop(arg=4))
 
     def test_unsecure_hook_dialog(self):
         """
         Tests that the unsecure hook dialog always returns `YES`.
         """
-        self.assertEqual(enums.JLinkFlags.DLG_BUTTON_NO, util.unsecure_hook_dialog('', '', 0))
+        self.assertEqual(enums.JLinkFlags.DLG_BUTTON_NO, Utils.unsecure_hook_dialog('', '', 0))
 
     @patch('sys.stdout', new_callable=StringIO.StringIO)
     def test_progress_bar(self, stream: StringIO):
@@ -138,10 +137,10 @@ class TestUtil(unittest.TestCase):
         Args:
           stream (StringIO): the mock output stream
         """
-        self.assertEqual(None, util.progress_bar(0, 100))
+        self.assertEqual(None, Utils.progress_bar(0, 100))
         self.assertFalse(stream.getvalue() == '\n')
 
-        self.assertEqual(None, util.progress_bar(100, 100))
+        self.assertEqual(None, Utils.progress_bar(100, 100))
 
         messages = stream.getvalue().split('\n')
         self.assertEqual(2, len(messages))
@@ -153,29 +152,29 @@ class TestUtil(unittest.TestCase):
         """
         Tests that the callback triggers a progress bar.
         """
-        self.assertEqual(None, util.flash_progress_callback('compare', '', 0))
+        self.assertEqual(None, Utils.flash_progress_callback('compare', '', 0))
         self.assertEqual('', stream.getvalue())
 
-        self.assertEqual(None, util.flash_progress_callback('Erase', '', 0))
+        self.assertEqual(None, Utils.flash_progress_callback('Erase', '', 0))
         self.assertTrue(len(stream.getvalue()) > 0)
 
     def test_calculate_parity(self):
         """
         Tests that the parity is properly calculated.
         """
-        self.assertEqual(1, util.calculate_parity(1))
-        self.assertEqual(1, util.calculate_parity(2))
-        self.assertEqual(0, util.calculate_parity(3))
+        self.assertEqual(1, Utils.calculate_parity(1))
+        self.assertEqual(1, Utils.calculate_parity(2))
+        self.assertEqual(0, Utils.calculate_parity(3))
 
     def test_calculate_parity_invalid(self):
         """
         Tests that an exception is raised for invalid args to `parity()`.
         """
         with self.assertRaises(ValueError):
-            util.calculate_parity('4')
+            Utils.calculate_parity('4')
 
         with self.assertRaises(ValueError):
-            util.calculate_parity(-1)
+            Utils.calculate_parity(-1)
 
 
 if __name__ == '__main__':

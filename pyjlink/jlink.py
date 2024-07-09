@@ -13,7 +13,7 @@ from . import jlock
 from . import library
 from . import structs
 from . import unlockers
-from . import util
+from . import utils
 
 import ctypes
 import datetime
@@ -309,7 +309,7 @@ class JLink(object):
         self._library = lib
         self._dll = lib.dll()
         self._tif = enums.JLinkInterfaces.JTAG
-        self._unsecure_hook = unsecure_hook or util.unsecure_hook_dialog
+        self._unsecure_hook = unsecure_hook or utils.Utils.unsecure_hook_dialog
         self._log_handler = None
         self._warning_handler = None
         self._error_handler = None
@@ -670,7 +670,7 @@ class JLink(object):
         Raises:
           ValueError: if index is less than 0 or >= supported device count.
         """
-        if not util.is_natural(index) or index >= self.num_supported_devices():
+        if not utils.Utils.is_natural(index) or index >= self.num_supported_devices():
             raise ValueError('Invalid index.')
 
         info = structs.JLinkDeviceInfo()
@@ -872,7 +872,7 @@ class JLink(object):
         """
         serial_no = self.serial_number
 
-        if self.firmware_newer:
+        if self.firmware_newer():
             # The J-Link's firmware is newer than the one compatible with the
             # DLL (though there are promises of backwards compatibility), so
             # perform a downgrade.
@@ -887,10 +887,10 @@ class JLink(object):
 
             self.open(serial_no=serial_no)
 
-            if self.firmware_newer:
+            if self.firmware_newer():
                 raise errors.JLinkException('Failed to sync firmware version.')
 
-        elif self.firmware_outdated:
+        elif self.firmware_outdated():
             # The J-Link's firmware is older than the one compatible with the
             # DLL, so perform a firmware upgrade.
             try:
@@ -901,7 +901,7 @@ class JLink(object):
             except errors.JLinkException as e:
                 pass
 
-            if self.firmware_outdated:
+            if self.firmware_outdated():
                 raise errors.JLinkException('Failed to sync firmware version.')
 
             return self.open(serial_no=serial_no)
@@ -927,7 +927,8 @@ class JLink(object):
           J-Link documentation,
           `UM08001 <https://www.segger.com/downloads/jlink>`__.
         """
-        err_buf = ctypes.create_string_buffer(0, self.MAX_BUF_SIZE)
+        #err_buf = ctypes.create_string_buffer(0, self.MAX_BUF_SIZE)
+        err_buf = (ctypes.c_char * self.MAX_BUF_SIZE)()
         res = self._dll.JLINKARM_ExecCommand(cmd.encode(), err_buf, self.MAX_BUF_SIZE)
         err_buf = ctypes.string_at(err_buf).decode()
 
@@ -999,10 +1000,10 @@ class JLink(object):
         Raises:
           ValueError: if ``instr_regs`` or ``data_bits`` are not natural numbers
         """
-        if not util.is_natural(instr_regs):
+        if not utils.Utils.is_natural(instr_regs):
             raise ValueError('IR value is not a natural number.')
 
-        if not util.is_natural(data_bits):
+        if not utils.Utils.is_natural(data_bits):
             raise ValueError('Data bits is not a natural number.')
 
         self._dll.JLINKARM_ConfigJTAG(instr_regs, data_bits)
@@ -1520,7 +1521,7 @@ class JLink(object):
         """
         if speed is None:
             speed = 0
-        elif not util.is_natural(speed):
+        elif not utils.Utils.is_natural(speed):
             raise TypeError('Expected positive number for speed, given %s.' % speed)
         elif speed > self.MAX_JTAG_SPEED:
             raise ValueError('Given speed exceeds max speed of %d.' % self.MAX_JTAG_SPEED)
@@ -2319,7 +2320,7 @@ class JLink(object):
         Raises:
           ValueError: if instruction count is not a natural number.
         """
-        if not util.is_natural(num_instructions):
+        if not utils.Utils.is_natural(num_instructions):
             raise ValueError('Invalid instruction count: %s.' % num_instructions)
 
         if not self.halted():
@@ -2589,7 +2590,7 @@ class JLink(object):
         See Also:
           `JTAG Technical Overview <https://www.xjtag.com/about-jtag/jtag-a-technical-overview>`_.
         """
-        if not util.is_natural(num_bits) or num_bits <= 0 or num_bits > 32:
+        if not utils.Utils.is_natural(num_bits) or num_bits <= 0 or num_bits > 32:
             raise ValueError('Number of bits must be >= 1 and <= 32.')
         self._dll.JLINKARM_StoreBits(tms, tdi, num_bits)
         return None
@@ -4052,7 +4053,7 @@ class JLink(object):
           JLinkException: on error.
           TypeError: if ``instruction`` is not a number.
         """
-        if not util.is_integer(instruction):
+        if not utils.Utils.is_integer(instruction):
             raise TypeError('Expected instruction to be an integer.')
 
         buf_size = self.MAX_BUF_SIZE

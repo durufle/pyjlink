@@ -5,15 +5,17 @@
 # License: MIT
 
 import pyjlink.binpacker as binpacker
-
 import unittest
 
 
 class TestBinpacker(unittest.TestCase):
-    """Unit test class for the `binpacker` submodule."""
+    """
+    Unit test class for the `binpacker` submodule.
+    """
 
     def setUp(self):
-        """Called before each test.
+        """
+        Called before each test.
 
         Performs setup.
 
@@ -26,7 +28,8 @@ class TestBinpacker(unittest.TestCase):
         pass
 
     def tearDown(self):
-        """Called after each test.
+        """
+        Called after each test.
 
         Performs teardown.
 

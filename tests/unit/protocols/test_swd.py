@@ -13,15 +13,16 @@
 # limitations under the License.
 
 import pyjlink.protocols.swd as swd
-import pyjlink.util
-
-import mock
+from pyjlink.utils import Utils
 
 import unittest
+from unittest.mock import Mock
 
 
 class TestSerialWireDebug(unittest.TestCase):
-    """Tests the `protocols.swd` submodule."""
+    """
+    Tests the `protocols.swd` submodule.
+    """
 
     def setUp(self):
         """
@@ -105,7 +106,7 @@ class TestSerialWireDebug(unittest.TestCase):
         status = swd.Response.STATUS_WAIT
         data = 2
 
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.swd_write.return_value = ack
         mock_jlink.swd_read8.return_value = status
         mock_jlink.swd_read32.return_value = data
@@ -141,7 +142,7 @@ class TestSerialWireDebug(unittest.TestCase):
         status = swd.Response.STATUS_ACK
         data = 1
 
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.swd_write.return_value = ack
         mock_jlink.swd_read8.return_value = status
         mock_jlink.swd_read32.return_value = data
@@ -181,7 +182,7 @@ class TestSerialWireDebug(unittest.TestCase):
         status = swd.Response.STATUS_ACK
         data = 3
 
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.swd_write.return_value = ack
         mock_jlink.swd_read8.return_value = status
         mock_jlink.swd_read32.return_value = data
@@ -232,11 +233,11 @@ class TestSerialWireDebug(unittest.TestCase):
         Tests sending a SWD Read Request.
         """
         data = 2
-        parity = pyjlink.util.calculate_parity(data)
+        parity = Utils.calculate_parity(data)
         request = swd.WriteRequest(0, True, data)
 
         ack = 2
-        mock_jlink = mock.Mock()
+        mock_jlink = Mock()
         mock_jlink.swd_write.return_value = ack
         mock_jlink.swd_read8.return_value = 1
 

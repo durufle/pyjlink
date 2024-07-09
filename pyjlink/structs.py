@@ -332,8 +332,8 @@ class JLinkMemoryZone(Structure):
 
 
 class JLinkSpeedInfo(Structure):
-    """R
-    epresents information about an emulator's supported speeds.
+    """
+    Represents information about an emulator's supported speeds.
 
     The emulator can support all target interface speeds calculated by dividing
     the base frequency by at least ``MinDiv``.
@@ -342,8 +342,7 @@ class JLinkSpeedInfo(Structure):
       'SizeOfStruct': the size of this structure.
       'BaseFreq': Base frequency (in HZ) used to calculate supported speeds.
       'MinDiv': minimum divider allowed to divide the base frequency.
-      'SupportAdaptive': ``1`` if emulator supports adaptive clocking, otherwise
-          ``0``.
+      'SupportAdaptive': ``1`` if emulator supports adaptive clocking, otherwise ``0``.
     """
     _fields_ = [
         ('SizeOfStruct', c_uint32),
@@ -488,8 +487,8 @@ class JLinkMOEInfo(Structure):
 
     Attributes:
       'HaltReason': reason why the CPU stopped.
-      'Index': if cause of CPU stop was a code/data breakpoint, this identifies the index of the code/data breakpoint unit
-            which causes the CPU to stop, otherwise it is ``-1``.
+      'Index': if cause of CPU stop was a code/data breakpoint, this identifies the index of the code/data breakpoint
+      unit which causes the CPU to stop, otherwise it is ``-1``.
     """
     _fields_ = [
         ('HaltReason', c_uint32),

@@ -8,7 +8,7 @@ import pyjlink.enums as enums
 from pyjlink.errors import JLinkException, JLinkDataException
 import pyjlink.jlink as jlink
 import pyjlink.structs as structs
-import pyjlink.util as util
+import pyjlink.utils as utils
 
 try:
     import StringIO
@@ -487,7 +487,7 @@ class TestJLink(unittest.TestCase):
         by which method we are connecting to the emulator.  If neither USB or
         Ethernet or specified, then we should raise an error.
         """
-        with self.assertRaises(AttributeError):
+        with self.assertRaises(JLinkException):
             self.jlink.open()
 
     def test_jlink_open_unspecified_context_manager(self):
@@ -503,7 +503,7 @@ class TestJLink(unittest.TestCase):
         Returns:
           ``None``
         """
-        with self.assertRaises(AttributeError):
+        with self.assertRaises(JLinkException):
             with jlink.JLink(self.lib) as jl:
                 self.assertTrue(jl.opened())  # Opened in CM.
             self.dll.JLINKARM_Close.assert_called()  # Closed on exit.
@@ -971,7 +971,8 @@ class TestJLink(unittest.TestCase):
             self.jlink.sync_firmware()
 
     def test_jlink_sync_firmware_newer(self):
-        """Tests syncing the J-Link firmware when it is newer than the DLL.
+        """
+        Tests syncing the J-Link firmware when it is newer than the DLL.
 
         Args:
           self (TestJLink): the ``TestJLink`` instance
@@ -2639,7 +2640,7 @@ class TestJLink(unittest.TestCase):
         self.jlink.halted.return_value = True
 
         # With a progress callback.
-        self.assertEqual(0, self.jlink.flash([0], 0, util.noop))
+        self.assertEqual(0, self.jlink.flash([0], 0, utils.Utils.noop))
         self.dll.JLINK_SetFlashProgProgressCallback.assert_called_once()
 
         arg = self.dll.JLINK_SetFlashProgProgressCallback.call_args[0][0]
@@ -2718,7 +2719,7 @@ class TestJLink(unittest.TestCase):
         self.jlink.erase = Mock()
 
         # With a progress callback.
-        self.assertEqual(0, self.jlink.flash_file('path', 0, util.noop))
+        self.assertEqual(0, self.jlink.flash_file('path', 0, utils.Utils.noop))
         self.dll.JLINK_SetFlashProgProgressCallback.assert_called_once()
 
         arg = self.dll.JLINK_SetFlashProgProgressCallback.call_args[0][0]

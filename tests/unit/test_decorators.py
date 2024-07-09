@@ -5,15 +5,15 @@
 # License: MIT
 
 import pyjlink.decorators as decorators
-
-import mock
-
 import threading
 import unittest
+from unittest.mock import Mock
 
 
 class TestDecorators(unittest.TestCase):
-    """Unit test for the `decorators` submodule."""
+    """
+    Unit test for the `decorators` submodule.
+    """
 
     def setUp(self):
         """Called before each test.
@@ -26,7 +26,7 @@ class TestDecorators(unittest.TestCase):
         Returns:
           `None`
         """
-        self.callback = mock.Mock()
+        self.callback = Mock()
 
     def tearDown(self):
         """Called after each test.
@@ -87,7 +87,7 @@ class TestDecorators(unittest.TestCase):
         self.assertTrue(isinstance(thread, threading.Thread))
 
         result = thread.join()
-        self.assertTrue(isinstance(result, mock.Mock))
+        self.assertTrue(isinstance(result, Mock))
         self.callback.assert_called_with(None, 4)
 
         thread = foo(callback=callback)

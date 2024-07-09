@@ -85,7 +85,7 @@ def flash_k21(jlink, firmware):
     jlink.set_reset_strategy(pyjlink.enums.JLinkResetStrategyCortexM3.RESETPIN)
     jlink.reset()
 
-    if not pyjlinkpyjlink.unlock_kinetis(jlink):
+    if not pyjlink.unlock_kinetis(jlink):
         jlink.power_off()
         return -1
 

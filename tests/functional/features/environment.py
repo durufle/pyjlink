@@ -25,7 +25,8 @@ import time
 
 
 def create_jlink(context):
-    """Creates an instance of a J-Link, attaching it to the context.
+    """
+    Creates an instance of a J-Link, attaching it to the context.
 
     Args:
       context (Context): the ``Context`` instance
@@ -47,7 +48,8 @@ def create_jlink(context):
 
 
 def reset_jlink(context):
-    """Resets the context's J-Link instance by destroying it.
+    """
+    Resets the context's J-Link instance by destroying it.
 
     Args:
       context (Context): the ``Context`` instance
@@ -60,7 +62,8 @@ def reset_jlink(context):
 
 
 def extract_tag(tags, prefix):
-    """Extracts a tag and its value.
+    """
+    Extracts a tag and its value.
 
     Consumes a tag prefix, and extracts the value corresponding to it.
 
@@ -81,7 +84,8 @@ def extract_tag(tags, prefix):
 
 
 def should_exclude(context, section):
-    """Returns whether the given section should be skipped.
+    """
+    Returns whether the given section should be skipped.
 
     Args:
       context (Context): the ``Context`` instance
@@ -103,7 +107,8 @@ def should_exclude(context, section):
 
 
 def before_all(context):
-    """Runs before all tests.
+    """
+    Runs before all tests.
 
     Syncs the J-Link firmware before running tests.
 
@@ -122,7 +127,8 @@ def before_all(context):
 
 
 def after_all(context):
-    """Runs after all tests.
+    """
+    Runs after all tests.
 
     Args:
       context (Context): the ``Context`` instance
@@ -134,7 +140,8 @@ def after_all(context):
 
 
 def before_feature(context, feature):
-    """Runs before each feature.
+    """
+    Runs before each feature.
 
     Args:
       context (Context): the ``Context`` instance
@@ -150,7 +157,8 @@ def before_feature(context, feature):
 
 
 def after_feature(context, feature):
-    """Runs after each feature.
+    """
+    Runs after each feature.
 
     Args:
       context (Context): the ``Context`` instance
@@ -163,7 +171,8 @@ def after_feature(context, feature):
 
 
 def before_scenario(context, scenario):
-    """Runs before each scenario.
+    """
+    Runs before each scenario.
 
     Args:
       context (Context): the ``Context`` instance
@@ -181,7 +190,8 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    """Runs after each scenario.
+    """
+    Runs after each scenario.
 
     Args:
       context (Context): the ``Context`` instance
@@ -205,7 +215,8 @@ def after_scenario(context, scenario):
 
 
 def before_tag(context, tag):
-    """Runs before each section with the given tag.
+    """
+    Runs before each section with the given tag.
 
     Args:
       context (Context): the ``Context`` instance
@@ -218,7 +229,8 @@ def before_tag(context, tag):
 
 
 def after_tag(context, tag):
-    """Runs after each section with the given tag.
+    """
+    Runs after each section with the given tag.
 
     Args:
       context (Context): the ``Context`` instance
@@ -231,7 +243,8 @@ def after_tag(context, tag):
 
 
 def before_step(context, step):
-    """Runs before each step.
+    """
+    Runs before each step.
 
     Args:
       context (Context): the ``Context`` instance
@@ -244,7 +257,8 @@ def before_step(context, step):
 
 
 def after_step(context, step):
-    """Runs after each step.
+    """
+    Runs after each step.
 
     Args:
       context (Context): the ``Context`` instance

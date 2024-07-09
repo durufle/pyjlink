@@ -6,7 +6,6 @@
 
 import pyjlink
 import pyjlink.__main__ as main
-
 import logging
 
 try:
@@ -40,9 +39,10 @@ class TestMain(unittest.TestCase):
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pyllink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_help(self, mock_jlink, mock_stdout, mock_stderr):
-        """Tests printing out the command-line help.
+        """
+        Tests printing out the command-line help.
 
         Args:
           self (TestMain): the ``TestMain`` instance
@@ -56,15 +56,15 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main.main(['--help'])
 
-        self.assertTrue('usage: pylink' in mock_stdout.getvalue())
+        self.assertTrue('usage: pyjlink' in mock_stdout.getvalue())
 
-    @patch('sys.argv', ['pylink', '--help'])
+    @patch('sys.argv', ['pyjlink', '--help'])
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
     @patch('pyjlink.__main__.pyjlink.JLink')
     def test_help_argv(self, mock_jlink, mock_stdout, mock_stderr):
-        """T
-        ests printing out the command-line help when called without args.
+        """
+        Tests printing out the command-line help when called without args.
 
         Args:
           self (TestMain): the ``TestMain`` instance
@@ -78,7 +78,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main.main()
 
-        self.assertTrue('usage: pylink' in mock_stdout.getvalue())
+        self.assertTrue('usage: pyjlink' in mock_stdout.getvalue())
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
@@ -95,7 +95,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(SystemExit):
             main.main(['--version'])
 
-        expected = 'pylink %s' % pyjlink.__version__
+        expected = 'pyjlink %s' % pyjlink.__version__
         if sys.version_info >= (3, 0):
             self.assertEqual(expected, mock_stdout.getvalue().strip())
         else:
@@ -135,7 +135,7 @@ class TestMain(unittest.TestCase):
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pylink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_new_command_fail_validation(self, mock_jlink, mock_stdout, mock_stderr):
         """
         Tests creating a new command that fails validation.
@@ -389,7 +389,7 @@ class TestMain(unittest.TestCase):
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pylink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_firmware_upgrade_command(self, mock_jlink, mock_stdout, mock_stderr):
         """
         Tests the command t- upgrade the J-Link firmware.
@@ -399,10 +399,10 @@ class TestMain(unittest.TestCase):
           mock_stdout (mock.Mock): mocked standard output stream
           mock_stderr (mock.Mock): mocked standard error stream
         """
-        mocked = mock.Mock()
+        mocked = Mock()
         mock_jlink.return_value = mocked
 
-        args = ['firmware', '--upgrade', '--serial', '123456789']
+        args = ['firmware', '--upgrade', '--serial', '504502376']
 
         # Firmware is already new, can't upgrade anymore.
         mocked.firmware_outdated.return_value = False
@@ -457,9 +457,10 @@ class TestMain(unittest.TestCase):
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pylink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_flash_command(self, mock_jlink, mock_stdout, mock_stderr):
-        """Tests running the flash command over JTAG and SWD.
+        """
+        Tests running the flash command over JTAG and SWD.
 
         Args:
           self (TestMain): the ``TestMain`` instance
@@ -476,19 +477,19 @@ class TestMain(unittest.TestCase):
         args = ['flash', '-t', 'swd', '-d', 'DEVICE', '-s', '123456789', 'fileA']
         self.assertEqual(0, main.main(args))
         mocked.flash_file.assert_called_with(addr=0,
-                                             on_progress=pyjlink.util.flash_progress_callback,
+                                             on_progress=pyjlink.utils.Utils.flash_progress_callback,
                                              path='fileA')
 
         args = ['flash', '-t', 'jtag', '-d', 'DEVICE', '-s', '123456789', 'fileB']
         self.assertEqual(0, main.main(args))
         mocked.flash_file.assert_called_with(addr=0,
-                                             on_progress=pyjlink.util.flash_progress_callback,
+                                             on_progress=pyjlink.utils.Utils.flash_progress_callback,
                                              path='fileB')
 
-    @patch('pylink.unlock')
+    @patch('pyjlink.unlock')
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pylink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_unlock_command(self, mock_jlink, mock_stdout, mock_stderr, mock_unlock):
         """Tests the command for unlocking a locked device.
 
@@ -518,9 +519,9 @@ class TestMain(unittest.TestCase):
         self.assertEqual(0, main.main(args))
         self.assertEqual('Failed to unlock device!', mock_stdout.getvalue().strip())
 
-    @mock.patch('sys.stderr', new_callable=StringIO.StringIO)
-    @mock.patch('sys.stdout', new_callable=StringIO.StringIO)
-    @mock.patch('pyjlink.__main__.pylink.JLink')
+    @patch('sys.stderr', new_callable=StringIO.StringIO)
+    @patch('sys.stdout', new_callable=StringIO.StringIO)
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_erase_command(self, mock_jlink, mock_stdout, mock_stderr):
         """Tests the command for erasing the device.
 
@@ -533,7 +534,7 @@ class TestMain(unittest.TestCase):
         Returns:
           ``None``
         """
-        mocked = mock.Mock()
+        mocked = Mock()
         mock_jlink.return_value = mocked
         mocked.erase.return_value = 1337
 
@@ -542,9 +543,9 @@ class TestMain(unittest.TestCase):
         self.assertEqual(0, main.main(args))
         self.assertEqual('Bytes Erased: 1337', mock_stdout.getvalue().strip())
 
-    @mock.patch('sys.stderr', new_callable=StringIO.StringIO)
-    @mock.patch('sys.stdout', new_callable=StringIO.StringIO)
-    @mock.patch('pylink.__main__.pyjlink.JLink')
+    @patch('sys.stderr', new_callable=StringIO.StringIO)
+    @patch('sys.stdout', new_callable=StringIO.StringIO)
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_license_list_command(self, mock_jlink, mock_stdout, mock_stderr):
         """Tests the command for listing emulator licenses.
 
@@ -553,7 +554,7 @@ class TestMain(unittest.TestCase):
           mock_stdout (mock.Mock): mocked standard output stream
           mock_stderr (mock.Mock): mocked standard error stream
         """
-        mocked = mock.Mock()
+        mocked = Mock()
         mock_jlink.return_value = mocked
 
         mocked.licenses = 'FlashBP,RDI'
@@ -564,9 +565,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue('Built-in Licenses: FlashBP, RDI' in mock_stdout.getvalue())
         self.assertTrue('Custom Licenses: GDB' in mock_stdout.getvalue())
 
-    @mock.patch('sys.stderr', new_callable=StringIO.StringIO)
-    @mock.patch('sys.stdout', new_callable=StringIO.StringIO)
-    @mock.patch('pyjlink.__main__.pyjlink.JLink')
+    @patch('sys.stderr', new_callable=StringIO.StringIO)
+    @patch('sys.stdout', new_callable=StringIO.StringIO)
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_license_add_command(self, mock_jlink, mock_stdout, mock_stderr):
         """Tests the command for adding emulator licenses.
 
@@ -579,7 +580,7 @@ class TestMain(unittest.TestCase):
         Returns:
           ``None``
         """
-        mocked = mock.Mock()
+        mocked = Mock()
         mock_jlink.return_value = mocked
 
         args = ['license', '-a', 'GDB', '-s', '123456789']
@@ -597,7 +598,7 @@ class TestMain(unittest.TestCase):
 
     @patch('sys.stderr', new_callable=StringIO.StringIO)
     @patch('sys.stdout', new_callable=StringIO.StringIO)
-    @patch('pylink.__main__.pylink.JLink')
+    @patch('pyjlink.__main__.pyjlink.JLink')
     def test_license_erase_command(self, mock_jlink, mock_stdout, mock_stderr):
         """Tests the command for erasing licenses.
 

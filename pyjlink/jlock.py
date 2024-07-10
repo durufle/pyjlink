@@ -38,16 +38,15 @@ class JLock(object):
     SERIAL_NAME_FMT = '.pylink-usb-{}.lck'
     IPADDR_NAME_FMT = '.pylink-ip-{}.lck'
 
-    def __init__(self, serial_no):
+    def __init__(self, serial_no: int):
         """
         Creates an instance of a ``JLock`` and populates the name.
 
-        Note:
+        :note:
           This method may fail if there is no temporary directory in which to
           have the lockfile placed.
 
-        Args:
-          serial_no (int): the serial number of the J-Link
+          :param serial_no: the serial number of the J-Link
         """
         self.name = self.SERIAL_NAME_FMT.format(serial_no)
         self.acquired = False
@@ -68,10 +67,10 @@ class JLock(object):
         If the lockfile exists but does not correspond to an active process,
         the lockfile is first removed, before an attempt is made to acquire it.
 
-        Returns:
+        :return:
           True if the lock was acquired, otherwise False.
 
-        Raises:
+        :raise:
           OSError: on file errors.
         """
         if os.path.exists(self.path):
@@ -116,7 +115,7 @@ class JLock(object):
         """
         Cleans up the lockfile if it was acquired.
 
-        Returns:
+        :return:
           False if the lock was not released or the lock is not acquired, otherwise True.
         """
         if not self.acquired:

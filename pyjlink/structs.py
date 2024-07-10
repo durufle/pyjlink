@@ -53,7 +53,7 @@ class JLinkConnectInfo(Structure):
         """
         Returns a representation of this class.
 
-        Returns:
+        :return:
           String representation of the class.
         """
         return 'JLinkConnectInfo(%s)' % self.__str__()
@@ -62,7 +62,7 @@ class JLinkConnectInfo(Structure):
         """
         Returns a string representation of the connection info.
 
-        Returns:
+        :return:
           String specifying the product, its serial number, and the type of
           connection that it has (one of USB or IP).
         """
@@ -88,7 +88,7 @@ class JLinkFlashArea(Structure):
         """
         Returns a representation of the instance.
 
-        Returns:
+        :return:
           String representation of the Flash Area.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
@@ -97,7 +97,7 @@ class JLinkFlashArea(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String specifying address of flash region, and its size.
         """
         return 'Address = 0x%x, Size = %s' % (self.Addr, self.Size)
@@ -155,9 +155,8 @@ class JLinkDeviceInfo(Structure):
 
         Populates the ``.SizeofStruct`` parameter to the size of the instance.
 
-        Args:
-          args: list of arguments
-          kwargs: key-word arguments dictionary
+        :param args: list of arguments
+        :param kwargs: key-word arguments dictionary
         """
         super(JLinkDeviceInfo, self).__init__(*args, **kwargs)
         self.SizeofStruct = sizeof(self)
@@ -166,7 +165,7 @@ class JLinkDeviceInfo(Structure):
         """
         Returns a representation of this instance.
 
-        Returns:
+        :return:
           Returns a string representation of the instance.
         """
         return 'JLinkDeviceInfo(%s)' % self.__str__()
@@ -175,7 +174,7 @@ class JLinkDeviceInfo(Structure):
         """
         Returns a string representation of this instance.
 
-        Returns:
+        :return:
           Returns a string specifying the device name, core, and manufacturer.
         """
         manu = self.manufacturer
@@ -186,7 +185,7 @@ class JLinkDeviceInfo(Structure):
         """
         Returns the name of the device.
 
-        Returns:
+        :return:
           Device name.
         """
         return cast(self.sName, c_char_p).value.decode()
@@ -196,7 +195,7 @@ class JLinkDeviceInfo(Structure):
         """
         Returns the name of the manufacturer of the device.
 
-        Returns:
+        :return:
           Manufacturer name.
         """
         buf = cast(self.sManu, c_char_p).value
@@ -242,7 +241,7 @@ class JLinkHardwareStatus(Structure):
 
         This is an alias for ``.VTarget``.
 
-        Returns:
+        :return:
           Target supply voltage as an integer.
         """
         return self.VTarget
@@ -265,21 +264,16 @@ class JLinkGPIODescriptor(Structure):
         """
         Returns a string representation of the instance.
 
-        Args:
-          self (JLinkGPIODescriptor): the ``JLinkGPIODescriptor`` instance
-
-        Returns:
+        :returns:
           String representation of the instance.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
     def __str__(self):
-        """Returns the GPIO name.
+        """
+        Returns the GPIO name.
 
-        Args:
-          self (JLinkGPIODescriptor): the ``JLInkGPIODescriptor`` instance
-
-        Returns:
+        :returns:
           GPIO name.
         """
         return self.acName.decode()
@@ -306,7 +300,7 @@ class JLinkMemoryZone(Structure):
         """
         Returns a string representation of the instance
 
-        Returns:
+        :return:
           String representation of the instance.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
@@ -315,7 +309,7 @@ class JLinkMemoryZone(Structure):
         """
         Returns a formatted string describing the memory zone.
 
-        Returns:
+        :return:
           String representation of the memory zone.
         """
         return '%s <Desc. %s, VirtAddr. 0x%x>' % (self.sName, self.sDesc, self.VirtAddr)
@@ -325,7 +319,7 @@ class JLinkMemoryZone(Structure):
         """
         Alias for the memory zone name.
 
-        Returns:
+        :return::
           The memory zone name.
         """
         return self.sName
@@ -365,7 +359,7 @@ class JLinkSpeedInfo(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the instance.
         """
         return self.__str__()
@@ -386,7 +380,7 @@ class JLinkSWOStartInfo(Structure):
       'Interface': the interface type used for SWO.
       'Speed': the frequency used for SWO communication in Hz.
 
-    Note:
+    :note:
       You should *never* change ``.SizeofStruct`` or ``.Interface``.
     """
     _fields_ = [
@@ -407,7 +401,7 @@ class JLinkSWOStartInfo(Structure):
         """
         Returns a representation of this instance.
 
-        Returns:
+        :return:
           The string representation of this instance.
         """
         return self.__str__()
@@ -416,7 +410,7 @@ class JLinkSWOStartInfo(Structure):
         """
         Returns a string representation of this instance.
 
-        Returns:
+        :return:
           The string representation of this instance.
         """
         return '%s(Speed=%sHz)' % (self.__class__.__name__, self.Speed)
@@ -438,7 +432,7 @@ class JLinkSWOSpeedInfo(Structure):
       MinPrescale -> minimum prescaler allowed to adjust the base frequency.
       MaxPrescale -> maximum prescaler allowed to adjust the base frequency.
 
-    Note:
+    :note:
       You should *never* change ``.SizeofStruct`` or ``.Interface``.
     """
     _fields_ = [
@@ -468,12 +462,6 @@ class JLinkSWOSpeedInfo(Structure):
     def __str__(self):
         """
         Returns a string representation of the instance.
-
-        Args:
-          self (JLinkSWOSpeedInfo): the ``JLinkSWOSpeedInfo`` instance
-
-        Returns:
-          ``None``
         """
         return '%s(Interface=UART, Freq=%sHz)' % (self.__class__.__name__, self.BaseFreq)
 
@@ -496,23 +484,19 @@ class JLinkMOEInfo(Structure):
     ]
 
     def __repr__(self):
-        """Returns a string representation of the instance.
+        """
+        Returns a string representation of the instance.
 
-        Args:
-          self (JLinkMOEInfo): the ``JLinkMOEInfo`` instance
-
-        Returns:
+        :return::
           A string representation of the instance.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
     def __str__(self):
-        """Returns a string representation of the instance.
+        """
+        Returns a string representation of the instance.
 
-        Args:
-          self (JLinkMOEInfo): the ``JLinkMOEInfo`` instance
-
-        Returns:
+        :return:
           A string representation of the instance.
         """
         d = enums.JLinkHaltReasons.__dict__
@@ -525,10 +509,7 @@ class JLinkMOEInfo(Structure):
         """
         Returns whether this a DBGRQ.
 
-        Args:
-          self (JLinkMOEInfo): the ``JLinkMOEInfo`` instance
-
-        Returns:
+        :return:
           ``True`` if this is a DBGRQ, otherwise ``False``.
         """
         return self.HaltReason == enums.JLinkHaltReasons.DBGRQ
@@ -537,7 +518,7 @@ class JLinkMOEInfo(Structure):
         """
         Returns whether this a code breakpoint.
 
-        Returns:
+        :return:
           True if this is a code breakpoint, otherwise False.
         """
         return self.HaltReason == enums.JLinkHaltReasons.CODE_BREAKPOINT
@@ -546,7 +527,7 @@ class JLinkMOEInfo(Structure):
         """
         Returns whether this a data breakpoint.
 
-        Returns:
+        :return:
           True if this is a data breakpoint, otherwise False.
         """
         return self.HaltReason == enums.JLinkHaltReasons.DATA_BREAKPOINT
@@ -555,7 +536,7 @@ class JLinkMOEInfo(Structure):
         """
         Returns whether this a vector catch.
 
-        Returns:
+        :return:
           True if this is a vector catch, otherwise False.
         """
         return self.HaltReason == enums.JLinkHaltReasons.VECTOR_CATCH
@@ -595,7 +576,7 @@ class JLinkBreakpointInfo(Structure):
         """
         Returns a formatted string describing the breakpoint.
 
-        Returns:
+        :return:
           String representation of the breakpoint.
         """
         return self.__str__()
@@ -604,7 +585,7 @@ class JLinkBreakpointInfo(Structure):
         """
         Returns a formatted string describing the breakpoint.
 
-        Returns:
+        :return:
           String representation of the breakpoint.
         """
         name = self.__class__.__name__
@@ -614,8 +595,7 @@ class JLinkBreakpointInfo(Structure):
         """
         Returns whether this is a software breakpoint.
 
-
-        Returns:
+        :return:
           True if the breakpoint is a software breakpoint, otherwise False.
         """
         software_types = [
@@ -629,7 +609,7 @@ class JLinkBreakpointInfo(Structure):
         """
         Returns whether this is a hardware breakpoint.
 
-        Returns:
+        :return:
           True if the breakpoint is a hardware breakpoint, otherwise False.
         """
         return self.Type & enums.JLinkBreakpoint.HW
@@ -638,7 +618,7 @@ class JLinkBreakpointInfo(Structure):
         """
         Returns if this breakpoint is pending.
 
-        Returns:
+        :return:
           True if the breakpoint is still pending, otherwise False.
         """
         return self.ImpFlags & enums.JLinkBreakpointImplementation.PENDING
@@ -685,7 +665,7 @@ class JLinkDataEvent(Structure):
         """
         Returns a string representation of the data event.
 
-        Returns:
+        :return:
           A string representation of the data event.
         """
         return self.__str__()
@@ -694,7 +674,7 @@ class JLinkDataEvent(Structure):
         """
         Returns a string representation of the data event.
 
-        Returns:
+        :return:
           A string representation of the data event.
         """
         name = self.__class__.__name__
@@ -733,7 +713,6 @@ class JLinkWatchpointInfo(Structure):
         Initializes the ``JLinkWatchpointInfo`` instance.
 
         Sets the size of the structure.
-
         """
         super(JLinkWatchpointInfo, self).__init__()
         self.SizeOfStruct = sizeof(self)
@@ -742,7 +721,7 @@ class JLinkWatchpointInfo(Structure):
         """
         Returns a formatted string describing the watchpoint.
 
-        Returns:
+        :return:
           String representation of the watchpoint.
         """
         return self.__str__()
@@ -751,7 +730,7 @@ class JLinkWatchpointInfo(Structure):
         """
         Returns a formatted string describing the watchpoint.
 
-        Returns:
+        :return:
           String representation of the watchpoint.
         """
         name = self.__class__.__name__
@@ -798,7 +777,7 @@ class JLinkStraceEventInfo(Structure):
         """
         Returns a formatted string describing the event info.
 
-        Returns:
+        :return:
           String representation of the event info.
         """
         return self.__str__()
@@ -832,7 +811,7 @@ class JLinkTraceData(Structure):
         """
         Returns a string representation of the trace data instance.
 
-        Returns:
+        :return:
           A string representation of the instance.
         """
         return self.__str__()
@@ -841,7 +820,7 @@ class JLinkTraceData(Structure):
         """
         Returns a string representation of the trace data instance.
 
-        Returns:
+        :return:
           A string representation of the instance.
         """
         return '%s(%d)' % (self.__class__.__name__, self.Packet)
@@ -859,7 +838,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to an data instruction.
 
-        Returns:
+        :return:
           True if this is trace data for an data instruction.
         """
         return self.PipeStat == 1
@@ -868,7 +847,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to an un-executed instruction.
 
-        Returns:
+        :return:
           True if this is trace data for an un-executed instruction.
         """
         return self.PipeStat == 2
@@ -877,7 +856,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to a wait.
 
-        Returns:
+        :return:
           True if this is trace data for a wait.
         """
         return self.PipeStat == 3
@@ -886,7 +865,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to a branch execution.
 
-        Returns:
+        :return:
           True if this is trace data for a branch execution.
         """
         return self.PipeStat == 4
@@ -895,7 +874,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to a branch with data.
 
-        Returns:
+        :return:
           True if this is trace data for a branch with data.
         """
         return self.PipeStat == 5
@@ -904,7 +883,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to a trigger event.
 
-        Returns:
+        :return:
           True if this is trace data for a trigger event.
         """
         return self.PipeStat == 6
@@ -913,7 +892,7 @@ class JLinkTraceData(Structure):
         """
         Returns whether the data corresponds to trace being disabled.
 
-        Returns:
+        :return:
           True if this is trace data for the trace disabled event.
         """
         return self.PipeStat == 7
@@ -955,7 +934,7 @@ class JLinkTraceRegion(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the trace region.
         """
         return self.__str__()
@@ -964,14 +943,15 @@ class JLinkTraceRegion(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the trace region.
         """
         return '%s(Index=%d)' % (self.__class__.__name__, self.RegionIndex)
 
 
 class JLinkRTTerminalStart(Structure):
-    """Structure used to configure an RTT instance.
+    """
+    Structure used to configure an RTT instance.
 
     Attributes:
       ConfigBlockAddress: Address of the RTT block.
@@ -985,7 +965,7 @@ class JLinkRTTerminalStart(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the instance.
         """
         return '%s(ConfigAddress=0x%X)' % (self.__class__.__name__, self.ConfigBlockAddress)
@@ -994,7 +974,7 @@ class JLinkRTTerminalStart(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the instance.
         """
         return self.__repr__()
@@ -1022,7 +1002,7 @@ class JLinkRTTerminalBufDesc(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the buffer descriptor.
         """
         return '%s(Index=%d, Name=%s)' % (self.__class__.__name__, self.BufferIndex, self.name)
@@ -1031,7 +1011,7 @@ class JLinkRTTerminalBufDesc(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           String representation of the buffer descriptor.
         """
         dir_string = 'up' if self.up else 'down'
@@ -1042,7 +1022,7 @@ class JLinkRTTerminalBufDesc(Structure):
         """
         Returns a boolean indicating if the buffer is an 'UP' buffer.
 
-        Returns:
+        :return:
           True if the buffer is an 'UP' buffer, otherwise ``False``.
         """
         return self.Direction == 0
@@ -1052,26 +1032,25 @@ class JLinkRTTerminalBufDesc(Structure):
         """
         Returns a boolean indicating if the buffer is an 'DOWN' buffer.
 
-        Returns:
+        :return:
           True if the buffer is an 'DOWN' buffer, otherwise ``False``.
         """
         return self.Direction == 1
 
     @property
     def name(self):
-        """Returns the name of the buffer.
+        """
+        Returns the name of the buffer.
 
-        Args:
-          self (JLinkRTTerminalBufDesc): the terminal buffer descriptor.
-
-        Returns:
+        :return:
           String name of the buffer.
         """
         return self.acName.decode()
 
 
 class JLinkRTTerminalStatus(Structure):
-    """Structure describing the status of the RTT terminal.
+    """
+    Structure describing the status of the RTT terminal.
 
     Attributes:
       'NumBytesTransferred': number of bytes sent to the client application.
@@ -1095,7 +1074,7 @@ class JLinkRTTerminalStatus(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           Strings representation of the status.
         """
         return '%s(NumUpBuffers=%d, NumDownBuffers=%d)' % (self.__class__.__name__,
@@ -1105,7 +1084,7 @@ class JLinkRTTerminalStatus(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
+        :return:
           Strings representation of the status.
         """
         return 'Status <NumUpBuffers=%d, NumDownBuffers=%d, Running=%s>' % (self.NumUpBuffers, self.NumDownBuffers,

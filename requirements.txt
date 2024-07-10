@@ -1,12 +1,12 @@
-psutil >= 5.2.2
-six~=1.16.0
+build
 behave == 1.2.5
-coverage == 4.4.1
-pycodestyle >= 2.3.1
+pylint
 sphinx
 sphinx-argparse
 sphinx_rtd_theme
-sphinxcontrib-napoleon
 pylint
+pycodestyle
 pytest
 pytest-cov
+psutil >= 5.2.2
+six~=1.16.0

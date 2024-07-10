@@ -22,7 +22,7 @@ class JLinkException(enums.JLinkGlobalErrors, Exception):
         message = code
 
         self.code = None
-        if isinstance(code,int):
+        if isinstance(code, int):
             message = self.to_string(code)
             self.code = code
 

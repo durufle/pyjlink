@@ -20,13 +20,13 @@ class Response(object):
     STATUS_FAULT = 1 << 2
     STATUS_INVALID = -1
 
-    def __init__(self, status, data=None):
+    def __init__(self, status: int, data=None):
         """
         Initializes the response.
 
-        Args:
-          status (int): the status the response exited with
-          data (object): the optional data returned from the request
+
+        :param status: the status the response exited with
+        :param data: the optional data returned from the request
         """
         self.status = status
         self.data = data
@@ -35,7 +35,7 @@ class Response(object):
         """
         Returns whether the response was Acknowledged.
 
-        Returns:
+        :return:
           True if response was Acknowledged, otherwise False
         """
         return self.status == self.STATUS_ACK
@@ -44,31 +44,27 @@ class Response(object):
         """
         Returns whether the response was a wait.
 
-        Returns:
+        :return:
           True if response exited with wait, otherwise False.
         """
         return self.status == self.STATUS_WAIT
 
     def fault(self):
-        """Returns whether the response exited with fault.
+        """
+        Returns whether the response exited with fault.
 
-        Args:
-          self (Response): the ``Response`` instance
-
-        Returns:
+        :return:
           ``True`` if response exited with a fault, otherwise ``False``.
         """
         return self.status == self.STATUS_FAULT
 
     def invalid(self):
-        """Returns whether the response exited with a bad result.
+        """
+        Returns whether the response exited with a bad result.
 
         This occurs when the parity is invalid.
 
-        Args:
-          self (Response): the ``Response`` instance
-
-        Returns:
+        :return:
           ``True`` if the parity checked failed, otherwise ``False``.
         """
         return self.status == self.STATUS_INVALID
@@ -113,22 +109,16 @@ class Request(ctypes.Union):
         ('value', ctypes.c_uint8),
     ]
 
-    def __init__(self, address, ap, data=None):
+    def __init__(self, address: int, ap: bool, data=None):
         """
         Initializes the SWD request.
 
-        Calculates the parity and sets the ``APnDP``, ``start``, ``stop``,
-        ``park`` and ``address`` bits.
+        Calculates the parity and sets the ``APnDP``, ``start``, ``stop``, ``park`` and ``address`` bits.
 
-        Args:
-          self (Request): the ``Request`` instance
-          address (int): the register index (``A[3:2]``)
-          ap (bool): ``True`` if this request is to an Access Port Access
-              Register, otherwise ``False`` for a Debug Port Access Register
-          data (int): data to write, if any (indicates a write request)
-
-        Returns:
-          ``None``
+        :param address: the register index (``A[3:2]``)
+        :param ap: ``True`` if this request is to an Access Port Access Register, otherwise ``False`` for
+        a Debug Port Access Register
+        :param data: data to write, if any (indicates a write request)
         """
         super(Request, self).__init__()
 
@@ -152,10 +142,9 @@ class Request(ctypes.Union):
 
         Sends the request and receives an ACK for the request.
 
-        Args:
-          jlink (JLink): the ``JLink`` instance to use for write/read
+        :param jlink: the ``JLink`` instance to use for write/read
 
-        Returns:
+        :return:
           The bit position of the ACK response.
         """
         # Send the request over SWD.
@@ -196,11 +185,9 @@ class ReadRequest(Request):
               eight cycles to clock the transaction through the SW-DP; this is
               done by reading an additional eight bits (eight clocks).
 
-        Args:
-          self (ReadRequest): the ``ReadRequest`` instance
-          jlink (JLink): the ``JLink`` instance to use for write/read
+        :param jlink: the ``JLink`` instance to use for write/read
 
-        Returns:
+        :return:
           An ``Response`` instance.
         """
         ack = super(ReadRequest, self).send(jlink)
@@ -225,14 +212,13 @@ class WriteRequest(Request):
     Definition for a SWD (Serial Wire Debug) Write Request.
     """
 
-    def __init__(self, address, ap, data):
+    def __init__(self, address: int, ap: bool, data):
         """
         Initializes the base class.
 
-        Args:
-          address (int): the register index
-          ap (bool): ``True`` if this request is to an Access Port Access
-                    Register, otherwise ``False`` for a Debug Port Access Register
+        :param address (int): the register index
+        :param ap: ``True`` if this request is to an Access Port Access Register, otherwise ``False``
+        for a Debug Port Access Register
         """
         super(WriteRequest, self).__init__(address=address, ap=ap, data=data)
 
@@ -251,11 +237,9 @@ class WriteRequest(Request):
               phase consists of two bits.
           4.  Write the data and parity bits.
 
-        Args:
-          jlink (JLink): the ``JLink`` instance to use for write/read
+        :param jlink: the ``JLink`` instance to use for write/read
 
-        Returns:
-          An ``Response`` instance.
+        :return: An ``Response`` instance.
         """
         ack = super(WriteRequest, self).send(jlink)
 

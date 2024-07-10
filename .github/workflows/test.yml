@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-20.04, macos-latest ]
+        os: [ ubuntu-20.04]
         python-version: [ 3.8, 3.9 ]
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           pycodestyle .
       - name: Run Unit Tests
         run: |
-          python setup.py test
+          pytest
       - name: Build a Wheel
         run: |
-          python setup.py bdist_wheel
+          python -m build

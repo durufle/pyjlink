@@ -13,17 +13,15 @@ import math
 BITS_PER_BYTE = 8
 
 
-def pack_size(value):
+def pack_size(value: int):
     """
     Returns the number of bytes required to represent a given value.
 
-    Args:
-      value (int): the natural number whose size to get
+    :param value: the natural number whose size to get
 
-    Returns:
-      The minimal number of bytes required to represent the given integer.
+    :return: The minimal number of bytes required to represent the given integer.
 
-    Raises:
+    :raises:
       ValueError: if ``value < 0``.
       TypeError: if ``value`` is not a number.
     """
@@ -34,21 +32,20 @@ def pack_size(value):
     return int(math.log(value, 256)) + 1
 
 
-def pack(value, nbits=None):
+def pack(value: int, nbits: int = None):
     """
     Packs a given value into an array of 8-bit unsigned integers.
 
     If ``nbits`` is not present, calculates the minimal number of bits required
     to represent the given ``value``.  The result is little endian.
 
-    Args:
-      value (int): the integer value to pack
-      nbits (int): optional number of bits to use to represent the value
+    :param value: the integer value to pack
+    :param nbits: optional number of bits to use to represent the value
 
-    Returns:
+    :return:
       An array of ``ctypes.c_uint8`` representing the packed ``value``.
 
-    Raises:
+    :raise:
       ValueError: if ``value < 0`` and ``nbits`` is ``None`` or ``nbits <= 0``.
       TypeError: if ``nbits`` or ``value`` are not numbers.
     """

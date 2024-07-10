@@ -92,7 +92,7 @@ class Library(object):
     # Linux/MacOS: The JLink shared object name, without any prefix like lib,
     # suffix like .so, .dylib or version number.
     #
-    # This is the value appropriate when invoking the ctypes API find_libary().
+    # This is the value appropriate when invoking the ctypes API find_library().
     JLINK_SDK_OBJECT = 'jlinkarm'
 
     # Windows: these are suitable for both the ctypes find_library() API,
@@ -119,10 +119,9 @@ class Library(object):
           - ``JLinkARM.dll`` for 32-bit platform
           - ``JLink_x64.dll`` for 64-bit platform
 
-        Args:
-          cls (Library): the ``Library`` class
+        :param cls: the ``Library`` class
 
-        Returns:
+        :return:
           The name of the library depending on the platform this module is run on.
 
         """
@@ -140,10 +139,9 @@ class Library(object):
           - ``C:\\Program Files\\SEGGER\\JLink``
           - ``C:\\Program Files (x86)\\SEGGER\\JLink``.
 
-        Args:
-          cls (Library): the ``Library`` class
+        :param cls: the ``Library`` class
 
-        Returns:
+        :return:
           The paths to the J-Link library files in the order that they are found.
         """
         dll = cls.get_appropriate_windows_sdk_name() + '.dll'
@@ -174,10 +172,9 @@ class Library(object):
         On Linux, the SEGGER tools are installed under the ``/opt/SEGGER``
         directory with versioned directories having the suffix ``_VERSION``.
 
-        Args:
-          cls (Library): the ``Library`` class
+        :param cls: the ``Library`` class
 
-        Returns:
+        :return:
           The paths to the J-Link library files in the order that they are found.
         """
         dll = Library.JLINK_SDK_NAME
@@ -224,10 +221,9 @@ class Library(object):
         >= 6.0.0 ``/Applications/SEGGER/JLink/libjlinkarm``
         ======== ============================================================
 
-        Args:
-          cls (Library): the ``Library`` class
+        :param cls: the ``Library`` class
 
-        Returns:
+        :return:
           The path to the J-Link library files in the order they are found.
         """
         dll = Library.JLINK_SDK_NAME
@@ -254,22 +250,18 @@ class Library(object):
                     if f.startswith(dll):
                         yield os.path.join(dir_path, f)
 
-    def __init__(self, dll_path=None, use_tmp_cpy=True):
+    def __init__(self, dll_path: str = None, use_tmp_cpy=True):
         """
         Initializes an instance of a ``Library``.
 
         Loads the default J-Link DLL if ``dll_path`` is ``None``, otherwise loads
         the DLL specified by the given ``dll_path``.
 
-        Args:
-          dll_path (str): the DLL to load into the library
-          use_tmp_cpy (bool): True to load a temporary copy of J-Link DLL
-
-        Returns:
-          ``None``
+        :param  dll_path : the DLL to load into the library
+        :param use_tmp_cpy: True to load a temporary copy of J-Link DLL
         """
         self._lib = None
-        self._winlib = None
+        self._win_lib = None
         self._path = None
         self._windows = sys.platform.startswith('win')
         self._cygwin = sys.platform.startswith('cygwin')
@@ -289,12 +281,6 @@ class Library(object):
     def __del__(self):
         """
         Cleans up the temporary DLL file created when the lib was loaded.
-
-        Args:
-          self (Library): the ``Library`` instance
-
-        Returns:
-          ``None``
         """
         self.unload()
 
@@ -305,10 +291,7 @@ class Library(object):
         The default J-Link SDK is determined by first checking if ``ctypes``
         can find the DLL, then by searching the platform-specific paths.
 
-        Args:
-          self (Library): the ``Library`` instance
-
-        Returns:
+        :return:
           ``True`` if the DLL was loaded, otherwise ``False``.
         """
 
@@ -325,7 +308,7 @@ class Library(object):
             # but a GNU libc extension.
             if platform.libc_ver()[0] == 'glibc':
                 if Library._dlinfo is None:
-                    Library._dlinfo = JLinkarmDlInfo(path)
+                    Library._dlinfo = JLinkArmDlInfo(path)
                 path = Library._dlinfo.path
             else:
                 # When GNU libc extensions aren't available,
@@ -349,24 +332,23 @@ class Library(object):
         return False
 
     def load(self, path=None):
-        """Loads the specified DLL, if any, otherwise re-loads the current DLL.
+        """
+        Loads the specified DLL, if any, otherwise re-loads the current DLL.
 
         If ``path`` is specified, loads the DLL at the given ``path``,
         otherwise re-loads the DLL currently specified by this library.
 
-        Note:
+        :note:
           This creates a temporary DLL file to use for the instance.  This is
           necessary to work around a limitation of the J-Link DLL in which
           multiple J-Links cannot be accessed from the same process.
 
-        Args:
-          self (Library): the ``Library`` instance
-          path (path): path to the DLL to load
+        :param path: path to the DLL to load
 
-        Returns:
+        return:
           ``True`` if library was loaded successfully.
 
-        Raises:
+        :raise:
           OSError: if there is no J-LINK SDK DLL present at the path.
 
         See Also:
@@ -411,23 +393,21 @@ class Library(object):
             # causes issues with Windows, where it expects the __stdcall
             # methods to follow the standard calling convention.  As a result,
             # we have to convert them to windows function calls.
-            self._winlib = ctypes.windll.LoadLibrary(lib_path)
+            self._win_lib = ctypes.windll.LoadLibrary(lib_path)
             for stdcall in self._standard_calls_:
-                if hasattr(self._winlib, stdcall):
+                if hasattr(self._win_lib, stdcall):
                     # Backwards compatibility.  Some methods do not exist on
                     # older versions of the J-Link firmware, so ignore them in
                     # these cases.
-                    setattr(self._lib, stdcall, getattr(self._winlib, stdcall))
+                    setattr(self._lib, stdcall, getattr(self._win_lib, stdcall))
         return True
 
-    def unload(self):
-        """Unloads the library's DLL if it has been loaded.
+    def unload(self) -> bool:
+        """
+        Unloads the library's DLL if it has been loaded.
 
         This additionally cleans up the temporary DLL file that was created
         when the library was loaded.
-
-        Args:
-          self (Library): the ``Library`` instance
 
         Returns:
           ``True`` if the DLL was unloaded, otherwise ``False``.
@@ -435,7 +415,7 @@ class Library(object):
         unloaded = False
 
         if self._lib is not None:
-            if self._winlib is not None:
+            if self._win_lib is not None:
                 # ctypes passes integers as 32-bit C integer types, which will
                 # truncate the value of a 64-bit pointer in 64-bit python, so
                 # we have to change the FreeLibrary method to take a pointer
@@ -447,10 +427,10 @@ class Library(object):
                 # On Windows we must free both loaded libraries before the
                 # temporary file can be cleaned up.
                 ctypes.windll.kernel32.FreeLibrary(self._lib._handle)
-                ctypes.windll.kernel32.FreeLibrary(self._winlib._handle)
+                ctypes.windll.kernel32.FreeLibrary(self._win_lib._handle)
 
                 self._lib = None
-                self._winlib = None
+                self._win_lib = None
 
                 unloaded = True
             else:
@@ -478,8 +458,9 @@ class Library(object):
         return self._lib
 
 
-class JLinkarmDlInfo:
-    """Helper to retrieve the absolute path of the JLink library (aka DLL)
+class JLinkArmDlInfo:
+    """
+    Helper to retrieve the absolute path of the JLink library (aka DLL)
     based on its soname.
 
     This is used on Linux, where ctypes.util.find_library() will not return
@@ -502,7 +483,7 @@ class JLinkarmDlInfo:
     # Request to obtain a pointer to the link_map structure corresponding
     # to a given handle (Linux).
     # See: man dlinfo(3)
-    RTLD_DI_LINKMAP = 2
+    RTLD_DI_LINK_MAP = 2
 
     # dlinfo(3): struct link_map, where l_name will be the file path.
     class LinkMap(ctypes.Structure):
@@ -525,7 +506,7 @@ class JLinkarmDlInfo:
         This runs the dlinfo() dance using the ctypes API:
         - loads the JLink DLL shared object for given soname
         - loads the dl library and lookup the dlinfo symbol
-        - calls dlinfo() with request RTLD_DI_LINKMAP to get the struct link_map
+        - calls dlinfo() with request RTLD_DI_LINK_MAP to get the struct link_map
           for the JLink library
         - access the struct content to retrieve the library's absolute path
 
@@ -533,8 +514,7 @@ class JLinkarmDlInfo:
         the ctypes API may raise, since this would likely hide a host
         system configuration issue (aka "should not happen").
 
-        Args:
-        - jlinkarm_soname: The JLink DLL soname returned by find_library(),
+        :param jlinkarm_soname: The JLink DLL soname returned by find_library(),
           for e.g. 'libjlinkarm.so.7'.
 
         Raises:
@@ -563,10 +543,10 @@ class JLinkarmDlInfo:
             dlinfo.argtypes = ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p
             dlinfo.restype = ctypes.c_int
 
-            linkmap = ctypes.c_void_p()
-            if dlinfo(tmp_cdll_jlink._handle, JLinkarmDlInfo.RTLD_DI_LINKMAP, ctypes.byref(linkmap)) == 0:
-                linkmap = ctypes.cast(linkmap, ctypes.POINTER(JLinkarmDlInfo.LinkMap))
-                self._dll_path = linkmap.contents.l_name.decode(sys.getdefaultencoding())
+            link_map = ctypes.c_void_p()
+            if dlinfo(tmp_cdll_jlink._handle, JLinkArmDlInfo.RTLD_DI_LINK_MAP, ctypes.byref(link_map)) == 0:
+                link_map = ctypes.cast(link_map, ctypes.POINTER(JLinkArmDlInfo.LinkMap))
+                self._dll_path = link_map.contents.l_name.decode(sys.getdefaultencoding())
 
             # "Free" tmp dl library
             del tmp_cdll_dl
@@ -582,10 +562,11 @@ class JLinkarmDlInfo:
 
     @property
     def path(self):
-        """Answers the JLink DLL file path.
+        """
+        Answers the JLink DLL file path.
 
-        Returns the JLink DLL's absolute path,
-        or None when the dl library is unavailable despite the system
-        presenting itself as POSIX.
+        :return:
+            The JLink DLL's absolute path, or None when the dl library is unavailable despite the system
+            presenting itself as POSIX.
         """
         return self._dll_path

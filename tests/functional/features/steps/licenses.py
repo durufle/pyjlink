@@ -49,7 +49,7 @@ def step_erase_licenses(context):
 @behave.then('my J-Link should have the license')
 def step_has_license(context):
     """
-    Asserts the J-Link has the given licenese.
+    Asserts the J-Link has the given license.
 
     Args:
       context (Context): the ``Context`` instance

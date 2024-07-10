@@ -18,7 +18,8 @@ import time
 
 @behave.given('my J-link is connected')
 def step_connected(context):
-    """Asserts that the J-Link is connected.
+    """
+    Asserts that the J-Link is connected.
 
     Args:
       context (Context): the ``Context`` instance
@@ -31,7 +32,8 @@ def step_connected(context):
 
 @behave.given('device {device}')
 def step_connect_device(context, device):
-    """Tries to connect to the given.
+    """
+    Tries to connect to the given.
 
     Args:
       context (Context): the ``Context`` instance
@@ -47,13 +49,14 @@ def step_connect_device(context, device):
     except pyjlink.JLinkException as e:
         if e.code == pyjlink.JLinkGlobalErrors.VCC_FAILURE:
             context.scenario.skip(reason='Target is not powered.')
-        elif e.code == pylink.JLinkGlobalErrors.NO_CPU_FOUND:
+        elif e.code == pyjlink.JLinkGlobalErrors.NO_CPU_FOUND:
             context.scenario.skip(reason='Target core not found.')
 
 
 @behave.given('target interface {interface}')
 def step_target_interface(context, interface):
-    """Sets the target interface for the JLink.
+    """
+    Sets the target interface for the JLink.
 
     Args:
       context (Context): the ``Context`` instance
@@ -72,7 +75,8 @@ def step_target_interface(context, interface):
 
 @behave.given('I close the J-Link')
 def step_close(context):
-    """Closes the J-Link.
+    """
+    Closes the J-Link.
 
     Args:
       context (Context): the ``Context`` instance
@@ -85,7 +89,8 @@ def step_close(context):
 
 @behave.when('I reset my device')
 def step_device_reset(context):
-    """Resets the target connected to the J-Link.
+    """
+    Resets the target connected to the J-Link.
 
     Args:
       context (Context): the ``Context`` instance
@@ -102,7 +107,8 @@ def step_device_reset(context):
 
 @behave.when('I flash the firmware {firmware}')
 def step_flash_firmware_when(context, firmware):
-    """Tries to flash the firmware.
+    """
+    Tries to flash the firmware.
 
     Args:
       context (Context): the ``Context`` instance
@@ -116,7 +122,8 @@ def step_flash_firmware_when(context, firmware):
 
 @behave.when('I read the firmware {firmware} into a bytestream')
 def step_read_firmware(context, firmware):
-    """Reads the firmware file into a bytestream.
+    """
+    Reads the firmware file into a bytestream.
 
     Args:
       context (Context): the ``Context`` instance

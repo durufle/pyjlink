@@ -17,7 +17,8 @@ import behave
 
 @behave.when('I write {value} to ICE register {register}')
 def step_write_to_ice_register(context, value, register):
-    """Writes a value to a single ICE register.
+    """
+    Writes a value to a single ICE register.
 
     Args:
       context (Context): the ``Context`` instance
@@ -35,7 +36,8 @@ def step_write_to_ice_register(context, value, register):
 
 @behave.when('I write {value} to register {register}')
 def step_write_to_register(context, value, register):
-    """Writes a value to a single register.
+    """
+    Writes a value to a single register.
 
     Args:
       context (Context): the ``Context`` instance
@@ -51,7 +53,8 @@ def step_write_to_register(context, value, register):
 
 @behave.when('I write to the registers')
 def step_write_to_registers(context):
-    """Writes multiple values to multiple registers.
+    """
+    Writes multiple values to multiple registers.
 
     The values and registers are loaded from the context's table.
 
@@ -71,7 +74,8 @@ def step_write_to_registers(context):
 
 @behave.then('ICE register {register} should have the value {value}')
 def step_ice_register_has_value(context, register, value):
-    """Checks that an ICE register has a particular value.
+    """
+    Checks that an ICE register has a particular value.
 
     Args:
       context (Context): the ``Context`` instance
@@ -89,7 +93,8 @@ def step_ice_register_has_value(context, register, value):
 
 @behave.then('register {register} should have the value {value}')
 def step_register_has_value(context, register, value):
-    """Reads a single value from a single register and asserts equality.
+    """
+    Reads a single value from a single register and asserts equality.
 
     Args:
       context (Context): the ``Context`` instance
@@ -104,7 +109,8 @@ def step_register_has_value(context, register, value):
 
 @behave.then('I should read from the registers')
 def step_registers_have_values(context):
-    """Reads multiple values from multiple registers and asserts equality.
+    """
+    Reads multiple values from multiple registers and asserts equality.
 
     Args:
       context (Context): the ``Context`` instance

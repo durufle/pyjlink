@@ -13,23 +13,22 @@ Python interface for the SEGGER J-Link.
 
 ## Installation
 
-Clone the project into a local repository, then navigate to the directory and
-run:
+```
+$ pip install ragnarok-pyjlink
+```
+To install the latest development version
 
 ```
-$ python setup.py install
+$ pip install git+https://github/durufle/pyjlink
 ```
 
 ### External Dependencies
 
-In order to use this library, you will need to have installed the SEGGER tools.
-The tools can be installed from the SEGGER website
-[here](https://www.segger.com/downloads/jlink).  This package is compatible
-with versions of the SEGGER tool `>= 6.0b`.  Download the software under
-`J-Link Software and Documentation Pack` for your specific hardware.  `PyLink`
-will automatically find the library if you have installed it this way, but for
-best results, you should use one of the two methods listed below depending on
-your operating system:
+In order to use this library, you will need to have installed the SEGGER tools. The tools can be installed from 
+the SEGGER website [here](https://www.segger.com/downloads/jlink).  This package is compatible
+with versions of the SEGGER tool `>= 6.0b`.  Download the software under `J-Link Software and Documentation Pack` 
+for your specific hardware.  `PyJLink` will automatically find the library  if you have installed it this way, but for 
+best results, you should use one of the two methods listed below depending on  your operating system:
 
 #### On Mac
 
@@ -88,16 +87,15 @@ if __name__ == '__main__':
 
 ## Troubleshooting
 
-Should you run into any issues, refer to the documentation, as well as check  out 
-our [troubleshooting](./TROUBLESHOOTING.md) document.
+Should you run into any issues, refer to the documentation, as well as check  out our 
+[troubleshooting](./TROUBLESHOOTING.md) document.
 
 
 ## Documentation
 
 Documentation follows the
 [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html),
-and uses [Sphinx](http://www.sphinx-doc.org/en/stable/) documentation
-generator with the
+and uses [Sphinx](http://www.sphinx-doc.org/en/stable/) documentation  generator with the
 [Napoleon](http://www.sphinx-doc.org/en/stable/ext/napoleon.html) extension
 to provide Google style Python support.  To generate the documentation, these
 packages will need to be installed (they are included in the provided
@@ -115,7 +113,7 @@ $ make html
 First install the development requirements by running:
 
 ```
-$ pip install -r development.txt
+$ pip install -r requirements.txt
 ```
 
 After you've installed the requirements, decide on the development work you

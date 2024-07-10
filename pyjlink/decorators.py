@@ -3,10 +3,8 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
-
-from . import threads
-
 import functools
+from . import threads
 
 
 def async_decorator(func):
@@ -14,13 +12,11 @@ def async_decorator(func):
     Asynchronous function decorator.  Interprets the function as being asynchronous, so returns a function that will
     handle calling the Function asynchronously.
 
-    Args:
-      func (function): function to be called asynchronously
+    :param func: function to be called asynchronously
 
-    Returns:
-      The wrapped function.
+    :return: The wrapped function.
 
-    Raises:
+    :raise:
       AttributeError: if ``func`` is not callable
     """
 
@@ -35,16 +31,14 @@ def async_decorator(func):
         the thread ran to completion without error, ``exception`` will be ``None``, otherwise ``exception``
         will be the generated exception that stopped the thread.  Result is the result of the expected function.
 
-        Args:
-          call-back (function): the callback to ultimately be called
-          args: list of arguments to pass to ``func``
-          kwargs: key-word arguments dictionary to pass to ``func``
+        :param args: list of arguments to pass to ``func``
+        :param kwargs: key-word arguments dictionary to pass to ``func``
 
-        Returns:
+        :return:
           A thread if the call is asynchronous, otherwise the the return value
           of the wrapped function.
 
-        Raises:
+        :raise:
           TypeError: if ``callback`` is not callable or is missing
         """
         if 'callback' not in kwargs or not kwargs['callback']:
@@ -59,11 +53,10 @@ def async_decorator(func):
             """
             Thread function on which the given ``func`` and ``callback`` are executed.
 
-            Args:
-              args: list of arguments to pass to ``func``
-              kwargs: key-word arguments dictionary to pass to ``func``
+            :param args: list of arguments to pass to ``func``
+            :param kwargs: key-word arguments dictionary to pass to ``func``
 
-            Returns:
+            :return:
               Return value of the wrapped function.
             """
             exception, res = None, None

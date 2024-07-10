@@ -8,8 +8,10 @@ import ctypes
 
 
 class JLinkGlobalErrors(object):
-    """Enumeration for the error codes which any J-Link SDK DLL API-function
-    can have as a return value."""
+    """
+    Enumeration for the error codes which any J-Link SDK DLL API-function
+    can have as a return value.
+    """
     UNSPECIFIED_ERROR = -1
     EMU_NO_CONNECTION = -256
     EMU_COMM_ERROR = -257
@@ -32,17 +34,18 @@ class JLinkGlobalErrors(object):
     CPU_IN_LOW_POWER_MODE = -274
 
     @classmethod
-    def to_string(cls, error_code):
-        """Returns the string message for the given ``error_code``.
+    def to_string(cls, error_code: int):
+        """
+        Returns the string message for the given ``error_code``.
 
         Args:
-          cls (JlinkGlobalErrors): the ``JLinkGlobalErrors`` class
-          error_code (int): error code to convert
+        @param cls: the ``JLinkGlobalErrors`` class
+        @param error_code: error code to convert
 
-        Returns:
+        @return:
           An error string corresponding to the error code.
 
-        Raises:
+        @raise:
           ValueError: if the error code is invalid.
         """
         if error_code == cls.EMU_NO_CONNECTION:
@@ -89,23 +92,24 @@ class JLinkGlobalErrors(object):
 
 
 class JLinkEraseErrors(JLinkGlobalErrors):
-    """Enumeration for the error codes generated during an erase operation."""
+    """
+    Enumeration for the error codes generated during an erase operation.
+    """
 
     ILLEGAL_COMMAND = -5
 
     @classmethod
-    def to_string(cls, error_code):
+    def to_string(cls, error_code: int):
         """
         Returns the string message for the given ``error_code``.
 
-        Args:
-          cls (JLinkEraseErrors): the ``JLinkEraseErrors`` class
-          error_code (int): error code to convert
+        @param cls: the ``JLinkEraseErrors`` class
+        @param error_code: error code to convert
 
-        Returns:
+        @return:
           An error string corresponding to the error code.
 
-        Raises:
+        @raise:
           ValueError: if the error code is invalid.
         """
         if error_code == cls.ILLEGAL_COMMAND:
@@ -114,24 +118,26 @@ class JLinkEraseErrors(JLinkGlobalErrors):
 
 
 class JLinkFlashErrors(JLinkGlobalErrors):
-    """Enumeration for the error codes generated during a flash operation."""
+    """
+    Enumeration for the error codes generated during a flash operation.
+    """
 
     COMPARE_ERROR = -2
     PROGRAM_ERASE_ERROR = -3
     VERIFICATION_ERROR = -4
 
     @classmethod
-    def to_string(cls, error_code):
-        """Returns the string message for the given ``error_code``.
+    def to_string(cls, error_code: int):
+        """
+        Returns the string message for the given ``error_code``.
 
-        Args:
-          cls (JLinkFlashErrors): the ``JLinkFlashErrors`` class
-          error_code (int): error code to convert
+        @param cls: the ``JLinkFlashErrors`` class
+        @param error_code: error code to convert
 
-        Returns:
+        @return:
           An error string corresponding to the error code.
 
-        Raises:
+        @raise:
           ValueError: if the error code is invalid.
         """
         if error_code == cls.COMPARE_ERROR:
@@ -144,22 +150,24 @@ class JLinkFlashErrors(JLinkGlobalErrors):
 
 
 class JLinkWriteErrors(JLinkGlobalErrors):
-    """Enumeration for the error codes generated during a write."""
+    """
+    Enumeration for the error codes generated during a write.
+    """
 
     ZONE_NOT_FOUND_ERROR = -5
 
     @classmethod
-    def to_string(cls, error_code):
-        """Returns the string message for the given ``error_code``.
+    def to_string(cls, error_code: int):
+        """
+        Returns the string message for the given ``error_code``.
 
-        Args:
-          cls (JLinkWriteErrors): the ``JLinkWriteErrors`` class
-          error_code (int): error code to convert
+        @param cls: the ``JLinkWriteErrors`` class
+        @param error_code: error code to convert
 
-        Returns:
+        @return:
           An error string corresponding to the error code.
 
-        Raises:
+        @raise:
           ValueError: if the error code is invalid.
         """
         if error_code == cls.ZONE_NOT_FOUND_ERROR:
@@ -168,22 +176,24 @@ class JLinkWriteErrors(JLinkGlobalErrors):
 
 
 class JLinkReadErrors(JLinkGlobalErrors):
-    """Enumeration for the error codes generated during a read."""
+    """
+    Enumeration for the error codes generated during a read.
+    """
 
     ZONE_NOT_FOUND_ERROR = -5
 
     @classmethod
-    def to_string(cls, error_code):
-        """Returns the string message for the given ``error_code``.
+    def to_string(cls, error_code: int):
+        """
+        Returns the string message for the given ``error_code``.
 
-        Args:
-          cls (JLinkReadErrors): the ``JLinkReadErrors`` class
-          error_code (int): error code to convert
+        @param cls: the ``JLinkReadErrors`` class
+        @param error_code: error code to convert
 
-        Returns:
+        @return:
           An error string corresponding to the error code.
 
-        Raises:
+        @raise:
           ValueError: if the error code is invalid.
         """
         if error_code == cls.ZONE_NOT_FOUND_ERROR:
@@ -192,7 +202,9 @@ class JLinkReadErrors(JLinkGlobalErrors):
 
 
 class JLinkDataErrors(JLinkGlobalErrors):
-    """Enumeration for the error codes generated when setting a data event."""
+    """
+    Enumeration for the error codes generated when setting a data event.
+    """
 
     ERROR_UNKNOWN = 0x80000000
     ERROR_NO_MORE_EVENTS = 0x80000001
@@ -204,7 +216,8 @@ class JLinkDataErrors(JLinkGlobalErrors):
 
     @classmethod
     def to_string(cls, error_code):
-        """Returns the string message for the given error code.
+        """
+        Returns the string message for the given error code.
 
         Args:
           cls (JLinkDataErrors): the ``JLinkDataErrors`` class
@@ -234,13 +247,16 @@ class JLinkDataErrors(JLinkGlobalErrors):
 
 
 class JLinkRTTErrors(JLinkGlobalErrors):
-    """Enumeration for error codes from RTT."""
+    """
+    Enumeration for error codes from RTT.
+    """
 
     RTT_ERROR_CONTROL_BLOCK_NOT_FOUND = -2
 
     @classmethod
     def to_string(cls, error_code):
-        """Returns the string message for the given error code.
+        """
+        Returns the string message for the given error code.
 
         Args:
           cls (JLinkRTTErrors): the ``JLinkRTTErrors`` class
@@ -258,14 +274,18 @@ class JLinkRTTErrors(JLinkGlobalErrors):
 
 
 class JLinkHost(object):
-    """Enumeration for the different JLink hosts: currently only IP and USB."""
+    """
+    Enumeration for the different JLink hosts: currently only IP and USB.
+    """
     USB = (1 << 0)
     IP = (1 << 1)
     USB_OR_IP = USB | IP
 
 
 class JLinkInterfaces(object):
-    """Target interfaces for the J-Link."""
+    """
+    Target interfaces for the J-Link.
+    """
     JTAG = 0
     SWD = 1
     FINE = 3
@@ -310,8 +330,10 @@ class JLinkResetStrategyCortexM3(object):
 
 
 class JLinkFunctions(object):
-    """Collection of function prototype and type builders for the J-Link SDK
-    API calls."""
+    """
+    Collection of function prototype and type builders for the J-Link SDK
+    API calls.
+    """
     LOG_PROTOTYPE = ctypes.CFUNCTYPE(None, ctypes.c_char_p)
     UNSECURE_HOOK_PROTOTYPE = ctypes.CFUNCTYPE(ctypes.c_int,
                                                ctypes.c_char_p,
@@ -324,7 +346,8 @@ class JLinkFunctions(object):
 
 
 class JLinkCore(object):
-    """Enumeration for the different CPU core identifiers.
+    """
+    Enumeration for the different CPU core identifiers.
 
     These are the possible cores for targets the J-Link is connected to.
     Note that these are bitfields."""
@@ -411,7 +434,8 @@ class JLinkCore(object):
 
 
 class JLinkDeviceFamily(object):
-    """Enumeration for the difference device families.
+    """
+    Enumeration for the difference device families.
 
     These are the possible device families for targets that the J-Link is
     connected to."""
@@ -439,8 +463,9 @@ class JLinkDeviceFamily(object):
 
 
 class JLinkFlags(object):
-    """Enumeration for the different flags that are passed to the J-Link C SDK
-    API methods."""
+    """
+    Enumeration for the different flags that are passed to the J-Link C SDK API methods.
+    """
     GO_OVERSTEP_BP = (1 << 0)
 
     DLG_BUTTON_YES = (1 << 0)
@@ -454,13 +479,17 @@ class JLinkFlags(object):
 
 
 class JLinkSWOInterfaces(object):
-    """Serial Wire Output (SWO) interfaces."""
+    """
+    Serial Wire Output (SWO) interfaces.
+    """
     UART = 0
     MANCHESTER = 1  # DO NOT USE
 
 
 class JLinkSWOCommands(object):
-    """Serial Wire Output (SWO) commands."""
+    """
+    Serial Wire Output (SWO) commands.
+    """
     START = 0
     STOP = 1
     FLUSH = 2
@@ -471,7 +500,9 @@ class JLinkSWOCommands(object):
 
 
 class JLinkCPUCapabilities(object):
-    """Target CPU Cabilities."""
+    """
+    Target CPU Capabilities.
+    """
     READ_MEMORY = (1 << 1)
     WRITE_MEMORY = (1 << 2)
     READ_REGISTERS = (1 << 3)
@@ -488,7 +519,8 @@ class JLinkCPUCapabilities(object):
 
 
 class JLinkHaltReasons(object):
-    """Halt reasons for the CPU.
+    """
+    Halt reasons for the CPU.
 
     Attributes:
       DBGRQ: CPU has been halted because DBGRQ signal asserted.
@@ -503,7 +535,8 @@ class JLinkHaltReasons(object):
 
 
 class JLinkVectorCatchCortexM3(object):
-    """Vector catch types for the ARM Cortex M3.
+    """
+    Vector catch types for the ARM Cortex M3.
 
     Attributes:
       CORE_RESET: The CPU core reset.
@@ -526,7 +559,8 @@ class JLinkVectorCatchCortexM3(object):
 
 
 class JLinkBreakpoint(object):
-    """J-Link breakpoint types.
+    """
+    J-Link breakpoint types.
 
     Attributes:
       SW_RAM: Software breakpoint located in RAM.
@@ -547,7 +581,8 @@ class JLinkBreakpoint(object):
 
 
 class JLinkBreakpointImplementation(object):
-    """J-Link breakpoint implementation types.
+    """
+    J-Link breakpoint implementation types.
 
     Attributes:
       HARD: Hardware breakpoint using a breakpoint unit.
@@ -562,7 +597,8 @@ class JLinkBreakpointImplementation(object):
 
 
 class JLinkEventTypes(object):
-    """J-Link data event types.
+    """
+    J-Link data event types.
 
     Attributes:
       BREAKPOINT: breakpoint data event.
@@ -571,7 +607,8 @@ class JLinkEventTypes(object):
 
 
 class JLinkAccessFlags(object):
-    """J-Link access types for data events.
+    """
+    J-Link access types for data events.
 
     These access types allow specifying the different types of access events
     that should be monitored.
@@ -593,7 +630,8 @@ class JLinkAccessFlags(object):
 
 
 class JLinkAccessMaskFlags(object):
-    """J-Link access mask flags.
+    """
+    J-Link access mask flags.
 
     Attributes:
       SIZE: specifies to not care about the access size of the event.
@@ -606,7 +644,9 @@ class JLinkAccessMaskFlags(object):
 
 
 class JLinkStraceCommand(object):
-    """STRACE commands."""
+    """
+    STRACE commands.
+    """
     TRACE_EVENT_SET = 0
     TRACE_EVENT_CLR = 1
     TRACE_EVENT_CLR_ALL = 2
@@ -614,7 +654,9 @@ class JLinkStraceCommand(object):
 
 
 class JLinkStraceEvent(object):
-    """STRACE events."""
+    """
+    STRACE events.
+    """
     CODE_FETCH = 0
     DATA_ACCESS = 1
     DATA_LOAD = 2
@@ -622,7 +664,9 @@ class JLinkStraceEvent(object):
 
 
 class JLinkStraceOperation(object):
-    """STRACE operation specifiers."""
+    """
+    STRACE operation specifiers.
+    """
     TRACE_START = 0
     TRACE_STOP = 1
     TRACE_INCLUDE_RANGE = 2
@@ -630,14 +674,18 @@ class JLinkStraceOperation(object):
 
 
 class JLinkTraceSource(object):
-    """Sources for tracing."""
+    """
+    Sources for tracing.
+    """
     ETB = 0
     ETM = 1
     MTB = 2
 
 
 class JLinkTraceCommand(object):
-    """J-Link trace commands."""
+    """
+    J-Link trace commands.
+    """
     START = 0x0
     STOP = 0x1
     FLUSH = 0x2
@@ -654,7 +702,8 @@ class JLinkTraceCommand(object):
 
 
 class JLinkTraceFormat(object):
-    """J-Link trace formats.
+    """
+    J-Link trace formats.
 
     Attributes:
       FORMAT_4BIT: 4-bit data.
@@ -681,7 +730,9 @@ class JLinkTraceFormat(object):
 
 
 class JLinkROMTable(object):
-    """The J-Link ROM tables."""
+    """
+    The J-Link ROM tables.
+    """
     NONE = 0x100
     ETM = 0x101
     MTB = 0x102
@@ -701,7 +752,9 @@ class JLinkROMTable(object):
 
 
 class JLinkRTTCommand(object):
-    """RTT commands."""
+    """
+    RTT commands.
+    """
     START = 0
     STOP = 1
     GETDESC = 2
@@ -710,6 +763,8 @@ class JLinkRTTCommand(object):
 
 
 class JLinkRTTDirection(object):
-    """RTT Direction."""
+    """
+    RTT Direction.
+    """
     UP = 0
     DOWN = 1

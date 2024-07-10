@@ -3,23 +3,27 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
-
-from . import enums
+"""
+utils module
+"""
 
 import platform
 import sys
+from . import enums
 
 
-class Utils(object):
+class Utils:
+    """
+    Utils class
+    """
     @staticmethod
     def is_integer(val):
         """
         Returns whether the given value is an integer.
 
-        Args:
-          val (object): value to check
+        :param val : value to check
 
-        Returns:
+        :return:
           ``True`` if the given value is an integer, otherwise ``False``.
         """
         try:
@@ -33,14 +37,11 @@ class Utils(object):
         """
         Returns whether the given value is a natural number.
 
-        Args:
-          val (object): value to check
+        :param val : value to check
 
-        Returns:
+        :return:
           ``True`` if the given value is a natural number, otherwise ``False``.
         """
-        # return isinstance(val, int) and val >= 0
-
         return Utils.is_integer(val) and (val >= 0)
 
     @staticmethod
@@ -48,39 +49,38 @@ class Utils(object):
         """
         Returns whether the current running platform is 64bit.
 
-        Returns:
+        :return:
           True if the platform is 64bit, otherwise False.
         """
         return platform.machine().endswith('64')
 
+    @staticmethod
     def noop(*args, **kwargs):
         """
         No-op.  Does nothing.
 
-        Args:
-          args: list of arguments
-          kwargs: keyword arguments dictionary
+        :param kwargs: keyword arguments dictionary
         """
         pass
 
     @staticmethod
-    def unsecure_hook_dialog(title, msg, flags):
+    def unsecure_hook_dialog(title: str, msg: str, flags: int):
         """
         No-op that ignores the dialog.
 
         Args:
-          title (str): title of the unsecure dialog
-          msg (str): text of the unsecure dialog
-          flags (int): flags specifying which values can be returned
+        :param title: title of the unsecure dialog
+        :param msg: text of the unsecure dialog
+        :param flags: flags specifying which values can be returned
 
-        Returns:
+        :return:
           ``enums.JLinkFlags.DLG_BUTTON_NO``
         """
         return enums.JLinkFlags.DLG_BUTTON_NO
 
     @staticmethod
-    def progress_bar(iteration,
-                     total,
+    def progress_bar(iteration: int,
+                     total: int,
                      prefix=None,
                      suffix=None,
                      decs=1,
@@ -92,20 +92,15 @@ class Utils(object):
 
         See `StackOverflow <http://stackoverflow.com/questions/3173320/>`__.
 
-        Args:
-          iteration (int): current iteration
-          total (int): total iterations
-          prefix (str): prefix string
-          suffix (str): suffix string
-          decs (int): positive number of decimals in percent complete
-          length (int): character length of the bar
+        :param iteration: current iteration
+        :param total: total iterations
+        :param prefix: prefix string
+        :param suffix: suffix string
+        :param decs: positive number of decimals in percent complete
+        :param length: character length of the bar
 
-        Returns:
-          ``None``
-
-        Note:
-          This function assumes that nothing else is printed to the console in the
-          interim.
+        :note:
+          This function assumes that nothing else is printed to the console in the interim.
         """
         if prefix is None:
             prefix = ''
@@ -128,20 +123,19 @@ class Utils(object):
             sys.stdout.flush()
 
     @staticmethod
-    def flash_progress_callback(action, progress_string, percentage):
+    def flash_progress_callback(action: str, progress_string: str, percentage: int):
         """
         Callback that can be used with ``JLink.flash()``.
 
         This callback generates a progress bar in the console to show the progress
         of each of the steps of the flash.
 
-        Args:
-          action (str): the current action being invoked
-          progress_string (str): the current step in the progress
-          percentage (int): the percent to which the current step has been done
+        :param action: the current action being invoked
+        :param progress_string: the current step in the progress
+        :param percentage: the percent to which the current step has been done
 
-        Note:
-          This function ignores the compare action.
+        :note:
+        This function ignores the compare action.
         """
         if action.lower() != 'compare':
             Utils.progress_bar(min(100, percentage), 100, prefix=action)
@@ -154,13 +148,12 @@ class Utils(object):
         The parity of a number is ``1`` if the number has an odd number of ones
         in its binary representation, otherwise ``0``.
 
-        Args:
-          n (int): the number whose parity to calculate
+        :param n: the number whose parity to calculate
 
-        Returns:
+        :return:
           ``1`` if the number has an odd number of ones, otherwise ``0``.
 
-        Raises:
+        :raise:
           ValueError: if ``n`` is less than ``0``.
         """
         if not Utils.is_natural(n):

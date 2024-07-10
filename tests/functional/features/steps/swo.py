@@ -22,7 +22,8 @@ import time
 
 @behave.when('I enable SWO')
 def step_enable_swo(context):
-    """Enables Serial Wire Output.
+    """
+    Enables Serial Wire Output.
 
     Args:
       context (Context): the ``Context`` instance
@@ -68,7 +69,8 @@ def step_enable_swo_on_port(context, port):
 
 @behave.then('I should see "{message}"')
 def step_should_see(context, message):
-    """Asserts that the given message was read.
+    """
+    Asserts that the given message was read.
 
     Args:
       context (Context): the ``Context`` instance

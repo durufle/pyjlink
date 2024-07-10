@@ -19,13 +19,9 @@ class ThreadReturn(threading.Thread):
         """
         Initializes the thread.
 
-        Args:
-          daemon (bool): if the thread should be spawned as a daemon
-          args: optional list of arguments
-          kwargs: optional key-word arguments
-
-        Returns:
-          ``None``
+        :param daemon (bool): if the thread should be spawned as a daemon
+        :param args: optional list of arguments
+        :param kwargs: optional key-word arguments
         """
         super(ThreadReturn, self).__init__(*args, **kwargs)
         self.daemon = daemon
@@ -34,12 +30,6 @@ class ThreadReturn(threading.Thread):
     def run(self):
         """
         Runs the thread.
-
-        Args:
-          self (ThreadReturn): the ``ThreadReturn`` instance
-
-        Returns:
-          ``None``
         """
         target = getattr(self, '_Thread__target', getattr(self, '_target', None))
         args = getattr(self, '_Thread__args', getattr(self, '_args', None))
@@ -53,11 +43,10 @@ class ThreadReturn(threading.Thread):
         """
         Joins the thread.
 
-        Args:
-          args: optional list of arguments
-          kwargs: optional key-word arguments
+        :param args: optional list of arguments
+        :param kwargs: optional key-word arguments
 
-        Returns:
+        :return:
           The return value of the exited thread.
         """
         super(ThreadReturn, self).join(*args, **kwargs)

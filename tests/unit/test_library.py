@@ -8,8 +8,7 @@ from platform import platform
 import pyjlink.library as library
 
 import unittest
-from unittest.mock import Mock, MagicMock,patch
-from pyjlink.utils import Utils
+from unittest.mock import Mock, MagicMock, patch
 
 
 class TestLibrary(unittest.TestCase):

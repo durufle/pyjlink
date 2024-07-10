@@ -3,6 +3,10 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
+
+"""
+jlink module
+"""
 import struct
 
 from . import binpacker
@@ -28,7 +32,8 @@ logger = logging.getLogger(__name__)
 
 
 class JLink(object):
-    """Python interface for the SEGGER J-Link.
+    """
+    Python interface for the SEGGER J-Link.
 
     This is a wrapper around the J-Link C SDK to provide a Python interface
     to it.  The shared library is loaded and used to call the SDK methods.
@@ -64,11 +69,9 @@ class JLink(object):
         """
         Decorator to specify the minimum SDK version required.
 
-        Args:
-          version (str): valid version string
+        :param version: valid version string
 
-        Returns:
-          A decorator function.
+        :return: A decorator function.
         """
 
         def _minimum_required(func):
@@ -84,17 +87,16 @@ class JLink(object):
 
             @functools.wraps(func)
             def wrapper(self, *args, **kwargs):
-                """Wrapper function to compare the DLL's SDK version.
+                """
+                Wrapper function to compare the DLL's SDK version.
 
-                Args:
-                  self (JLink): the ``JLink`` instance
-                  args (list): list of arguments to pass to ``func``
-                  kwargs (dict): key-word arguments dict to pass to ``func``
+                :param args: list of arguments to pass to ``func``
+                :param kwargs: key-word arguments dict to pass to ``func``
 
-                Returns:
+                :return:
                   The return value of the wrapped function.
 
-                Raises:
+                :raise:
                   JLinkException: if the DLL's version is less than ``version``.
                 """
                 if list(self.version) < list(version):
@@ -119,8 +121,8 @@ class JLink(object):
 
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
-            """Wrapper function to check that the given ``JLink`` has been
-            opened.
+            """
+            Wrapper function to check that the given ``JLink`` has been opened.
 
             Args:
               self (JLink): the ``JLink`` instance
@@ -259,7 +261,8 @@ class JLink(object):
 
     def __init__(self, lib=None, log=None, detailed_log=None, error=None, warn=None, unsecure_hook=None,
                  serial_no=None, ip_addr=None, open_tunnel=False, use_tmpcpy=True):
-        """Initializes the J-Link interface object.
+        """
+        Initializes the J-Link interface object.
 
         Note:
           By default, the unsecure dialog will reject unsecuring the device on
@@ -342,14 +345,8 @@ class JLink(object):
         self._initialized = True
 
     def __del__(self):
-        """Destructor for the ``JLink`` instance.  Closes the J-Link connection
-        if one exists.
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Destructor for the ``JLink`` instance.  Closes the J-Link connection if one exists.
         """
         # weakref callbacks are rather low level, and working out how to use
         # them correctly requires a bit of head scratching.  One must find
@@ -369,10 +366,10 @@ class JLink(object):
 
         Parameters passed to __init__ are used for open() function.
 
-        Returns:
+        :return:
           the ``JLink`` instance
 
-        Raises:
+        :raises:
           JLinkException: if fails to open (i.e. if device is unplugged)
           TypeError: if ``serial_no`` is present, but not ``int`` coercible.
           AttributeError: if ``serial_no`` and ``ip_addr`` are both ``None``.
@@ -390,35 +387,23 @@ class JLink(object):
         Stops the SWO if enabled and closes the J-Link connection if one
         exists.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          exc_type (BaseExceptionType, None): the exception class, if any
-            raised inside the context manager
-          exc_val (BaseException, None): the exception object, if any raised
-            inside the context manager
-          exc_tb (TracebackType, None): the exception traceback, if any
-            exception was raised inside the context manager.
+        :param exc_type: the exception class, if any
+        :param exc_val: the exception object, if any raised
+        :param exc_tb: the exception traceback, if any exception was raised inside the context manager.
 
-        Returns:
-          ``True`` if exception raised inside the context manager was handled
-            and shall be suppressed (not propagated), ``None`` otherwise.
+        :return::
+          ``True`` if exception raised inside the context manager was handled and shall be suppressed (not propagated),
+           ``None`` otherwise.
         """
         self._finalize()
         # Do not return anything to pass on all other exceptions.
 
     def _finalize(self):
-        """Finalizer ("destructor") for the ``JLink`` instance.
+        """
+        Finalizer ("destructor") for the ``JLink`` instance.
 
-        Stops the SWO if enabled and closes the J-Link connection if one
-        exists.
-        Called when exiting the context manager or when this object is
-        destructed (garbage collected).
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``None``
+        Stops the SWO if enabled and closes the J-Link connection if one exists. Called when exiting the context
+        manager or when this object is destructed (garbage collected).
         """
         if self._initialized:
             if self.connected():
@@ -432,12 +417,9 @@ class JLink(object):
         """
         Converts a register name to a register index
 
-        Args:
-            self (JLink): the ``JLink`` instance
-            register (str): the register name
+        :param register: the register name
 
-        Returns:
-          ``int``
+        :return: register index
         """
         result: int = 0
 
@@ -454,10 +436,7 @@ class JLink(object):
         """
         Returns whether the DLL is open.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           ``True`` if the J-Link is open, otherwise ``False``.
         """
         return bool(self._dll.JLINKARM_IsOpen())
@@ -466,10 +445,7 @@ class JLink(object):
         """
         Returns whether a J-Link is connected.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           ``True`` if the J-Link is open and connected, otherwise ``False``.
         """
         return self.opened() and bool(self._dll.JLINKARM_EMU_IsConnected())
@@ -478,11 +454,8 @@ class JLink(object):
         """
         Returns whether a target is connected to the J-Link.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``True`` if a target is connected, otherwise ``False``.
+        :return:
+            ``True`` if a target is connected, otherwise ``False``.
         """
         return self.connected() and bool(self._dll.JLINKARM_IsConnected())
 
@@ -491,12 +464,8 @@ class JLink(object):
         """
         Returns the log handler function.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``None`` if the log handler was not set, otherwise a
-          ``ctypes.CFUNCTYPE``.
+        :return:
+          ``None`` if the log handler was not set, otherwise a ``ctypes.CFUNCTYPE``.
         """
         return self._log_handler
 
@@ -504,12 +473,9 @@ class JLink(object):
     def log_handler(self, handler):
         """
         Setter for the log handler function.
-
-        Returns:
-            None
         """
         if not self.opened():
-            handler = handler or util.noop
+            handler = handler or utils.Utils.noop
             self._log_handler = enums.JLinkFunctions.LOG_PROTOTYPE(handler)
             self._dll.JLINKARM_EnableLog(self._log_handler)
 
@@ -518,7 +484,7 @@ class JLink(object):
         """
         Returns the detailed log handler function.
 
-        Returns:
+        :return:
             None if the detailed log handler was not set, otherwise a ctypes.CFUNCTYPE.
         """
         return self._detailed_log_handler
@@ -527,12 +493,9 @@ class JLink(object):
     def detailed_log_handler(self, handler):
         """
         Setter for the detailed log handler function.
-
-        Returns:
-            None
         """
         if not self.opened():
-            handler = handler or util.noop
+            handler = handler or utils.Utils.noop
             self._detailed_log_handler = enums.JLinkFunctions.LOG_PROTOTYPE(handler)
             self._dll.JLINKARM_EnableLogCom(self._detailed_log_handler)
 
@@ -541,7 +504,7 @@ class JLink(object):
         """
         Returns the error handler function.
 
-        Returns:
+        :return:
             None if the error handler was not set, otherwise a ctypes.CFUNCTYPE``.
         """
         return self._error_handler
@@ -554,14 +517,10 @@ class JLink(object):
         If the DLL is open, this function is a no-op, so it should be called
         prior to calling ``open()``.
 
-        Args:
-          handler (function): function to call on error messages
-
-        Returns:
-            None
+        :param handler: function to call on error messages
         """
         if not self.opened():
-            handler = handler or util.noop
+            handler = handler or utils.Utils.noop
             self._error_handler = enums.JLinkFunctions.LOG_PROTOTYPE(handler)
             self._dll.JLINKARM_SetErrorOutHandler(self._error_handler)
 
@@ -570,8 +529,7 @@ class JLink(object):
         """
         Returns the warning handler function.
 
-        Returns:
-            None if the warning handler was not set, otherwise a ctypes.CFUNCTYPE.
+        :return: None if the warning handler was not set, otherwise a ctypes.CFUNCTYPE.
         """
         return self._warning_handler
 
@@ -582,14 +540,11 @@ class JLink(object):
 
         If the DLL is open, this function is a no-op, so it should be called prior to calling ``open()``.
 
-        Args:
-          handler (function): function to call on warning messages
-
-        Returns:
-          ``None``
+        :param handler: function to call on warning messages
+`
         """
         if not self.opened():
-            handler = handler or util.noop
+            handler = handler or utils.Utils.noop
             self._warning_handler = enums.JLinkFunctions.LOG_PROTOTYPE(handler)
             self._dll.JLINKARM_SetWarnOutHandler(self._warning_handler)
 
@@ -606,13 +561,12 @@ class JLink(object):
         """
         Returns a list of all the connected emulators.
 
-        Args:
-          host (int): host type to search (default: ``JLinkHost.USB``)
+        :param host: host type to search (default: ``JLinkHost.USB``)
 
-        Returns:
+        :return:
           List of ``JLinkConnectInfo`` specifying the connected emulators.
 
-        Raises:
+        :raise:
           JLinkException: if fails to enumerate devices.
         """
         res = self._dll.JLINKARM_EMU_GetList(host, 0, 0)
@@ -627,17 +581,16 @@ class JLink(object):
 
         return list(info)[:num_found]
 
-    def get_device_index(self, chip_name):
+    def get_device_index(self, chip_name: str):
         """
         Finds index of device with chip name
 
-        Args:
-          chip_name (str): target chip name
+        :param chip_name: target chip name
 
-        Returns:
+        :return:
           Index of the device with the matching chip name.
 
-        Raises:
+        :raise:
           ``JLinkException``: if chip is unsupported.
         """
         index = self._dll.JLINKARM_DEVICE_GetIndex(chip_name.encode('ascii'))
@@ -651,7 +604,7 @@ class JLink(object):
         """
         Returns the number of devices that are supported by the opened J-Link DLL.
 
-        Returns:
+        :return:
           Number of devices the J-Link DLL supports.
         """
         return int(self._dll.JLINKARM_DEVICE_GetInfo(-1, 0))
@@ -660,14 +613,12 @@ class JLink(object):
         """
         Gets the device at the given ``index``.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          index (int): the index of the device whose information to get
+        :param index: the index of the device whose information to get
 
-        Returns:
+        :return:
           A ``JLinkDeviceInfo`` describing the requested device.
 
-        Raises:
+        :raise:
           ValueError: if index is less than 0 or >= supported device count.
         """
         if not utils.Utils.is_natural(index) or index >= self.num_supported_devices():
@@ -927,7 +878,6 @@ class JLink(object):
           J-Link documentation,
           `UM08001 <https://www.segger.com/downloads/jlink>`__.
         """
-        #err_buf = ctypes.create_string_buffer(0, self.MAX_BUF_SIZE)
         err_buf = (ctypes.c_char * self.MAX_BUF_SIZE)()
         res = self._dll.JLINKARM_ExecCommand(cmd.encode(), err_buf, self.MAX_BUF_SIZE)
         err_buf = ctypes.string_at(err_buf).decode()
@@ -2623,7 +2573,7 @@ class JLink(object):
         Store a raw data sequence in the output buffer
         """
 
-        self._dll.JLINKARM_StoreRaw(tdi, mode, num_bits)
+        # self._dll.JLINKARM_StoreRaw(tdi, mode, num_bits)
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required

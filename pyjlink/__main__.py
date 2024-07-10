@@ -358,7 +358,7 @@ class InfoCommand(Command):
             print('DLL Version: %s' % jlink.version)
             print('Features: %s' % ', '.join(jlink.features))
         elif args.jtag:
-            status = jlink.hardware_status()
+            status = jlink.hardware_status
             print('TCK Pin Status: %d' % status.tck)
             print('TDI Pin Status: %d' % status.tdi)
             print('TDO Pin Status: %d' % status.tdo)
@@ -387,7 +387,7 @@ class EmulatorCommand(Command):
         """
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument('-l', '--list', nargs='?',
-                           type=str.lower, default='_',
+                           type= str.lower, default='_',
                            choices=['usb', 'ip'],
                            help='list all the connected emulators')
         group.add_argument('-s', '--supported', nargs=1,
@@ -397,14 +397,10 @@ class EmulatorCommand(Command):
         return None
 
     def run(self, args):
-        """Runs the emulator command.
+        """
+        Runs the emulator command.
 
-        Args:
-          self (EmulatorCommand): the ``EmulatorCommand`` instance
-          args (Namespace): arguments to parse
-
-        Returns:
-          ``None``
+        :param args: arguments to parse
         """
         jlink = pyjlink.JLink()
 
@@ -459,20 +455,18 @@ class EmulatorCommand(Command):
 
 
 class FirmwareCommand(Command):
-    """Command for upgrading and downgrading J-Link firmware."""
+    """
+    Command for upgrading and downgrading J-Link firmware.
+    """
     name = 'firmware'
     description = 'Modify the J-Link firmware.'
     help = 'modify the J-Link firmware'
 
     def add_arguments(self, parser):
-        """Adds the arguments for the firmware command.
+        """
+        Adds the arguments for the firmware command.
 
-        Args:
-          self (FirmwareCommand): the ``FirmwareCommand`` instance
-          parser (argparse.ArgumentParser): parser to add the commands to
-
-        Returns:
-          ``None``
+        :param parser: parser to add the commands to
         """
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument('-d', '--downgrade', action='store_true',
@@ -485,12 +479,7 @@ class FirmwareCommand(Command):
         """
         Runs the firmware command.
 
-        Args:
-          self (FirmwareCommand): the ``FirmwareCommand`` instance
-          args (Namespace): arguments to parse
-
-        Returns:
-          ``None``
+        :param args: arguments to parse
         """
         jlink = self.create_jlink(args)
         if args.downgrade:
@@ -528,7 +517,7 @@ def commands():
     """
     Returns the program commands.
 
-    Returns:
+    :return:
       A list of commands.
     """
     return map(lambda c: c(), CommandMeta.registry.values())
@@ -539,9 +528,8 @@ def create_parser():
 
     This needs to be exported in order for Sphinx to document it correctly.
 
-    Returns:
-      An instance of an ``argparse.ArgumentParser`` that parses all the
-      commands supported by the PyLink CLI.
+    :return:
+      An instance of an ``argparse.ArgumentParser`` that parses all the commands supported by the PyLink CLI.
     """
     parser = argparse.ArgumentParser(prog=pyjlink.__title__,
                                      description=pyjlink.__description__,
@@ -567,13 +555,12 @@ def main(args=None):
     """
     Main command-line interface entrypoint.
 
-    Runs the given subcommand or argument that were specified.  If not given a
-    ``args`` parameter, assumes the arguments are passed on the command-line.
+    Runs the given subcommand or argument that were specified.  If not given a ``args`` parameter, assumes the
+    arguments are passed on the command-line.
 
-    Args:
-      args (list): list of command-line arguments
+    :param args: list of command-line arguments
 
-    Returns:
+    :return:
       Zero on success, non-zero otherwise.
     """
     if args is None:

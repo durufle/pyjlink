@@ -25,7 +25,9 @@ UNLOCK_METHODS = {}
 
 
 class KinetisException(Exception):
-    """Exception generated when polling fails."""
+    """
+    Exception generated when polling fails.
+    """
     pass
 
 
@@ -33,13 +35,11 @@ def unlock_kinetis_identified(identity, flags):
     """
     Checks whether the given flags are a valid identity.
 
-    Args:
-      identity (Identity): the identity to validate against
-      flags (register.IDCodeRegisterFlags): the set idcode flags
+    :param identity: the identity to validate against
+    :param flags: the set idcode flags
 
-    Returns:
-      ``True`` if the given ``flags`` correctly identify the the debug
-      interface, otherwise ``False``.
+    :return::
+      ``True`` if the given ``flags`` correctly identify the debug interface, otherwise ``False``.
     """
     if flags.version_code != identity.version_code:
         return False
@@ -51,10 +51,10 @@ def unlock_kinetis_identified(identity, flags):
 
 
 def unlock_kinetis_abort_clear():
-    """Returns the abort register clear code.
+    """
+    Returns the abort register clear code.
 
-    Returns:
-      The abort register clear code.
+     :return: The abort register clear code.
     """
     flags = registers.AbortRegisterFlags()
     flags.STKCMPCLR = 1
@@ -65,23 +65,21 @@ def unlock_kinetis_abort_clear():
 
 
 def unlock_kinetis_read_until_ack(jlink, address):
-    """Polls the device until the request is acknowledged.
+    """
+    Polls the device until the request is acknowledged.
 
-    Sends a read request to the connected device to read the register at the
-    given 'address'.  Polls indefinitely until either the request is ACK'd or
-    the request ends in a fault.
+    Sends a read request to the connected device to read the register at the given 'address'.
+    Polls indefinitely until either the request is ACK'd or the request ends in a fault.
 
-    Args:
-      jlink (JLink): the connected J-Link
-      address (int) the address of the register to poll
+    :param jlink: the connected J-Link
+    :param address: the address of the register to poll
 
-    Returns:
-      ``SWDResponse`` object on success.
+    :return: ``SWDResponse`` object on success.
 
-    Raises:
+    :raise:
       KinetisException: when read exits with non-ack or non-wait status.
 
-    Note:
+    :note:
       This function is required in order to avoid reading corrupt or otherwise
       invalid data from registers when communicating over SWD.
     """
@@ -127,13 +125,12 @@ def unlock_kinetis_swd(jlink):
           indicate that it finished mass erasing, and therefore the system is
           now unsecure.
 
-    Args:
-      jlink (JLink): the connected J-Link
+    :param jlink: the connected J-Link
 
-    Returns:
+    :return:
       ``True`` if the device was unlocked successfully, otherwise ``False``.
 
-    Raises:
+    :raise:
       KinetisException: when the device cannot be unlocked or fails to unlock.
 
     See Also:
@@ -229,17 +226,11 @@ def unlock_kinetis_jtag(jlink):
     """
     Unlocks a Kinetis device over JTAG.
 
-    Note:
-      Currently not implemented.
+    :param jlink: the connected J-Link
 
-    Args:
-      jlink (JLink): the connected J-Link
+    :returns: ``True`` if the device was unlocked successfully, otherwise ``False``.
 
-    Returns:
-      ``True`` if the device was unlocked successfully, otherwise ``False``.
-
-    Raises:
-      NotImplementedError: always.
+    Raises: NotImplementedError: always.
     """
     jtag_identity = Identity(0x4, 0xBA0)
     raise NotImplementedError('Unlock Kinetis over JTAG is not implemented.')
@@ -253,14 +244,11 @@ def unlock_kinetis(jlink):
     """
     Unlock for Freescale Kinetis K40 or K60 device.
 
-    Args:
-      jlink (JLink): an instance of a J-Link that is connected to a target.
+    :param jlink: an instance of a J-Link that is connected to a target.
 
-    Returns:
-      ``True`` if the device was successfully unlocked, otherwise ``False``.
+    :return: ``True`` if the device was successfully unlocked, otherwise ``False``.
 
-    Raises:
-      ValueError: if the J-Link is not connected to a target.
+    :raise: ValueError: if the J-Link is not connected to a target.
     """
     if not jlink.connected():
         raise ValueError('No target to unlock.')

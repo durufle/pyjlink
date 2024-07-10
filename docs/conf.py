@@ -36,7 +36,7 @@ import pyjlink  # noqa
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
-    'sphinxarg.ext'
+    'sphinxarg.ext',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -58,7 +58,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'PyJLink'
 author = pyjlink.__author__
-copyright = u'2024, Laurent Woolcap'
+copyright = u'2024, Laurent Bonnet'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

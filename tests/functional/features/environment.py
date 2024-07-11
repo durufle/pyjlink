@@ -28,11 +28,9 @@ def create_jlink(context):
     """
     Creates an instance of a J-Link, attaching it to the context.
 
-    Args:
-      context (Context): the ``Context`` instance
+    :param context: the ``Context`` instance
 
-    Returns:
-      ``JLink``
+    :return: ``JLink``
     """
     context.log = StringIO.StringIO()
     context.jlink = pyjlink.JLink(log=context.log.write,
@@ -51,11 +49,7 @@ def reset_jlink(context):
     """
     Resets the context's J-Link instance by destroying it.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     context.jlink.close()
     return create_jlink(context)
@@ -67,11 +61,10 @@ def extract_tag(tags, prefix):
 
     Consumes a tag prefix, and extracts the value corresponding to it.
 
-    Args:
-      tags (list): the list of tags to check
-      prefix (str): the tag prefix
+    :param tags: the list of tags to check
+    :param prefix: the tag prefix
 
-    Returns:
+    :return:
       A tuple of tag and tag value.
     """
     for tag in tags:
@@ -87,11 +80,10 @@ def should_exclude(context, section):
     """
     Returns whether the given section should be skipped.
 
-    Args:
-      context (Context): the ``Context`` instance
-      section: the section to skip
+    :param context: the ``Context`` instance
+    :param section: the section to skip
 
-    Returns:
+    :return:
       ``True`` if section should be skipped, otherwise ``False``.
     """
     if len(section.tags) == 0:
@@ -112,11 +104,7 @@ def before_all(context):
 
     Syncs the J-Link firmware before running tests.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = create_jlink(context)
     jlink.sync_firmware()
@@ -130,11 +118,7 @@ def after_all(context):
     """
     Runs after all tests.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     pass
 
@@ -143,12 +127,8 @@ def before_feature(context, feature):
     """
     Runs before each feature.
 
-    Args:
-      context (Context): the ``Context`` instance
-      feature (Feature): the feature that is next to run
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param feature: the feature that is next to run
     """
     reset_jlink(context)
 
@@ -160,12 +140,8 @@ def after_feature(context, feature):
     """
     Runs after each feature.
 
-    Args:
-      context (Context): the ``Context`` instance
-      feature (Feature): the feature that has just ran
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param feature: the feature that is next to run
     """
     pass
 
@@ -174,12 +150,8 @@ def before_scenario(context, scenario):
     """
     Runs before each scenario.
 
-    Args:
-      context (Context): the ``Context`` instance
-      scenario (Scenario): the scenario that is next to run
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param scenario: the scenario that is next to run
     """
     reset_jlink(context)
 
@@ -193,12 +165,8 @@ def after_scenario(context, scenario):
     """
     Runs after each scenario.
 
-    Args:
-      context (Context): the ``Context`` instance
-      scenario (Scenario): the scenario that has just ran
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param scenario: the scenario that has just ran
     """
     if getattr(scenario, 'skip_reason', None) is not None:
         sys.stdout.write('    Skipped Scenario.  Reason: %s\n' % scenario.skip_reason)
@@ -218,12 +186,8 @@ def before_tag(context, tag):
     """
     Runs before each section with the given tag.
 
-    Args:
-      context (Context): the ``Context`` instance
-      tag (Tag): the section's tag
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param tag: the section's tag
     """
     pass
 
@@ -232,12 +196,8 @@ def after_tag(context, tag):
     """
     Runs after each section with the given tag.
 
-    Args:
-      context (Context): the ``Context`` instance
-      tag (Tag): the section's tag
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param tag: the section's tag
     """
     pass
 
@@ -249,9 +209,6 @@ def before_step(context, step):
     Args:
       context (Context): the ``Context`` instance
       step (Step): the step that is next to run
-
-    Returns:
-      ``None``
     """
     context.step = step
 
@@ -263,8 +220,5 @@ def after_step(context, step):
     Args:
       context (Context): the ``Context`` instance
       step (Step): the step that has just ran
-
-    Returns:
-      ``None``
     """
     pass

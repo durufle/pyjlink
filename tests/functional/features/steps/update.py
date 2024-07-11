@@ -19,41 +19,33 @@ import behave
 
 @behave.given('I invalidate the firmware')
 def step_firmware_invalidate(context):
-    """Invalidtes the emulator's firmware.
+    """
+    Invalidates the emulator's firmware.
 
-    Args:
-      context: the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     context.jlink.invalidate_firmware()
 
 
 @behave.then('I can update the firmware')
 def step_firmware_update(context):
-    """Asserts that the firmware can be updated.
+    """
+    Asserts that the firmware can be updated.
 
-    Args:
-      context: the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert context.jlink.update_firmware() >= 0
 
 
 @behave.then('I can force a firmware update')
 def step_force_firmware_update(context):
-    """Asserts that the firmware can be force updated.
+    """
+    Asserts that the firmware can be force updated.
 
-    Args:
-      context: the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert context.jlink.update_firmware() >= 0
 
     log_messages = context.log.getvalue().split('\n')
-    assert 'New firmware booted successfully' in log_messages[-1]
+    print(log_messages)
+    assert 'New firmware booted successfully' in log_messages

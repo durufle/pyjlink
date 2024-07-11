@@ -20,13 +20,10 @@ def step_write_to_ice_register(context, value, register):
     """
     Writes a value to a single ICE register.
 
-    Args:
-      context (Context): the ``Context`` instance
-      value (str): the value to write to the register
-      register (str): the register to write to
+    :param context: the ``Context`` instance
+    :param value: the value to write to the register
+    :param register: the register to write to
 
-    Returns:
-      ``None``
     """
     jlink = context.jlink
     register = int(register, 0)
@@ -39,13 +36,9 @@ def step_write_to_register(context, value, register):
     """
     Writes a value to a single register.
 
-    Args:
-      context (Context): the ``Context`` instance
-      value (str): the value to write to the register
-      register (str): the register to write to
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param value: the value to write to the register
+    :param register: the register to write to
     """
     jlink = context.jlink
     jlink.register_write(int(register), int(value))
@@ -58,11 +51,7 @@ def step_write_to_registers(context):
 
     The values and registers are loaded from the context's table.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = context.jlink
     registers, values = [], []
@@ -77,13 +66,9 @@ def step_ice_register_has_value(context, register, value):
     """
     Checks that an ICE register has a particular value.
 
-    Args:
-      context (Context): the ``Context`` instance
-      register (str): the ICE register to read from
-      value (str): the value the ICE register should have
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param register: the ICE register to read from
+    :param value: the value the ICE register should have
     """
     jlink = context.jlink
     register = int(register, 0)
@@ -96,11 +81,9 @@ def step_register_has_value(context, register, value):
     """
     Reads a single value from a single register and asserts equality.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param register: the ICE register to read from
+    :param value: the value the ICE register should have
     """
     jlink = context.jlink
     actual = jlink.register_read(int(register))
@@ -112,11 +95,7 @@ def step_registers_have_values(context):
     """
     Reads multiple values from multiple registers and asserts equality.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = context.jlink
     registers, expected_values = [], []

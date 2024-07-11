@@ -14,17 +14,17 @@
 
 import behave
 
-MEMORY_ADDR = 0x500
+MEMORY_ADDR = 0x08000000
 
 
 @behave.when('I write the {size}-bit integer {value} to memory')
 def step_write_memory(context, size, value):
-    """Writes a value to the memory of the device.
+    """
+    Writes a value to the memory of the device.
 
-    Args:
-      context (Context): the ``Context`` instance
-      size (str): the number of bits to use for the value
-      value (str): the value to write
+    :param context: the ``Context`` instance
+    :param size: the number of bits to use for the value
+    :param value: data to write
 
     Returns:
       ``None``
@@ -48,15 +48,12 @@ def step_write_memory(context, size, value):
 
 @behave.then('I should read the {size}-bit integer {value} from memory')
 def step_read_memory(context, size, value):
-    """Reads a value from the memory of the device.
+    """
+    Reads a value from the memory of the device.
 
-    Args:
-      context (Context): the ``Context`` instance
-      size (str): the number of bits to use for the value
-      value (str): the value to read
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param size: the number of bits to use for the value
+    :param value: the data  read
     """
     jlink = context.jlink
     methods = {
@@ -76,14 +73,11 @@ def step_read_memory(context, size, value):
 
 @behave.then('I should read the integer {value} from code memory')
 def step_read_code_memory(context, value):
-    """Reads and checks a value from code memory.
+    """
+    Reads and checks a value from code memory.
 
-    Args:
-      context (Context): the ``Context`` instance
-      value (str): the value that should be read
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param value: the value that should be read
     """
     actual = context.jlink.code_memory_read(MEMORY_ADDR, 1)[0]
     expected = int(value)

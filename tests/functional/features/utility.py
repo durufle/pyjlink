@@ -23,7 +23,7 @@ def root_dir():
     """
     Retrieves the root testing directory.
 
-    Returns:
+    :return:
       The root testing directory.
     """
     dir_name = os.path.abspath(os.path.dirname(__file__))
@@ -34,10 +34,9 @@ def firmware_path(firmware):
     """
     Returns the path to given firmware, provided it exists.
 
-    Args:
-      firmware (str): the firmware to search for
+    :param: firmware: the firmware to search for
 
-    Returns:
+    :return:
       The file path to the firmware if it exists, otherwise ``None``.
     """
     fw = os.path.join(root_dir(), 'firmware', firmware, 'build', 'firmware.bin')
@@ -60,11 +59,10 @@ def flash(jlink, firmware):
     """
     Flashes the given firmware to the target.
 
-    Args:
-      jlink (JLink): the connected ``JLink`` instance
-      firmware (str): the path to the firmware to flash
+    :param: jlink: the connected ``JLink`` instance
+    :param: firmware: the path to the firmware to flash
 
-    Returns:
+    :return:
       The number of bytes flashed.
     """
     return jlink.flash_file(firmware, 0)

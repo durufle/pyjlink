@@ -6,7 +6,7 @@ Feature: Registers
     Scenario: Writing to a Single Register
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12 (ALLOW SECURITY)
+        And device CY8C6XX7_CM4
         When I halt the device
         And I write 42 to register 0
         Then register 0 should have the value 42
@@ -14,7 +14,7 @@ Feature: Registers
     Scenario: Writing to Multiple Registers
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12 (ALLOW SECURITY)
+        And device CY8C6XX7_CM4
         When I halt the device
         And I write to the registers:
             | register | value |

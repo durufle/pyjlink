@@ -21,11 +21,7 @@ def step_connected(context):
     """
     Asserts that the J-Link is connected.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert context.jlink.connected()
 
@@ -35,17 +31,13 @@ def step_connect_device(context, device):
     """
     Tries to connect to the given.
 
-    Args:
-      context (Context): the ``Context`` instance
-      device (str): name of the devie to connect to
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param device: name of the device to connect to
     """
     try:
         jlink = context.jlink
         jlink.connect(str(device))
-        jlink.set_reset_strategy(pyjlink.JLinkResetStrategyCortexM3.NORMAL)
+        # jlink.set_reset_strategy(pyjlink.JLinkResetStrategyCortexM3.NORMAL)
     except pyjlink.JLinkException as e:
         if e.code == pyjlink.JLinkGlobalErrors.VCC_FAILURE:
             context.scenario.skip(reason='Target is not powered.')
@@ -58,12 +50,8 @@ def step_target_interface(context, interface):
     """
     Sets the target interface for the JLink.
 
-    Args:
-      context (Context): the ``Context`` instance
-      interface (str): the interface to use for the J-Link
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param interface: the interface to use for the J-Link
     """
     if interface.lower() == 'jtag':
         context.jlink.set_tif(pyjlink.enums.JLinkInterfaces.JTAG)
@@ -78,11 +66,7 @@ def step_close(context):
     """
     Closes the J-Link.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     context.jlink.close()
 
@@ -92,11 +76,7 @@ def step_device_reset(context):
     """
     Resets the target connected to the J-Link.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = context.jlink
     jlink.power_on()
@@ -110,12 +90,8 @@ def step_flash_firmware_when(context, firmware):
     """
     Tries to flash the firmware.
 
-    Args:
-      context (Context): the ``Context`` instance
-      firmware (str): the name of the firmware to flash
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param firmware: the name of the firmware to flash
     """
     return step_flash_firmware_retries(context, firmware, 0)
 
@@ -125,12 +101,8 @@ def step_read_firmware(context, firmware):
     """
     Reads the firmware file into a bytestream.
 
-    Args:
-      context (Context): the ``Context`` instance
-      firmware (str): the name of the firmware
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param firmware: the name of the firmware to flash
     """
     firmware = utility.firmware_path(str(firmware))
     data = []
@@ -144,52 +116,40 @@ def step_read_firmware(context, firmware):
 
 @behave.when('I halt the device')
 def step_halt(context):
-    """Halts the J-Link target.
+    """
+    Halts the J-Link target.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     context.jlink.halt()
 
 
 @behave.when('I create a new process with my J-Link')
 def step_create_process(context):
-    """Creates a new process to access the J-Link.
+    """
+    Creates a new process to access the J-Link.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     context.process = multiprocessing.Process
 
 
 @behave.then('the device should be halted')
 def step_is_halted(context):
-    """Assets that the device is halted / no longer running.
+    """
+    Assets that the device is halted / no longer running.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert context.jlink.halted()
 
 
 @behave.then('the emulator should be connected')
 def step_not_connected(context):
-    """Checks that the JLink is not open.
+    """
+    Checks that the JLink is not open.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert context.jlink.opened()
     assert context.jlink.connected()
@@ -197,13 +157,10 @@ def step_not_connected(context):
 
 @behave.then('the emulator should not be connected')
 def step_not_connected(context):
-    """Checks that the JLink is not open.
+    """
+    Checks that the JLink is not open.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert not context.jlink.opened()
     assert not context.jlink.connected()
@@ -211,28 +168,22 @@ def step_not_connected(context):
 
 @behave.then('I can flash the firmware {firmware} with 1 retry')
 def step_flash_firmware(context, firmware):
-    """Tries to flash the firmware.
+    """
+    Tries to flash the firmware.
 
-    Args:
-      context (Context): the ``Context`` instance
-      firmware (str): the name of the firmware to flash
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param firmware: the name of the firmware to flash
     """
     return step_flash_firmware_retries(context, firmware, 1)
 
 
 @behave.then('I can flash the firmware with {retries} retries')
 def step_flash_firmware_bytestream_retries(context, retries):
-    """Tries to flash the firmware from a bytestream.
+    """
+    Tries to flash the firmware from a bytestream.
 
-    Args:
-      context (Context): the ``Context`` instance
-      retries (int): the number of retries when flashing
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param retries: the number of retries when flashing
     """
     jlink = context.jlink
     retries = int(retries)
@@ -243,7 +194,7 @@ def step_flash_firmware_bytestream_retries(context, retries):
             res = jlink.flash(context.data, 0)
             if res >= 0:
                 break
-        except pyljink.JLinkException as e:
+        except pyjlink.JLinkException as e:
             retries = retries - 1
 
     assert retries >= 0
@@ -254,15 +205,12 @@ def step_flash_firmware_bytestream_retries(context, retries):
 
 @behave.then('I can flash the firmware {firmware} with {retries} retries')
 def step_flash_firmware_retries(context, firmware, retries):
-    """Tries to flash the firmware with the given number of retries.
+    """
+    Tries to flash the firmware with the given number of retries.
 
-    Args:
-      context (Context): the ``Context`` instance
-      firmware (str): the name of the firmware to flash
-      retries (int): the number of retries to do
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
+    :param firmware: the name of the firmware to flash
+    :param retries: the number of retries to do
     """
     jlink = context.jlink
     retries = int(retries)
@@ -288,13 +236,10 @@ def step_flash_firmware_retries(context, firmware, retries):
 
 @behave.then('a new J-Link should not be connected')
 def step_new_jlink_not_connected(context):
-    """Assserts that a new J-Link instance will not be connected.
+    """
+    Asserts that a new J-Link instance will not be connected.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink_a, jlink_b = context.jlink, pyjlink.JLink()
 
@@ -314,13 +259,10 @@ def step_new_jlink_not_connected(context):
 
 @behave.then('that process\'s J-Link is also connected')
 def step_process_jlink_connected(context):
-    """Asserts that the J-Link is connected in the second process.
+    """
+    Asserts that the J-Link is connected in the second process.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     def f(jlink, queue):
         queue.put(jlink.opened())
@@ -337,13 +279,10 @@ def step_process_jlink_connected(context):
 
 @behave.then('I should not be able to open a new connection to it')
 def step_connection_open_jlink(context):
-    """Asserts that we cannot open a new connection to an opened J-Link.
+    """
+    Asserts that we cannot open a new connection to an opened J-Link.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     serial_no = context.jlink.serial_number
     new_jlink = pyjlink.JLink()

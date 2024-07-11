@@ -787,10 +787,7 @@ class JLink(object):
         which will make the emulator download the firmware of the J-Link SDK
         DLL that this instance was created with.
 
-        Returns:
-          ``None``
-
-        Raises:
+        :raise:
           JLinkException: on hardware error.
         """
         self.exec_command('InvalidateFW')
@@ -804,9 +801,8 @@ class JLink(object):
         If there is a newer version of firmware available for the J-Link
         device, then updates the firmware.
 
-        Returns:
-          Checksum of the new firmware on update, ``0`` if the firmware was not
-          changed.
+        :return:
+          Checksum of the new firmware on update, ``0`` if the firmware was not changed.
         """
         return self._dll.JLINKARM_UpdateFirmwareIfNewer()
 
@@ -2798,8 +2794,7 @@ class JLink(object):
           JLinkException: if memory could not be read.
         """
         buf_size = num_bytes
-        # buf = (ctypes.c_uint8 * buf_size)()
-        buf = ctypes.create_string_buffer(buf_size)
+        buf = (ctypes.c_uint8 * buf_size)()
         res = self._dll.JLINKARM_ReadCodeMem(addr, buf_size, buf)
         if res < 0:
             raise errors.JLinkException(res)

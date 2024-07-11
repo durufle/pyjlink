@@ -6,7 +6,7 @@ Feature: Memory
     Scenario Outline: Writing to Device Memory
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12 (ALLOW SECURITY)
+        And device CY8C6XX7_CM4
         When I write the <size>-bit integer <value> to memory
         Then I should read the <size>-bit integer <value> from memory
 
@@ -20,20 +20,20 @@ Feature: Memory
     Scenario: Overflow on Writing to Device Memory
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12
+        And device CY8C6XX7_CM4
         When I write the 8-bit integer 256 to memory
         Then I should read the 8-bit integer 0 from memory
 
     Scenario: Underflow on Reading from Device Memory
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12
+        And device CY8C6XX7_CM4
         When I write the 16-bit integer 256 to memory
         Then I should read the 8-bit integer 0 from memory
 
     Scenario: Reading from Code Memory
         Given my J-Link is connected
         And target interface SWD
-        And device MK21FX512xxx12
+        And device CY8C6XX7_CM4
         When I write the 8-bit integer 92 to memory
         Then I should read the integer 92 from code memory

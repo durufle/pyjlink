@@ -21,11 +21,7 @@ def step_add_license(context):
     """
     Adds a license to the J-Link.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = context.jlink
     assert jlink.add_license(str(context.text))
@@ -36,11 +32,8 @@ def step_erase_licenses(context):
     """
     Erases the J-Link's licenses.
 
-    Args:
-      context (Context): the ``Context`` instance
+    :param context: the ``Context`` instance
 
-    Returns:
-      ``None``
     """
     jlink = context.jlink
     assert jlink.erase_licenses()
@@ -51,11 +44,7 @@ def step_has_license(context):
     """
     Asserts the J-Link has the given license.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     jlink = context.jlink
     expected = context.text.strip()
@@ -69,10 +58,6 @@ def step_no_licenses(context):
     """
     Asserts the J-Link has no licenses.
 
-    Args:
-      context (Context): the ``Context`` instance
-
-    Returns:
-      ``None``
+    :param context: the ``Context`` instance
     """
     assert len(context.jlink.custom_licenses) == 0

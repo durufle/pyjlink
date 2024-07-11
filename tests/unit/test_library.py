@@ -895,11 +895,12 @@ class TestLibrary(unittest.TestCase):
     @patch('pyjlink.utils.Utils.is_os_64bit', return_value=True)
     @patch('pyjlink.platform.libc_ver', return_value=('libc', '1.0'))
     @patch('ctypes.util.find_library', return_value='libjlinkarm.so.7')
-    @patch('pyjlink.library.JLinkarmDlInfo.__init__')
+    @patch('pyjlink.libraryJLinkArmDlInfo.__init__')
     @patch('ctypes.cdll.LoadLibrary')
     def test_linux_glibc_unavailable(self, mock_load_library, mock_dlinfo_ctr, mock_find_library,
                                      mock_libc_ver, mock_is_os_64bit, mock_os, mock_open):
-        """Confirms the whole JLinkarmDlInfo code path is not involved when GNU libc
+        """
+        Confirms the whole JLinkarmDlInfo code path is not involved when GNU libc
         extensions are unavailable on a Linux system, and that we'll successfully fallback
         to the "search by file name".
 

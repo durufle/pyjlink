@@ -3012,13 +3012,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(scan_len, self.jlink.scan_len())
 
     def test_jlink_scan_chain_len(self):
-        """Tests getting the scan chain length of the J-Link.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests getting the scan chain length of the J-Link.
         """
         scan_chain = 1
 
@@ -3030,13 +3025,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, self.jlink.scan_chain_len(scan_chain))
 
     def test_jlink_device_family(self):
-        """Tests the J-Link ``device_family()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``device_family()`` method.
         """
         family = enums.JLinkDeviceFamily.CORTEX_M1
         self.dll.JLINKARM_GetDeviceFamily.return_value = family
@@ -3047,13 +3037,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(family, self.jlink.device_family())
 
     def test_jlink_register_list(self):
-        """Tests the J-Link ``register_list()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``register_list()`` method.
         """
         self.dll.JLINKARM_GetRegisterList.return_value = 0
 
@@ -3062,13 +3047,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(0, len(res))
 
     def test_jlink_register_name(self):
-        """Tests the J-Link ``register_name()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``register_name()`` method.
         """
         register_name = 'Name'
         buf = ctypes.create_string_buffer(register_name.encode(), len(register_name))
@@ -3077,31 +3057,21 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(register_name, self.jlink.register_name(0))
 
     def test_jlink_cpu_speed_error(self):
-        """Tests the J-Link ``cpu_speed()`` method on error.
-
-        Args:
-          self (TestJlink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``cpu_speed()`` method on error.
         """
         self.dll.JLINKARM_MeasureCPUSpeedEx.return_value = -1
         with self.assertRaises(JLinkException):
             self.jlink.cpu_speed()
 
     def test_jlink_cpu_speed_success(self):
-        """Tests the J-Link ``cpu_speed()`` method on success.
+        """
+        Tests the J-Link ``cpu_speed()`` method on success.
 
         There are three cases:
           - When silent option is passed.
           - When silent option is not passed.
           - When CPU speed is not supported.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         # Unsupported
         self.dll.JLINKARM_MeasureCPUSpeedEx.return_value = 0
@@ -3118,13 +3088,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINKARM_MeasureCPUSpeedEx.assert_called_with(-1, 1, 1)
 
     def test_jlink_cpu_halt_reasons_failure(self):
-        """Tests failing to get the CPU halt reasons.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests failing to get the CPU halt reasons.
         """
         self.dll.JLINKARM_GetMOEs.return_value = -1
 
@@ -3132,13 +3097,8 @@ class TestJLink(unittest.TestCase):
             self.jlink.cpu_halt_reasons()
 
     def test_jlink_cpu_halt_reasons_success(self):
-        """Tests successfully getting the CPU halt reasons.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests successfully getting the CPU halt reasons.
         """
         self.dll.JLINKARM_GetMOEs.return_value = 0
 
@@ -3154,15 +3114,8 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(isinstance(halt_reasons[0], structs.JLinkMOEInfo))
 
     def test_jlink_jtag_create_clock(self):
-        """Tests creating a JTAG clock on TCK.
-
-        Should return the status of the TDO pin: either 0 or 1.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests creating a JTAG clock on TCK.
         """
         self.dll.JLINKARM_Clock.return_value = 0
         self.assertEqual(0, self.jlink.jtag_create_clock())
@@ -3171,13 +3124,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(1, self.jlink.jtag_create_clock())
 
     def test_jlink_jtag_send_invalid_bits(self):
-        """Tests passing an invalid number of bits to ``jtag_send()``.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests passing an invalid number of bits to ``jtag_send()``.
         """
         tms = 0
         tdi = 0
@@ -3195,13 +3143,8 @@ class TestJLink(unittest.TestCase):
             self.jlink.jtag_send(tms, tdi, num_bits)
 
     def test_jlink_jtag_send_success(self):
-        """Tests successfully sending data via JTAG.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests successfully sending data via JTAG.
         """
         tms = 0
         tdi = 0
@@ -3210,25 +3153,15 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(None, self.jlink.jtag_send(tms, tdi, num_bits))
 
     def test_jlink_jtag_flush(self):
-        """Tests successfully flushing the JTAG buffer.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests successfully flushing the JTAG buffer.
         """
         self.jlink.jtag_flush()
         self.dll.JLINKARM_WriteBits.assert_called_once()
 
     def test_jlink_swd_read8(self):
-        """Tests the J-Link ``swd_read8()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_read8()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3238,13 +3171,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(val, self.jlink.swd_read8(0))
 
     def test_jlink_swd_read16(self):
-        """Tests the J-Link ``swd_read16()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_read16()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3254,14 +3182,9 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(val, self.jlink.swd_read16(0))
 
     def test_jlink_swd_read32(self):
-        """Tests the J-Link ``swd_read32()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
+        Tests the J-Link ``swd_read32()`` method.
+         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
         val = 10
@@ -3270,13 +3193,8 @@ class TestJLink(unittest.TestCase):
         self.assertEqual(val, self.jlink.swd_read32(0))
 
     def test_jlink_swd_write_fail(self):
-        """Tests the J-Link ``swd_write()`` method on failure.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_write()`` method on failure.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3286,30 +3204,20 @@ class TestJLink(unittest.TestCase):
             self.jlink.swd_write(0, 0, 32)
 
     def test_jlink_swd_write_success(self):
-        """Tests the J-Link ``swd_write()`` method on success.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_write()`` method on success.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
-        bitpos = 1
-        self.dll.JLINK_SWD_StoreRaw.return_value = bitpos
+        bit_pos = 1
+        self.dll.JLINK_SWD_StoreRaw.return_value = bit_pos
 
-        self.assertEqual(bitpos, self.jlink.swd_write(8, 8, 8))
+        self.assertEqual(bit_pos, self.jlink.swd_write(8, 8, 8))
         self.dll.JLINK_SWD_StoreRaw.assert_called_once()
 
     def test_jlink_swd_write8(self):
-        """Tests the J-Link ``swd_write8()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_write8()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3318,13 +3226,8 @@ class TestJLink(unittest.TestCase):
         self.jlink.swd_write.assert_called_once_with(0, 0, 8)
 
     def test_jlink_swd_write16(self):
-        """Tests the J-Link ``swd_write16()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_write16()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3333,13 +3236,8 @@ class TestJLink(unittest.TestCase):
         self.jlink.swd_write.assert_called_once_with(0, 0, 16)
 
     def test_jlink_swd_write32(self):
-        """Tests the J-Link ``swd_write32()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_write32()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3348,13 +3246,8 @@ class TestJLink(unittest.TestCase):
         self.jlink.swd_write.assert_called_once_with(0, 0, 32)
 
     def test_jlink_swd_sync(self):
-        """Tests the J-Link ``swd_sync()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``swd_sync()`` method.
         """
         self.jlink._tif = enums.JLinkInterfaces.SWD
 
@@ -3365,13 +3258,8 @@ class TestJLink(unittest.TestCase):
         self.dll.JLINK_SWD_SyncBytes.assert_called_once()
 
     def test_jlink_flash_write_access_width(self):
-        """Tests calling the flash write methods with variable access width.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests calling the flash write methods with variable access width.
         """
         addr = 0xdeadbeef
         self.jlink.flash_write = Mock()
@@ -3385,13 +3273,8 @@ class TestJLink(unittest.TestCase):
         self.jlink.flash_write.assert_called_with(addr, [0xFFFFFFFF], 32)
 
     def test_jlink_code_memory_read_invalid(self):
-        """Tests failing to read code memory.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests failing to read code memory.
         """
         self.dll.JLINKARM_ReadCodeMem.return_value = -1
         with self.assertRaises(JLinkException):
@@ -3400,12 +3283,6 @@ class TestJLink(unittest.TestCase):
     def test_jlink_code_memory_read_success(self):
         """
         Tests successfully reading code memory.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
         """
         self.dll.JLINKARM_ReadCodeMem.return_value = 0
 
@@ -3421,13 +3298,8 @@ class TestJLink(unittest.TestCase):
         self.assertTrue(isinstance(res[0], bytes))
 
     def test_jlink_num_memory_zones(self):
-        """Tests the J-Link ``num_memory_zones()`` method.
-
-        Args:
-          self (TestJLink): the ``TestJLink`` instance
-
-        Returns:
-          ``None``
+        """
+        Tests the J-Link ``num_memory_zones()`` method.
         """
         self.dll.JLINK_GetMemZones.return_value = -1
         with self.assertRaises(JLinkException):

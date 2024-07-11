@@ -28,7 +28,13 @@ jobs:
           pycodestyle .
       - name: Run Unit Tests
         run: |
-          pytest
+          pytest ./tests/unit/test*.py --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+      - name: Upload pytest result
+        uses: action/upload-artifact@v4
+        with:
+          name: pytest-results-${{ matrix.python-version }}
+          path: junit/test-results-${{ matrix.python-version }}.xml
+        if: ${{ always() }}
       - name: Build a Wheel
         run: |
           python -m build

@@ -17,23 +17,18 @@ except ImportError:
 import sys
 
 
-def main(jlink_serial: int, device: str):
+def main(device: str):
     """
     Main function.
 
-    Args:
-      jlink_serial: the J-Link serial number
-      device: the target CPU
+    :param device: the target CPU
 
-    Returns:
-      ``None``
-
-    Raises:
+    :raise:
       JLinkException: on error
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=jlink_serial)
+    jlink.open()
 
     jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
     jlink.connect(device, verbose=True)
@@ -47,4 +42,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    main(504502376, "CY8C5868XXXLP")
+    main("CY8C6XX7_CM4")

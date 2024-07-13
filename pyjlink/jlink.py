@@ -78,10 +78,9 @@ class JLink(object):
             """
             Internal decorator that wraps around the given function.
 
-            Args:
-              func (function): function being decorated
+            :param func (function): function being decorated
 
-            Returns:
+            :return:
               The wrapper unction.
             """
 
@@ -90,6 +89,7 @@ class JLink(object):
                 """
                 Wrapper function to compare the DLL's SDK version.
 
+                :param self: the ``JLink`` instance
                 :param args: list of arguments to pass to ``func``
                 :param kwargs: key-word arguments dict to pass to ``func``
 
@@ -112,10 +112,9 @@ class JLink(object):
         """
         Decorator to specify that the J-Link DLL must be opened, and a J-Link connection must be established.
 
-        Args:
-          func (function): function being decorated
+        :param func: function being decorated
 
-        Returns:
+        :return:
           The wrapper function.
         """
 
@@ -124,17 +123,15 @@ class JLink(object):
             """
             Wrapper function to check that the given ``JLink`` has been opened.
 
-            Args:
-              self (JLink): the ``JLink`` instance
-              args: list of arguments to pass to the wrapped function
-              kwargs: key-word arguments dict to pass to the wrapped function
+            :param self: the ``JLink`` instance
+            :param args: list of arguments to pass to the wrapped function
+            :param kwargs: key-word arguments dict to pass to the wrapped function
 
-            Returns:
+            :return:
               The return value of the wrapped function.
 
-            Raises:
-              JLinkException: if the J-Link DLL is not open or the J-Link is
-                  disconnected.
+            :raise:
+              JLinkException: if the J-Link DLL is not open or the J-Link is disconnected.
             """
             if not self.opened():
                 raise errors.JLinkException('J-Link DLL is not open.')
@@ -149,10 +146,9 @@ class JLink(object):
         """
         Decorator to specify that a target connection is required in order for the given method to be used.
 
-        Args:
-          func (function): function being decorated
+        :param func: function being decorated
 
-        Returns:
+        :returns:
           The wrapper function.
         """
 
@@ -626,7 +622,7 @@ class JLink(object):
 
         info = structs.JLinkDeviceInfo()
 
-        result = self._dll.JLINKARM_DEVICE_GetInfo(index, ctypes.byref(info))
+        self._dll.JLINKARM_DEVICE_GetInfo(index, ctypes.byref(info))
         return info
 
     def open(self, serial_no=None, ip_addr=None):
@@ -1433,10 +1429,7 @@ class JLink(object):
         """
         Returns the current JTAG connection speed.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           JTAG connection speed.
         """
         return self._dll.JLINKARM_GetSpeed()
@@ -1452,16 +1445,11 @@ class JLink(object):
         ``JLink.MAX_JTAG_SPEED`` and no smaller than ``JLink.MIN_JTAG_SPEED``.
         The given ``speed`` can also not be ``JLink.INVALID_JTAG_SPEED``.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          speed (int): the speed in kHz to set the communication at
-          auto (bool): automatically detect correct speed
-          adaptive (bool): select adaptive clocking as JTAG speed
+        :param speed: the speed in kHz to set the communication at
+        :param auto: automatically detect correct speed
+        :param adaptive: select adaptive clocking as JTAG speed
 
-        Returns:
-          ``None``
-
-        Raises:
+        :raises:
           TypeError: if given speed is not a natural number.
           ValueError: if given speed is too high, too low, or invalid.
         """
@@ -1499,7 +1487,6 @@ class JLink(object):
         return None
 
     @property
-    @open_required
     def speed_info(self):
         """
         Retrieves information about supported target interface speeds.
@@ -2437,7 +2424,8 @@ class JLink(object):
 
     @connection_required
     def register_name(self, register_index):
-        """Retrives and returns the name of an ARM CPU register.
+        """
+        Retrieves and returns the name of an ARM CPU register.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -2478,15 +2466,12 @@ class JLink(object):
         """
         Retrieves the reasons that the CPU was halted.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           A list of ``JLInkMOEInfo`` instances specifying the reasons for which
           the CPU was halted.  This list may be empty in the case that the CPU
           is not halted.
 
-        Raises:
+        :raise:
           JLinkException: on hardware error.
         """
         buf_size = self.MAX_NUM_MOES
@@ -2497,7 +2482,8 @@ class JLink(object):
 
         return list(buf)[:num_reasons]
 
-    @connection_required
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
     def jtag_create_clock(self):
         """
         Creates a JTAG clock on TCK.
@@ -2513,7 +2499,8 @@ class JLink(object):
         """
         return self._dll.JLINKARM_Clock()
 
-    @connection_required
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
     def jtag_send(self, tms, tdi, num_bits):
         """
         Sends data via JTAG.
@@ -2522,15 +2509,14 @@ class JLink(object):
         clock edge, on bit is transferred in from TDI and out to TDO.  The
         clock uses the TMS to step through the standard JTAG state machine.
 
-        Args:
-          tms (int): used to determine the state transitions for the Test Access Port (TAP) controller from
-          its current state
-          tdi (int): input data to be transferred in from TDI to TDO
 
-          num_bits (int): a number in the range ``[1, 32]`` inclusively specifying the number of meaningful bits in the
-          tms and tdi parameters for the purpose of extracting state and data information
+        :param tms: used to determine the state transitions for the Test Access Port (TAP)
+        controller from its current state
+        :param tdi: input data to be transferred in from TDI to TDO
+        :param num_bits: a number in the range ``[1, 32]`` inclusively specifying the number of meaningful bits in the
+        tms and tdi parameters for the purpose of extracting state and data information
 
-        Raises:
+        :raise:
           ValueError: if ``num_bits < 1`` or ``num_bits > 32``.
 
         See Also:
@@ -2541,7 +2527,8 @@ class JLink(object):
         self._dll.JLINKARM_StoreBits(tms, tdi, num_bits)
         return None
 
-    @connection_required
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
     def jtag_flush(self):
         """
         Flushes the internal JTAG buffer.
@@ -2552,18 +2539,36 @@ class JLink(object):
         """
         self._dll.JLINKARM_WriteBits()
 
-    @connection_required
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
     def jtag_device_id(self, index):
         """
         Return the Jtag Id of one connected device.
 
-        Args:
-          index: Device index
+        :param index: Device index
         """
         return self._dll.JLINKARM_JTAG_GetDeviceId(index)
 
     @interface_required(enums.JLinkInterfaces.JTAG)
-    @connection_required
+    @open_required
+    def jtag_device_info(self, index):
+        """
+        Get additional information about a device
+
+        :param index: Device index
+
+        :return: execution device information
+        """
+        if not utils.Utils.is_natural(index) or index >= self.num_supported_devices():
+            raise ValueError('Invalid index.')
+
+        info = structs.JLinkJTAGDeviceInfo()
+
+        self._dll.JLINKARM_JTAG_GetDeviceInfo(index, ctypes.byref(info))
+        return info
+
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
     def jtag_storeraw(self, output, mode, num_bits):
         """
         Store a raw data sequence in the output buffer

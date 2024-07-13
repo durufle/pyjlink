@@ -15,18 +15,13 @@ except ImportError:
     import io as StringIO
 
 
-def main(jlink_serial: int, device: str):
+def main(device: str):
     """
     Main function.
 
-    Args:
-      jlink_serial: the J-Link serial number
-      device: the target CPU
+    :param device: the target CPU
 
-    Returns:
-      ``None``
-
-    Raises:
+    :raise:
       JLinkException: on error
     """
     jlink = pyjlink.JLink()
@@ -47,4 +42,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    main(jlink_serial=504502376, device="CY8C5868XXXLP")
+    main(device="CY8C6XX7_CM4")

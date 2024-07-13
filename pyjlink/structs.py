@@ -114,6 +114,77 @@ class JLinkRAMArea(JLinkFlashArea):
     pass
 
 
+class JLinkJTAGDeviceInfo(Structure):
+    """
+    J-Link device information use with JTAG API
+    """
+    _fields_ = [
+        ('sName', POINTER(c_char)),
+        ('IRLen', c_uint32),
+        ('IRPrint', c_uint32),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initializes the instance.
+
+        Populates the ``.SizeofStruct`` parameter to the size of the instance.
+
+        :param args: list of arguments
+        :param kwargs: key-word arguments dictionary
+        """
+        super(JLinkJTAGDeviceInfo, self).__init__(*args, **kwargs)
+        self.SizeofStruct = sizeof(self)
+
+    def __repr__(self):
+        """
+        Returns a representation of this instance.
+
+        :return:
+          Returns a string representation of the instance.
+        """
+        return 'JLinkJTAGDeviceInfo(%s)' % self.__str__()
+
+    def __str__(self):
+        """
+        Returns a string representation of this instance.
+
+        :return:
+          Returns a string specifying the device name, core, and manufacturer.
+        """
+        return '%s ( IRLen: %d, IRPrint: %d)' % (self.name, self.IRLen, self.IRPrint)
+
+    @property
+    def name(self):
+        """
+        Returns the name of the device.
+
+        :return:
+          Device name.
+        """
+        return cast(self.sName, c_char_p).value.decode()
+
+    @property
+    def ir_len(self):
+        """
+        Returns instruction register length
+
+        :return:
+          IRLen.
+        """
+        return self.IRLen
+
+    @property
+    def ir_print(self):
+        """
+        Returns instruction register print
+
+        :return:
+          IRPrint.
+        """
+        return self.IRPrint
+
+
 class JLinkDeviceInfo(Structure):
     """
     J-Link device information.
@@ -368,7 +439,8 @@ class JLinkSpeedInfo(Structure):
         """
         Returns this instance formatted as a string.
         """
-        return '%s(Freq=%sHz)' % (self.__class__.__name__, self.BaseFreq)
+        return '%s(Freq=%sHz,Adaptive=%s, MinDiv=%s)' % (self.__class__.__name__,
+                                                         self.BaseFreq, self.SupportAdaptive == 1, self.MinDiv)
 
 
 class JLinkSWOStartInfo(Structure):

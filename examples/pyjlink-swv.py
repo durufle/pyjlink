@@ -36,34 +36,33 @@ import sys
 import time
 
 
-def serial_wire_viewer(jlink_serial, device):
-    """Implements a Serial Wire Viewer (SWV).
+def serial_wire_viewer(device):
+    """
+    Implements a Serial Wire Viewer (SWV).
 
     A Serial Wire Viewer (SWV) allows us implement real-time logging of output
     from a connected device over Serial Wire Output (SWO).
 
-    Args:
-      jlink_serial (str): the J-Link serial number
-      device (str): the target CPU
+    :param device: the target CPU
 
-    Returns:
+    :return:
       Always returns ``0``.
 
-    Raises:
+    :raise:
       JLinkException: on error
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=jlink_serial)
+    jlink.open()
 
     # Use Serial Wire Debug as the target interface.  Need this in order to use
     # Serial Wire Output.
     jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
     jlink.connect(device, verbose=True)
     jlink.coresight_configure()
-    jlink.set_reset_strategy(pylink.enums.JLinkResetStrategyCortexM3.RESETPIN)
+    jlink.set_reset_strategy(pyjlink.enums.JLinkResetStrategyCortexM3.RESETPIN)
 
-    # Have to halt the CPU before getitng its speed.
+    # Have to halt the CPU before getting its speed.
     jlink.reset()
     jlink.halt()
 
@@ -109,4 +108,4 @@ def serial_wire_viewer(jlink_serial, device):
 
 
 if __name__ == '__main__':
-    exit(serial_wire_viewer(sys.argv[1], sys.argv[2]))
+    exit(serial_wire_viewer("CY8C6XX7_CM4"))

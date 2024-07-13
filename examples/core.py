@@ -16,23 +16,21 @@ except ImportError:
     import io as StringIO
 
 
-def main(jlink_serial: int, device: str):
+def main(device: str):
     """
     Prints the core's information.
 
-    Args:
-      jlink_serial (str): the J-Link serial number
-      device (str): the target CPU
+    :param device: the target CPU
 
-    Returns:
+    :return:
       Always returns ``0``.
 
-    Raises:
+    :raise:
       JLinkException: on error
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=jlink_serial)
+    jlink.open()
 
     # Use Serial Wire Debug as the target interface.
     jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
@@ -52,4 +50,4 @@ def main(jlink_serial: int, device: str):
 
 if __name__ == '__main__':
     # CY8C6XX6_CM4
-    exit(main(504502376, "CY8C5868XXXLP"))
+    exit(main("CY8C6XX7_CM4"))

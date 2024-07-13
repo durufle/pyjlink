@@ -1,28 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Square, Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#
-# Example Serial Wire Debug Viewer.
-#
-# This module demonstrates implementing a Serial Wire Viewer using the PyLink
-# library.
-#
-# Usage: swd.py jlink_serial_number device
-# Author: Ford Peprah
-# Date: Friday, September 23rd, 2016
-# Copyright: 2016 Square, Inc.
+# License: MIT
+
 
 import pyjlink
 
@@ -30,31 +11,28 @@ try:
     import StringIO
 except ImportError:
     import io as StringIO
-import string
 import sys
 import time
 
 
-def main(jlink_serial: int, device: str):
+def main(device: str):
     """
     Implements a Serial Wire Viewer (SWV).
 
     A Serial Wire Viewer (SWV) allows us implement real-time logging of output
     from a connected device over Serial Wire Output (SWO).
 
-    Args:
-      jlink_serial (str): the J-Link serial number
-      device (str): the target CPU
+    :param device: the target CPU
 
-    Returns:
+    :return:
       Always returns ``0``.
 
-    Raises:
+    :raise:
       JLinkException: on error
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=jlink_serial)
+    jlink.open()
 
     # Use Serial Wire Debug as the target interface.  Need this in order to use
     # Serial Wire Output.
@@ -107,4 +85,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    exit(main(504502376, "STM32L552ZE"))
+    exit(main("CY8C6XX7_CM4"))

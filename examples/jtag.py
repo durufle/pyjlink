@@ -26,13 +26,14 @@ def main(serial: int, device: str):
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=serial)
-    jlink.connect(device)
-
-    #
+    jlink.open()
+    jlink.set_speed(4000)
+    print(f"speed info      : {jlink.speed_info}")
+    print(f"device id       : {jlink.jtag_device_id(0)}")
+    print(f"device info     : {jlink.jtag_device_info(0)}")
 
     jlink.close()
 
 
 if __name__ == '__main__':
-    main(serial=504502376, device="STM32L552ZE")
+    main(serial=504502376, device="CY8C6XX7_CM4")

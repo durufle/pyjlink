@@ -471,8 +471,8 @@ class JLinkSpeedInfo(Structure):
         """
         Returns this instance formatted as a string.
         """
-        return '%s(Freq=%sHz,Adaptive=%s, MinDiv=%s)' % (self.__class__.__name__,
-                                                         self.BaseFreq, self.SupportAdaptive == 1, self.MinDiv)
+        return '%s(Freq=%sHz, Adaptive=%s, MinDiv=%s)' % (self.__class__.__name__,
+                                                          self.BaseFreq, self.SupportAdaptive == 1, self.MinDiv)
 
 
 class JLinkSWOStartInfo(Structure):

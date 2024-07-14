@@ -2715,7 +2715,7 @@ class JLink(object):
         return self.flash_write(addr, data, 32)
 
     @connection_required
-    def code_memory_read(self, addr: int, num_bytes: int):
+    def code_memory_read(self, addr: int, num_bytes: int) -> list:
         """
         Reads bytes from code memory.
 

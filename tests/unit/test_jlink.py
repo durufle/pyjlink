@@ -3295,7 +3295,7 @@ class TestJLink(unittest.TestCase):
         res = self.jlink.code_memory_read(0, 1)
         self.assertTrue(isinstance(res, list))
         self.assertEqual(1, len(res))
-        self.assertTrue(isinstance(res[0], bytes))
+        self.assertTrue(isinstance(res[0], int))
 
     def test_jlink_num_memory_zones(self):
         """

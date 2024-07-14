@@ -115,7 +115,7 @@ class TestStructs(unittest.TestCase):
         info.sManu = ctypes.cast(manufacturer, ctypes.POINTER(ctypes.c_char))
         self.assertEqual(manufacturer.decode(), info.manufacturer)
 
-        info_string = 'A Feast For Crows <Core Id. 0, Manu. G.R.R. Martin>'
+        info_string = 'A Feast For Crows <Core Id. 0, Manu. G.R.R. Martin, Flash size: None>'
         self.assertEqual(info_string, str(info))
         self.assertEqual('JLinkDeviceInfo(%s)' % info_string, repr(info))
 
@@ -187,7 +187,7 @@ class TestStructs(unittest.TestCase):
 
         self.assertEqual(ctypes.sizeof(info), info.SizeOfStruct)
 
-        info_string = 'JLinkSpeedInfo(Freq=0Hz)'
+        info_string = 'JLinkSpeedInfo(Freq=0Hz, Adaptive=False, MinDiv=0)'
         self.assertEqual(info_string, str(info))
         self.assertEqual(info_string, repr(info))
 

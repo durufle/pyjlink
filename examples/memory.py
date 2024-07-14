@@ -1,27 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Square, Inc.
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2024 Laurent Bonnet
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#
-# Example core information printer.
-#
-# This module prints the core's information.
-#
-# Usage: core.py jlink_serial_number device
-# Author: Ford Peprah
-# Date: October 1st, 2016
-# Copyright: 2016 Square, Inc.
+# License: MIT
+
 
 import pyjlink
 
@@ -65,4 +47,4 @@ def main(jlink_serial: int, device: str):
 
 
 if __name__ == '__main__':
-    exit(main(504502376, "CY8C5868XXXLP"))
+    exit(main(504502376, "CY8C6XX7_CM4"))

@@ -1,9 +1,8 @@
 Tutorial
 ========
 
-In this tutorial, assume that the serial number of the J-Link emulator being
-connected to is ``123456789``, and that the target device is an
-``Mkxxxxxxxxxx7``.
+In this tutorial, assume that the serial number of the J-Link emulator being connected to is ``123456789``, and that the
+target device is an ``CY8C6XX7_CM4``.
 
 Connecting to an Emulator
 -------------------------
@@ -36,7 +35,7 @@ Connecting to a Target CPU
 
 .. code:: python
 
-   >>> jlink.connect('MKxxxxxxxxxx7')
+   >>> jlink.connect('CY8C6XX7_CM4')
    >>> jlink.core_id()
    50331903
    >>> jlink.device_family()

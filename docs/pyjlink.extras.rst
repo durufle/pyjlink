@@ -31,6 +31,7 @@ Registers
 This submodule provides `ctypes` bindings for different registers.
 
 .. automodule:: pyjlink.registers
+    :noindex:
     :members:
     :undoc-members:
     :show-inheritance:

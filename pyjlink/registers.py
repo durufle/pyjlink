@@ -12,10 +12,10 @@ class IDCodeRegisterBits(ctypes.LittleEndianStructure):
     This class holds the different bit masks for the IDCode register.
 
     Attributes:
-      'valid': validity bit, should always be ``0``.
-      'manufacturer': the JEDEC Manufacturer ID.
-      'part_no': the part number defined by the manufacturer.
-      'version_code': the version code.
+      valid (int): validity bit, should always be ``0``.
+      manufacturer (int): the JEDEC Manufacturer ID.
+      part_no (int): the part number defined by the manufacturer.
+      version_code (int): the version code.
     """
     _fields_ = [
         ('valid',        ctypes.c_uint32, 1),

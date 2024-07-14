@@ -46,6 +46,5 @@ def step_force_firmware_update(context):
     """
     assert context.jlink.update_firmware() >= 0
 
-    log_messages = context.log.getvalue().split('\n')
-    print(log_messages)
+    log_messages = context.log.getvalue()
     assert 'New firmware booted successfully' in log_messages

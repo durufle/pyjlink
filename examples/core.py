@@ -20,7 +20,7 @@ def main(device: str):
     """
     Prints the core's information.
 
-    :param device: the target CPU
+    :param device: the target CPU (e.g. STM32L552ZE, CY8C6XX7_CM4)
 
     :return:
       Always returns ``0``.
@@ -40,6 +40,7 @@ def main(device: str):
     print(f'CPU Id                  : {hex(jlink.core_cpu()).upper()}')
     print(f'Core Name               : {jlink.core_name()}')
     print(f'Device Family           : {jlink.device_family()}')
+
     print(f"etm supported           : {jlink.etm_supported}")
     print("Register list...")
 
@@ -50,4 +51,4 @@ def main(device: str):
 
 if __name__ == '__main__':
     # CY8C6XX6_CM4
-    exit(main("CY8C6XX7_CM4"))
+    exit(main("STM32L552ZE"))

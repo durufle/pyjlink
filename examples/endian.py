@@ -14,7 +14,6 @@ try:
     import StringIO
 except ImportError:
     import io as StringIO
-import sys
 
 
 def main(device: str):

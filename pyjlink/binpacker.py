@@ -21,7 +21,7 @@ def pack_size(value: int):
 
     :return: The minimal number of bytes required to represent the given integer.
 
-    :raises:
+    :raise:
       ValueError: if ``value < 0``.
       TypeError: if ``value`` is not a number.
     """

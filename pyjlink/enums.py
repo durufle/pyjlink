@@ -539,20 +539,20 @@ class JLinkVectorCatchCortexM3(object):
     Vector catch types for the ARM Cortex M3.
 
     Attributes:
-      CORE_RESET: The CPU core reset.
-      MEM_ERROR: A memory management error occurred.
-      COPROCESSOR_ERROR: Usage fault error accessing the Coprocessor.
-      CHECK_ERROR: Usage fault error on enabled check.
-      STATE_ERROR: Usage fault state error.
-      BUS_ERROR: Normal bus error.
-      INT_ERROR: Interrupt or exception service error.
-      HARD_ERROR: Hard fault error.
+        CORE_RESET: The CPU core reset.
+        MEM_ERROR: A memory management error occurred.
+        COPROCESSOR_ERROR: Usage fault error accessing the Coprocessor.
+        CHECK_ERROR: Usage fault error on enabled check.
+        STATE_ERROR: Usage fault state error.
+        BUS_ERROR: Normal bus error.
+        INT_ERROR: Interrupt or exception service error.
+        HARD_ERROR: Hard fault error.
     """
-    CORE_RESET = (1 << 0)
+    CORE_RESET: int = (1 << 0)
     MEM_ERROR = (1 << 4)
     COPROCESSOR_ERROR = (1 << 5)
     CHECK_ERROR = (1 << 6)
-    STATE_ERROR = (1 << 7)
+    STATE_ERROR: int = (1 << 7)
     BUS_ERROR = (1 << 8)
     INT_ERROR = (1 << 9)
     HARD_ERROR = (1 << 10)

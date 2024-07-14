@@ -3,9 +3,8 @@
 # Copyright (C) 2024 Laurent Bonnet
 #
 # License: MIT
-
 """
-jlink module
+ jlink module
 """
 import struct
 
@@ -27,7 +26,7 @@ import logging
 import operator
 import time
 import six
-
+from array import array
 logger = logging.getLogger(__name__)
 
 
@@ -256,23 +255,20 @@ class JLink(object):
         return _interface_required
 
     def __init__(self, lib=None, log=None, detailed_log=None, error=None, warn=None, unsecure_hook=None,
-                 serial_no=None, ip_addr=None, open_tunnel=False, use_tmpcpy=True):
+                 serial_no=None, ip_addr=None, open_tunnel=False, use_tmp_cpy=True):
         """
         Initializes the J-Link interface object.
 
         Note:
-          By default, the unsecure dialog will reject unsecuring the device on
-          connection.  If you wish to change this behaviour (to have the device
-          be unsecured and erased), pass a callback that returns
+          By default, the unsecure dialog will reject un-securing the device on connection.  If you wish to change this
+          behaviour (to have the device be unsecured and erased), pass a callback that returns
           ``JLinkFlags.DLG_BUTTON_YES`` as its return value.
 
         Args:
-          self (JLink): the ``JLink`` instance
           lib (Library): a valid ``Library`` instance (not ``None`` dll)
-          log (function): function to be called to write out log messages, by
-            default this writes to standard out
-          detailed_log (function): function to be called to write out detailed
-            log messages, by default this writes to standard out
+          log (function): function to be called to write out log messages, by default this writes to standard out
+          detailed_log (function): function to be called to write out detailed log messages,
+          by default this writes to standard out
           error (function): function to be called to write out error messages,
             default this writes to standard error
           warn (function): function to be called to write out warning messages,
@@ -289,7 +285,7 @@ class JLink(object):
             of ``open`` method.
             If ``None``, the driver will not be opened automatically
             (however, it is still closed when exiting the context manager).
-          use_tmpcpy (bool): True to load a temporary copy of J-Link DLL
+          use_tmp_cpy (bool): True to load a temporary copy of J-Link DLL
 
         Returns:
           ``None``
@@ -300,7 +296,7 @@ class JLink(object):
         self._initialized = False
 
         if lib is None:
-            lib = library.Library(use_tmp_cpy=use_tmpcpy)
+            lib = library.Library(use_tmp_cpy=use_tmp_cpy)
 
         if lib.dll() is None:
             raise TypeError('Expected to be given a valid DLL.')
@@ -1476,12 +1472,6 @@ class JLink(object):
     def set_max_speed(self):
         """
         Sets JTAG communication speed to the maximum supported speed.
-
-        Args:
-          self (JLink): the JLink instance
-
-        Returns:
-          None
         """
         self._dll.JLINKARM_SetMaxSpeed()
         return None
@@ -1491,12 +1481,8 @@ class JLink(object):
         """
         Retrieves information about supported target interface speeds.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          The ``JLinkSpeedInfo`` instance describing the supported target
-          interface speeds.
+        :return:
+          The ``JLinkSpeedInfo`` instance describing the supported target interface speeds.
         """
         speed_info = structs.JLinkSpeedInfo()
         self._dll.JLINKARM_GetSpeedInfo(ctypes.byref(speed_info))
@@ -1508,10 +1494,7 @@ class JLink(object):
         """
         Returns a string of the built-in licenses the J-Link has.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           String of the contents of the built-in licenses the J-Link has.
         """
         buf_size = self.MAX_BUF_SIZE
@@ -1528,10 +1511,7 @@ class JLink(object):
         """
         Returns a string of the installed licenses the J-Link has.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           String of the contents of the custom licenses the J-Link has.
         """
         buf = ctypes.create_string_buffer(self.MAX_BUF_SIZE)
@@ -1546,14 +1526,12 @@ class JLink(object):
         """
         Adds the given ``contents`` as a new custom license to the J-Link.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          contents: the string contents of the new custom license
+        :param contents: the string contents of the new custom license
 
-        Returns:
+        :return:
           True if license was added, ``False`` if license already existed.
 
-        Raises:
+        :raise:
           JLinkException: if the write fails.
 
         Note:
@@ -1580,14 +1558,11 @@ class JLink(object):
         """
         Erases the custom licenses from the connected J-Link.
 
+        :return:
+            True on success, otherwise False.
+
         Note:
           This method will erase all licenses stored on the J-Link.
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-            True on success, otherwise False.
         """
         res = self._dll.JLINK_EMU_EraseLicenses()
         return res == 0
@@ -1598,10 +1573,7 @@ class JLink(object):
         """
         Returns the current target interface of the J-Link.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           Integer specifying the current target interface.
         """
         return self._tif
@@ -1611,10 +1583,7 @@ class JLink(object):
         """
         Returns a bitmask of the supported target interfaces.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        return:
           Bitfield specifying which target interfaces are supported.
         """
         buf = ctypes.c_uint32()
@@ -1629,14 +1598,12 @@ class JLink(object):
 
         Note that a restart must be triggered for this to take effect.
 
-        Args:
-          self (Jlink): the ``JLink`` instance
-          interface (int): integer identifier of the interface
+        :param interface: integer identifier of the interface
 
-        Returns:
+        return:
           True if target was updated, otherwise False.
 
-        Raises:
+        :raise:
           JLinkException: if the given interface is invalid or unsupported.
         """
         if not (1 << interface) & self.supported_tif():
@@ -1653,19 +1620,16 @@ class JLink(object):
 
     @open_required
     def gpio_properties(self):
-        """Returns the properties of the user-controllable GPIOs.
+        """
+        Returns the properties of the user-controllable GPIOs.
 
         Provided the device supports user-controllable GPIOs, they will be
         returned by this method.
 
-        Args:
-          self (JLink): the ``JLink`` instance
+        :return:
+          A list of ``JLinkGPIODescriptor`` instances totalling the number of requested properties.
 
-        Returns:
-          A list of ``JLinkGPIODescriptor`` instances totalling the number of
-          requested properties.
-
-        Raises:
+        :raise:
           JLinkException: on error.
         """
         res = self._dll.JLINK_EMU_GPIO_GetProps(0, 0)
@@ -1687,14 +1651,12 @@ class JLink(object):
 
         Defaults to the first four pins if an argument is not given.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          pins (list): indices of the GPIO pins whose states are requested
+        :param pins: indices of the GPIO pins whose states are requested
 
-        Returns:
+        :return:
           A list of states.
 
-        Raises:
+        :raise:
           JLinkException: on error.
         """
         if pins is None:
@@ -2226,12 +2188,6 @@ class JLink(object):
         Note:
           This must be called at least once after power up if the TAP
           controller is to be used.
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          ``None``
         """
         self._dll.JLINKARM_ResetTRST()
 
@@ -2244,13 +2200,13 @@ class JLink(object):
           This is a no-op if the CPU isn't halted.
 
         Args:
-          num_instructions (int): number of instructions to simulate, defaults to zero
-          skip_breakpoints (bool): skip current breakpoint (default: False)
+        :param num_instructions: number of instructions to simulate, defaults to zero
+        :param skip_breakpoints: skip current breakpoint (default: False)
 
-        Returns:
+        :return:
             True if device was restarted, otherwise False.
 
-        Raises:
+        :raises:
           ValueError: if instruction count is not a natural number.
         """
         if not utils.Utils.is_natural(num_instructions):
@@ -2269,14 +2225,11 @@ class JLink(object):
 
     @connection_required
     @decorators.async_decorator
-    def halt(self):
+    def halt(self) -> bool:
         """
         Halts the CPU Core.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           ``True`` if halted, ``False`` otherwise.
         """
         res = int(self._dll.JLINKARM_Halt())
@@ -2286,17 +2239,14 @@ class JLink(object):
         return False
 
     @connection_required
-    def halted(self):
+    def halted(self) -> bool:
         """
         Returns whether the CPU core was halted.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           ``True`` if the CPU core is halted, otherwise ``False``.
 
-        Raises:
+        :raise:
           JLinkException: on device errors.
         """
         result = int(self._dll.JLINKARM_IsHalted())
@@ -2306,14 +2256,11 @@ class JLink(object):
         return result > 0
 
     @connection_required
-    def core_id(self):
-        """Returns the identifier of the target ARM core.
+    def core_id(self) -> int:
+        """
+        Returns the identifier of the target ARM core.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          Integer identifier of ARM core.
+        :return: Integer identifier of ARM core.
         """
         return self._dll.JLINKARM_GetId()
 
@@ -2326,11 +2273,7 @@ class JLink(object):
           This is distinct from the value returned from ``core_id()`` which is
           the ARM specific identifier.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          The identifier of the CPU core.
+        :return: The identifier of the CPU core.
         """
         return self._dll.JLINKARM_CORE_GetFound()
 
@@ -2339,8 +2282,7 @@ class JLink(object):
         """
         Returns the name of the target ARM core.
 
-        Returns:
-          The target core's name.
+        :return: The target core's name.
         """
         buf_size = self.MAX_BUF_SIZE
         buf = ctypes.create_string_buffer(buf_size)
@@ -2352,11 +2294,7 @@ class JLink(object):
         """
         Counts and returns the total length of instruction registers of all the devices in the JTAG scan chain.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          Total instruction register length.
+        :return: Total instruction register length.
         """
         return self._dll.JLINKARM_GetIRLen()
 
@@ -2365,26 +2303,21 @@ class JLink(object):
         """
         Retrieves and returns the length of the scan chain select register.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          Length of the scan chain select register.
+        return: Length of the scan chain select register.
         """
         return self._dll.JLINKARM_GetScanLen()
 
     @connection_required
-    def scan_chain_len(self, scan_chain):
-        """Retrieves and returns the number of bits in the scan chain.
+    def scan_chain_len(self, scan_chain: int):
+        """
+        Retrieves and returns the number of bits in the scan chain.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          scan_chain (int): scan chain to be measured
+        :param scan_chain: scan chain to be measured
 
-        Returns:
+        :returns:
           Number of bits in the specified scan chain.
 
-        Raises:
+        :raise:
           JLinkException: on error.
         """
         res = self._dll.JLINKARM_MeasureSCLen(scan_chain)
@@ -2394,12 +2327,10 @@ class JLink(object):
 
     @connection_required
     def device_family(self):
-        """Returns the device family of the target CPU.
+        """
+        Returns the device family of the target CPU.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           Integer identifier of the device family.
         """
         return self._dll.JLINKARM_GetDeviceFamily()
@@ -2411,10 +2342,7 @@ class JLink(object):
 
         The returned indices can be used to read the register content or grab the register name.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
+        :return:
           List of registers.
         """
         num_items = self.MAX_NUM_CPU_REGISTERS
@@ -2423,15 +2351,13 @@ class JLink(object):
         return buf[:num_regs]
 
     @connection_required
-    def register_name(self, register_index):
+    def register_name(self, register_index: int):
         """
         Retrieves and returns the name of an ARM CPU register.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          register_index (int): index of the register whose name to retrieve
+        :param register_index: index of the register whose name to retrieve
 
-        Returns:
+        return:
           Name of the register.
         """
         result = self._dll.JLINKARM_GetRegisterName(register_index)
@@ -2442,18 +2368,15 @@ class JLink(object):
         """
         Retrieves the CPU speed of the target.
 
-        If the target does not support CPU frequency detection, this function
-        will return ``0``.
+        If the target does not support CPU frequency detection, this function will return ``0``.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          silent (bool): ``True`` if the CPU detection should not report errors to the error handler on failure.
+        :param silent: ``True`` if the CPU detection should not report errors to the error handler on failure.
 
-        Returns:
+        :return:
           The measured CPU frequency on success, otherwise ``0`` if the core does
           not support CPU frequency detection.
 
-        Raises:
+        :raise:
           JLinkException: on hardware error.
         """
         res = self._dll.JLINKARM_MeasureCPUSpeedEx(-1, 1, int(silent))
@@ -2467,12 +2390,10 @@ class JLink(object):
         Retrieves the reasons that the CPU was halted.
 
         :return:
-          A list of ``JLInkMOEInfo`` instances specifying the reasons for which
-          the CPU was halted.  This list may be empty in the case that the CPU
-          is not halted.
+          A list of ``JLInkMOEInfo`` instances specifying the reasons for which the CPU was halted.  This list may be
+          empty in the case that the CPU is not halted.
 
-        :raise:
-          JLinkException: on hardware error.
+        :raise: JLinkException: on hardware error.
         """
         buf_size = self.MAX_NUM_MOES
         buf = (structs.JLinkMOEInfo * buf_size)()
@@ -2488,14 +2409,11 @@ class JLink(object):
         """
         Creates a JTAG clock on TCK.
 
+        :return:
+          The state of the TDO pin: either ``0`` or ``1``.
+
         Note:
           This function only needs to be called once.
-
-        Args:
-          self (JLink): the ``JLink`` instance
-
-        Returns:
-          The state of the TDO pin: either ``0`` or ``1``.
         """
         return self._dll.JLINKARM_Clock()
 
@@ -2509,12 +2427,11 @@ class JLink(object):
         clock edge, on bit is transferred in from TDI and out to TDO.  The
         clock uses the TMS to step through the standard JTAG state machine.
 
-
-        :param tms: used to determine the state transitions for the Test Access Port (TAP)
-        controller from its current state
+        :param tms: used to determine the state transitions for the Test Access Port (TAP) controller from
+                    its current state
         :param tdi: input data to be transferred in from TDI to TDO
-        :param num_bits: a number in the range ``[1, 32]`` inclusively specifying the number of meaningful bits in the
-        tms and tdi parameters for the purpose of extracting state and data information
+        :param num_bits: a number in the range ``1, 32`` inclusively specifying the number of meaningful bits in the
+                         tms and tdi parameters for the purpose of extracting state and data information
 
         :raise:
           ValueError: if ``num_bits < 1`` or ``num_bits > 32``.
@@ -2525,7 +2442,6 @@ class JLink(object):
         if not utils.Utils.is_natural(num_bits) or num_bits <= 0 or num_bits > 32:
             raise ValueError('Number of bits must be >= 1 and <= 32.')
         self._dll.JLINKARM_StoreBits(tms, tdi, num_bits)
-        return None
 
     @interface_required(enums.JLinkInterfaces.JTAG)
     @open_required
@@ -2569,54 +2485,95 @@ class JLink(object):
 
     @interface_required(enums.JLinkInterfaces.JTAG)
     @open_required
-    def jtag_storeraw(self, output, mode, num_bits):
+    def jtag_store_data(self, output: array, num_bits):
         """
         Store a raw data sequence in the output buffer
-        """
 
-        # self._dll.JLINKARM_StoreRaw(tdi, mode, num_bits)
+        :return: bit position of data in input buffer after transmission
+        """
+        length = len(output)
+        buf = (ctypes.c_uint32 * length)()
+        bit_position = self._dll.JLINK_JTAG_StoreData(buf, num_bits)
+        if bit_position < 0:
+            raise errors.JLinkException(bit_position)
+        return bit_position
+
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
+    def jtag_get_u8(self, num_bits):
+        """
+        Get a unit of 8 bit from output buffer
+
+        :param num_bits: Start position of unit to read from input buffer
+
+        Note:
+            No control on num_bits value
+        """
+        value = self._dll.JLINKARM_GetU8(num_bits)
+        return value
+
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
+    def jtag_get_u16(self, num_bits):
+        """
+        Get a unit of 16 bit from output buffer
+
+        Note: No control on num_bits value
+
+        :param num_bits: Start position of unit to read from input buffer
+        """
+        value = self._dll.JLINKARM_GetU16(num_bits)
+        return value
+
+    @interface_required(enums.JLinkInterfaces.JTAG)
+    @open_required
+    def jtag_get_u32(self, num_bits):
+        """
+        Get a unit of 32 bit from output buffer
+
+        :param num_bits: Start position of unit to read from input buffer
+
+        Note:
+            No control on num_bits value
+        """
+        value = self._dll.JLINKARM_GetU32(num_bits)
+        return value
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
-    def swd_read8(self, offset):
+    def swd_read8(self, offset: int):
         """
         Gets a unit of 8 bits from the input buffer.
 
-        Args:
-          offset (int): the offset (in bits) from which to start reading
+        :param offset: the offset (in bits) from which to start reading
 
-        Returns:
-          The integer read from the input buffer.
+        :return: The integer read from the input buffer.
         """
         value = self._dll.JLINK_SWD_GetU8(offset)
         return ctypes.c_uint8(value).value
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
-    def swd_read16(self, offset):
+    def swd_read16(self, offset: int):
         """
         Gets a unit of 16 bits from the input buffer.
 
-        Args:
-          offset (int): the offset (in bits) from which to start reading
+        :param offset: the offset (in bits) from which to start reading
 
-        Returns:
-          The integer read from the input buffer.
+        :return: The integer read from the input buffer.
         """
         value = self._dll.JLINK_SWD_GetU16(offset)
         return ctypes.c_uint16(value).value
 
     @interface_required(enums.JLinkInterfaces.SWD)
     @connection_required
-    def swd_read32(self, offset):
+    def swd_read32(self, offset: int):
         """
         Gets a unit of 32 bits from the input buffer.
 
-        Args:
-          offset (int): the offset (in bits) from which to start reading
+        :param offset: the offset (in bits) from which to start reading
 
-        Returns:
-          The integer read from the input buffer.
+        :return: The integer read from the input buffer.
         """
         value = self._dll.JLINK_SWD_GetU32(offset)
         return ctypes.c_uint32(value).value
@@ -2627,13 +2584,11 @@ class JLink(object):
         """
         Writes bytes over SWD (Serial Wire Debug).
 
-        Args:
-          output (int): the output buffer offset to write to
-          value (int): the value to write to the output buffer
-          numbits (int): the number of bits needed to represent the ``output`` and value
+        :param output: the output buffer offset to write to
+        :param value: the value to write to the output buffer
+        :param numbits: the number of bits needed to represent the ``output`` and value
 
-        Returns:
-          The bit position of the response in the input buffer.
+        :return: The bit position of the response in the input buffer.
         """
         p_output = binpacker.pack(output, numbits)
         p_input = binpacker.pack(value, numbits)
@@ -2648,12 +2603,10 @@ class JLink(object):
         """
         Writes one byte over SWD (Serial Wire Debug).
 
-        Args:
-          output (int): the output buffer offset to write to
-          value (int): the value to write to the output buffer
+        :param output : the output buffer offset to write to
+        :param value: the value to write to the output buffer
 
-        Returns:
-          The bit position of the response in the input buffer.
+        :return: The bit position of the response in the input buffer.
         """
         return self.swd_write(output, value, 8)
 
@@ -2663,12 +2616,10 @@ class JLink(object):
         """
         Writes two bytes over SWD (Serial Wire Debug).
 
-        Args:
-          output (int): the output buffer offset to write to
-          value (int): the value to write to the output buffer
+        :param output: the output buffer offset to write to
+        :parm value: the value to write to the output buffer
 
-        Returns:
-          The bit position of the response in the input buffer.
+        :return: The bit position of the response in the input buffer.
         """
         return self.swd_write(output, value, 16)
 
@@ -2678,12 +2629,10 @@ class JLink(object):
         """
         Writes four bytes over SWD (Serial Wire Debug).
 
-        Args:
-          output (int): the output buffer offset to write to
-          value (int): the value to write to the output buffer
+        :param output: the output buffer offset to write to
+        :param value: the value to write to the output buffer
 
-        Returns:
-          The bit position of the response in the input buffer.
+        :return: The bit position of the response in the input buffer.
         """
         return self.swd_write(output, value, 32)
 
@@ -2693,12 +2642,7 @@ class JLink(object):
         """
         Causes a flush to write all data remaining in output buffers to SWD device.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          pad (bool): ``True`` if should pad the data to full byte size
-
-        Returns:
-          ``None``
+        :param pad: ``True`` if should pad the data to full byte size
         """
         if pad:
             self._dll.JLINK_SWD_SyncBytes()
@@ -2708,20 +2652,18 @@ class JLink(object):
 
     @connection_required
     def flash_write(self, addr, data, nbits=None, flags=0):
-        """Writes data to the flash region of a device.
+        """
+        Writes data to the flash region of a device.
 
-        The given number of bits, if provided, must be either ``8``, ``16``, or
-        ``32``.
+        The given number of bits, if provided, must be either ``8``, ``16``, or ``32``.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): starting flash address to write to
-          data (list): list of data units to write
-          nbits (int): number of bits to use for each unit
-          flags:
 
-        Returns:
-          Number of bytes written to flash.
+        :param addr: starting flash address to write to
+        :param data: list of data units to write
+        :param nbits: number of bits to use for each unit
+        :param flags:
+
+        :return: Number of bytes written to flash.
         """
         # This indicates that all data written from this point on will go into
         # the buffer of the flash loader of the DLL.
@@ -2738,64 +2680,57 @@ class JLink(object):
 
     @connection_required
     def flash_write8(self, addr, data):
-        """Writes bytes to the flash region of a device.
+        """
+        Writes bytes to the flash region of a device.
 
-        Args:
-          addr (int): starting flash address to write to
-          data (list): list of bytes to write
+        :parma addr: starting flash address to write to
+        :param data: list of bytes to write
 
-        Returns:
-          Number of bytes written to flash.
+        :return: Number of bytes written to flash.
         """
         return self.flash_write(addr, data, 8)
 
     @connection_required
-    def flash_write16(self, addr, data):
+    def flash_write16(self, addr: int, data: list):
         """
         Writes half-words to the flash region of a device.
 
-        Args:
-          addr (int): starting flash address to write to
-          data (list): list of half-words to write
+        :param addr: starting flash address to write to
+        :param data: list of half-words to write
 
-        Returns:
-          Number of bytes written to flash.
+        :return: Number of bytes written to flash.
         """
         return self.flash_write(addr, data, 16)
 
     @connection_required
-    def flash_write32(self, addr, data):
+    def flash_write32(self, addr: int, data: list):
         """
         Writes words to the flash region of a device.
 
-        Args:
-          addr (int): starting flash address to write to
-          data (list): list of words to write
+        :param addr: starting flash address to write to
+        :param data: list of words to write
 
-        Returns:
-          Number of bytes written to flash.
+        :return: Number of bytes written to flash.
         """
         return self.flash_write(addr, data, 32)
 
     @connection_required
-    def code_memory_read(self, addr, num_bytes):
+    def code_memory_read(self, addr: int, num_bytes: int):
         """
         Reads bytes from code memory.
 
         Note:
-          This is similar to calling ``memory_read`` or ``memory_read8``,
-          except that this uses a cache and reads ahead.  This should be used
-          in instances where you want to read a small amount of bytes at a
-          time, and expect to always read ahead.
+          This is similar to calling ``memory_read`` or ``memory_read8``, except that this uses a cache and reads ahead.
+          This should be used in instances where you want to read a small amount of bytes at a time, and expect to
+          always read ahead.
 
-        Args:
-          addr (int): starting address from which to read
-          num_bytes (int): number of bytes to read
+        :param addr: starting address from which to read
+        :param num_bytes: number of bytes to read
 
-        Returns:
+        :return:
           A list of bytes read from the target.
 
-        Raises:
+        :raise:
           JLinkException: if memory could not be read.
         """
         buf_size = num_bytes
@@ -2810,10 +2745,10 @@ class JLink(object):
         """
         Returns the number of memory zones supported by the target.
 
-        Returns:
+        :return:
           An integer count of the number of memory zones supported by the target.
 
-        Raises:
+        :raise:
           JLinkException: on error.
         """
         count = self._dll.JLINK_GetMemZones(0, 0)
@@ -2826,14 +2761,13 @@ class JLink(object):
         """
         Gets all memory zones supported by the current target.
 
-        Some targets support multiple memory zones.  This function provides the
-        ability to get a list of all the memory zones to facilate using the
-        memory zone routing functions.
+        Some targets support multiple memory zones.  This function provides the ability to get a list of all the memory
+        zones to facilitate using the memory zone routing functions.
 
-        Returns:
+        :return:
           A list of all the memory zones as ``JLinkMemoryZone`` structures.
 
-        Raises:
+        :raise:
           JLinkException: on hardware errors.
         """
         count = self.num_memory_zones()
@@ -2851,22 +2785,20 @@ class JLink(object):
         """
         Reads memory from a target system or specific memory zone.
 
-        The optional ``zone`` specifies a memory zone to access to read from,
-        e.g. ``IDATA``, ``DDATA``, or ``CODE``.
+        The optional ``zone`` specifies a memory zone to access to read from, e.g. ``IDATA``, ``DDATA``, or ``CODE``.
 
-        The given number of bits, if provided, must be either ``8``, ``16``, or
-        ``32``.  If not provided, always reads ``num_units`` bytes.
+        The given number of bits, if provided, must be either ``8``, ``16``, or ``32``.
+        If not provided, always reads ``num_units`` bytes.
 
-        Args:
-          addr (int): start address to read from
-          num_units (int): number of units to read
-          zone (str): optional memory zone name to access
-          nbits (int): number of bits to use for each unit
+        :param addr: start address to read from
+        :param num_units: number of units to read
+        :param zone: optional memory zone name to access
+        :param nbits: number of bits to use for each unit
 
-        Returns:
+        :return:
           List of units read from the target system.
 
-        Raises:
+        :raise:
           JLinkException: if memory could not be read.
           ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16`` or ``32``.
         """
@@ -2909,41 +2841,39 @@ class JLink(object):
         """
         Reads memory from the target system in units of bytes.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): start address to read from
-          num_bytes (int): number of bytes to read
-          zone (str): memory zone to read from
+        :param addr: start address to read from
+        :param num_bytes: number of bytes to read
+        :param zone: memory zone to read from
 
-        Returns:
+        :return:
           List of bytes read from the target system.
 
-        Raises:
+        :raise:
           JLinkException: if memory could not be read.
         """
         return self.memory_read(addr, num_bytes, zone=zone, nbits=8)
 
     @connection_required
-    def memory_read16(self, addr, num_halfwords, zone=None):
-        """Reads memory from the target system in units of 16-bits.
+    def memory_read16(self, addr, num_half_words, zone=None):
+        """
+        Reads memory from the target system in units of 16-bits.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): start address to read from
-          num_halfwords (int): number of half words to read
-          zone (str): memory zone to read from
+        :param addr: start address to read from
+        :param num_half_words: number of half words to read
+        :param zone: memory zone to read from
 
-        Returns:
-          List of halfwords read from the target system.
+        :return:
+          List of half-words read from the target system.
 
-        Raises:
+        :raise:
           JLinkException: if memory could not be read
         """
-        return self.memory_read(addr, num_halfwords, zone=zone, nbits=16)
+        return self.memory_read(addr, num_half_words, zone=zone, nbits=16)
 
     @connection_required
     def memory_read32(self, addr, num_words, zone=None):
-        """Reads memory from the target system in units of 32-bits.
+        """
+        Reads memory from the target system in units of 32-bits.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -2961,7 +2891,8 @@ class JLink(object):
 
     @connection_required
     def memory_read64(self, addr, num_long_words):
-        """Reads memory from the target system in units of 64-bits.
+        """
+        Reads memory from the target system in units of 64-bits.
 
         Args:
           self (JLink): the ``JLink`` instance
@@ -2983,27 +2914,22 @@ class JLink(object):
         return buf[:units_read]
 
     @connection_required
-    def memory_write(self, addr, data, zone=None, nbits=None):
+    def memory_write(self, addr: int, data: list, zone: str = None, nbits: int = None):
         """
         Writes memory to a target system or specific memory zone.
 
-        The optional ``zone`` specifies a memory zone to access to write to,
-        e.g. ``IDATA``, ``DDATA``, or ``CODE``.
+        The optional ``zone`` specifies a memory zone to access to write to, e.g. ``IDATA``, ``DDATA``, or ``CODE``.
+        The given number of bits, if provided, must be either ``8``, ``16``, or ``32``.
 
-        The given number of bits, if provided, must be either ``8``, ``16``, or
-        ``32``.
+        :param addr: start address to write to
+        :param data: list of data units to write
+        :param zone: optional memory zone name to access
+        :param nbits: number of bits to use for each unit
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): start address to write to
-          data (list): list of data units to write
-          zone (str): optional memory zone name to access
-          nbits (int): number of bits to use for each unit
-
-        Returns:
+        :return:
           Number of units written.
 
-        Raises:
+        :raise:
           JLinkException: on write hardware failure.
           ValueError: if ``nbits`` is not ``None``, and not in ``8``, ``16`` or ``32``.
         """
@@ -3050,19 +2976,18 @@ class JLink(object):
         return units_written
 
     @connection_required
-    def memory_write8(self, addr, data, zone=None):
-        """Writes bytes to memory of a target system.
+    def memory_write8(self, addr: int, data: list, zone: str = None):
+        """
+        Writes bytes to memory of a target system.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): start address to write to
-          data (list): list of bytes to write
-          zone (str): optional memory zone to access
+        :param addr: start address to write to
+        :param data: list of bytes to write
+        :param zone: optional memory zone to access
 
-        Returns:
+        :return:
           Number of bytes written to target.
 
-        Raises:
+        :raise:
           JLinkException: on memory access error.
         """
         return self.memory_write(addr, data, zone, 8)
@@ -5137,20 +5062,20 @@ class JLink(object):
         return value
 
     @open_required
-    def cp15_register_write(self, cr_n, op_1, cr_m, op_2, value):
-        """Writes value to specified coprocessor register.
+    def cp15_register_write(self, cr_n:int, op_1:int, cr_m:int, op_2:int, value:int):
+        """
+        Writes value to specified coprocessor register.
 
-        Args:
-          cr_n (int): CRn value
-          op_1 (int): Op1 value
-          cr_m (int): CRm value
-          op_2 (int): Op2 value
-          value (int): value to write
+        :param cr_n: CRn value
+        :param op_1: Op1 value
+        :param cr_m: CRm value
+        :param op_2: Op2 value
+        :param value:  to write
 
-        Returns:
+        :return:
           An integer containing the result of the command
 
-        Raises:
+        :raise:
           JLinkException: on error
         """
         res = self._dll.JLINKARM_CP15_WriteEx(cr_n, cr_m, op_1, op_2, value)

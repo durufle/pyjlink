@@ -9,6 +9,7 @@ Structures
 ----------
 
 .. automodule:: pyjlink.structs
+    :noindex:
     :members:
     :undoc-members:
     :show-inheritance:
@@ -17,6 +18,7 @@ Enumerations
 ------------
 
 .. automodule:: pyjlink.enums
+    :noindex:
     :members:
     :undoc-members:
     :show-inheritance:

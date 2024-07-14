@@ -13,22 +13,22 @@ class JLinkConnectInfo(Structure):
     J-Link connection info structure.
 
     Attributes:
-      'SerialNumber': J-Link serial number.
-      'Connection': type of connection (e.g. ``enums.JLinkHost.USB``)
-      'USBAddr': USB address if connected via USB.
-      'aIPAddr': IP address if connected via IP.
-      'Time': Time period (ms) after which UDP discover answer was received.
-      'Time_us': Time period (uS) after which UDP discover answer was received.
-      'HWVersion': Hardware version of J-Link, if connected via IP.
-      'abMACAddr': MAC Address, if connected via IP.
-      'acProduct': Product name, if connected via IP.
-      'acNickname': Nickname, if connected via IP.
-      'acFWString': Firmware string, if connected via IP.
-      'IsDHCPAssignedIP': Is IP address reception via DHCP.
-      'IsDHCPAssignedIPIsValid': True if connected via IP.
-      'NumIPConnections': Number of IP connections currently established.
-      'NumIPConnectionsIsValid': True if connected via IP.
-      'aPadding': Bytes reserved for future use.
+        SerialNumber: J-Link serial number.
+        Connection: type of connection (e.g. ``enums.JLinkHost.USB``)
+        USBAddr: USB address if connected via USB.
+        aIPAddr: IP address if connected via IP.
+        Time: Time period (ms) after which UDP discover answer was received.
+        Time_us: Time period (uS) after which UDP discover answer was received.
+        HWVersion: Hardware version of J-Link, if connected via IP.
+        abMACAddr: MAC Address, if connected via IP.
+        acProduct: Product name, if connected via IP.
+        acNickname: Nickname, if connected via IP.
+        acFWString: Firmware string, if connected via IP.
+        IsDHCPAssignedIP: Is IP address reception via DHCP.
+        IsDHCPAssignedIPIsValid: True if connected via IP.
+        NumIPConnections: Number of IP connections currently established.
+        NumIPConnectionsIsValid: True if connected via IP.
+        aPadding: Bytes reserved for future use.
     """
     _fields_ = [
         ('SerialNumber', c_uint32),
@@ -53,8 +53,7 @@ class JLinkConnectInfo(Structure):
         """
         Returns a representation of this class.
 
-        :return:
-          String representation of the class.
+        :return: String representation of the class.
         """
         return 'JLinkConnectInfo(%s)' % self.__str__()
 
@@ -62,9 +61,8 @@ class JLinkConnectInfo(Structure):
         """
         Returns a string representation of the connection info.
 
-        :return:
-          String specifying the product, its serial number, and the type of
-          connection that it has (one of USB or IP).
+        :return: String specifying the product, its serial number, and the type of connection that it has
+                 (one of USB or IP).
         """
         conn = 'USB' if self.Connection == 1 else 'IP'
         return '%s <Serial No. %s, Conn. %s>' % (self.acProduct.decode(), self.SerialNumber, conn)
@@ -75,8 +73,8 @@ class JLinkFlashArea(Structure):
     Definition for a region of Flash.
 
     Attributes:
-      'Addr': address where the flash area starts.
-      'Size': size of the flash area.
+        Addr: address where the flash area starts.
+        Size: size of the flash area.
     """
 
     _fields_ = [
@@ -88,8 +86,7 @@ class JLinkFlashArea(Structure):
         """
         Returns a representation of the instance.
 
-        :return:
-          String representation of the Flash Area.
+        :return: String representation of the Flash Area.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
@@ -97,8 +94,7 @@ class JLinkFlashArea(Structure):
         """
         Returns a string representation of the instance.
 
-        :return:
-          String specifying address of flash region, and its size.
+        :return: String specifying address of flash region, and its size.
         """
         return 'Address = 0x%x, Size = %s' % (self.Addr, self.Size)
 
@@ -108,10 +104,52 @@ class JLinkRAMArea(JLinkFlashArea):
     Definition for a region of RAM.
 
     Attributes:
-      'Addr': address where the flash area starts.
-      'Size': size of the flash area.
+        Addr (int): address where the flash area starts.
+        Size (int): size of the flash area.
     """
     pass
+
+
+class JLinkJTAGStoreData(Structure):
+    """
+    J-Link device information use with JTAG API.
+
+    Attributes:
+        pTDI (int): pointer on buffer.
+        NumBits (int): Number of bits.
+    """
+    _fields_ = [
+        ('pTDI', POINTER(c_char)),
+        ('NumBits', c_uint32)
+    ]
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initializes the instance.
+
+        Populates the ``.SizeofStruct`` parameter to the size of the instance.
+
+        :param args: list of arguments
+        :param kwargs: key-word arguments dictionary
+        """
+        super(JLinkJTAGStoreData, self).__init__(*args, **kwargs)
+        self.SizeofStruct = sizeof(self)
+
+    def __repr__(self):
+        """
+        Returns a representation of this instance.
+
+        :return: Returns a string representation of the instance.
+        """
+        return 'JLinkJTAGStoreData(%s)' % self.__str__()
+
+    def __str__(self):
+        """
+        Returns a string representation of this instance.
+
+        :return: Returns a string specifying the device name, core, and manufacturer.
+        """
+        return '%s ( IRLen: %d, IRPrint: %d)' % (self.name, self.IRLen, self.IRPrint)
 
 
 class JLinkJTAGDeviceInfo(Structure):
@@ -140,8 +178,7 @@ class JLinkJTAGDeviceInfo(Structure):
         """
         Returns a representation of this instance.
 
-        :return:
-          Returns a string representation of the instance.
+        :return: Returns a string representation of the instance.
         """
         return 'JLinkJTAGDeviceInfo(%s)' % self.__str__()
 
@@ -149,8 +186,7 @@ class JLinkJTAGDeviceInfo(Structure):
         """
         Returns a string representation of this instance.
 
-        :return:
-          Returns a string specifying the device name, core, and manufacturer.
+        :return: Returns a string specifying the device name, IRLen, and IRPrint.
         """
         return '%s ( IRLen: %d, IRPrint: %d)' % (self.name, self.IRLen, self.IRPrint)
 
@@ -159,8 +195,7 @@ class JLinkJTAGDeviceInfo(Structure):
         """
         Returns the name of the device.
 
-        :return:
-          Device name.
+        :return: Device name.
         """
         return cast(self.sName, c_char_p).value.decode()
 
@@ -169,8 +204,7 @@ class JLinkJTAGDeviceInfo(Structure):
         """
         Returns instruction register length
 
-        :return:
-          IRLen.
+        :return: IRLen value.
         """
         return self.IRLen
 
@@ -179,8 +213,7 @@ class JLinkJTAGDeviceInfo(Structure):
         """
         Returns instruction register print
 
-        :return:
-          IRPrint.
+        :return: IRPrint value.
         """
         return self.IRPrint
 
@@ -192,18 +225,18 @@ class JLinkDeviceInfo(Structure):
     This structure is used to represent a device that is supported by the J-Link.
 
     Attributes:
-      'SizeOfStruct': Size of the struct (DO NOT CHANGE).
-      'sName': name of the device.
-      'CoreId': core identifier of the device.
-      'FlashAddr': base address of the internal flash of the device.
-      'RAMAddr': base address of the internal RAM of the device.
-      'EndianMode': the endian mode of the device (0 -> only little endian, 1 -> only big endian, 2 -> both).
-      'FlashSize': total flash size in bytes.
-      'RAMSize': total RAM size in bytes.
-      'sManu': device manufacturer.
-      'aFlashArea': a list of ``JLinkFlashArea`` instances.
-      'aRamArea': a list of ``JLinkRAMArea`` instances.
-      'Core': CPU core.
+         SizeOfStruct: Size of the struct (DO NOT CHANGE).
+         sName: name of the device.
+         CoreId: core identifier of the device.
+         FlashAddr: base address of the internal flash of the device.
+         RAMAddr: base address of the internal RAM of the device.
+         EndianMode': the endian mode of the device (0 -> only little endian, 1 -> only big endian, 2 -> both).
+         FlashSize: total flash size in bytes.
+         RAMSize: total RAM size in bytes.
+         sManu: device manufacturer.
+         aFlashArea: a list of ``JLinkFlashArea`` instances.
+         aRamArea: a list of ``JLinkRAMArea`` instances.
+         Core: CPU core.
     """
     _fields_ = [
         ('SizeofStruct', c_uint32),
@@ -236,8 +269,7 @@ class JLinkDeviceInfo(Structure):
         """
         Returns a representation of this instance.
 
-        :return:
-          Returns a string representation of the instance.
+        :return: Returns a string representation of the instance.
         """
         return 'JLinkDeviceInfo(%s)' % self.__str__()
 
@@ -245,19 +277,18 @@ class JLinkDeviceInfo(Structure):
         """
         Returns a string representation of this instance.
 
-        :return:
-          Returns a string specifying the device name, core, and manufacturer.
+        :return: Returns a string specifying the device name, core, and manufacturer.
         """
         manu = self.manufacturer
-        return '%s <Core Id. %s, Manu. %s>' % (self.name, self.Core, manu)
+        flash_size = self.flash_size
+        return '%s <Core Id. %s, Manu. %s, Flash size: %s>' % (self.name, self.Core, manu, flash_size)
 
     @property
     def name(self):
         """
         Returns the name of the device.
 
-        :return:
-          Device name.
+        :return: Device name.
         """
         return cast(self.sName, c_char_p).value.decode()
 
@@ -266,10 +297,19 @@ class JLinkDeviceInfo(Structure):
         """
         Returns the name of the manufacturer of the device.
 
-        :return:
-          Manufacturer name.
+        :return: Manufacturer name.
         """
         buf = cast(self.sManu, c_char_p).value
+        return buf.decode() if buf else None
+
+    @property
+    def flash_size(self):
+        """
+        Returns the name of the manufacturer of the device.
+
+        :return: Flash Size value.
+        """
+        buf = cast(self.FlashSize, c_char_p).value
         return buf.decode() if buf else None
 
 
@@ -278,13 +318,13 @@ class JLinkHardwareStatus(Structure):
     Definition for the hardware status information for a J-Link.
 
     Attributes:
-      'VTarget': target supply voltage.
-      'tck': measured state of TCK pin.
-      'tdi': measured state of TDI pin.
-      'tdo': measured state of TDO pin.
-      'tms': measured state of TMS pin.
-      'tres': measured state of TRES pin.
-      'trst': measured state of TRST pin.
+       VTarget: target supply voltage.
+       tck: measured state of TCK pin.
+       tdi: measured state of TDI pin.
+       tdo: measured state of TDO pin.
+       tms: measured state of TMS pin.
+       tres: measured state of TRES pin.
+       trst: measured state of TRST pin.
     """
     _fields_ = [
         ('VTarget', c_uint16),
@@ -300,8 +340,7 @@ class JLinkHardwareStatus(Structure):
         """
         Returns a string representation of the instance.
 
-        Returns:
-          String representation of the instance.
+        Returns: String representation of the instance.
         """
         return '%s(VTarget=%dmV)' % (self.__class__.__name__, self.voltage)
 
@@ -312,8 +351,7 @@ class JLinkHardwareStatus(Structure):
 
         This is an alias for ``.VTarget``.
 
-        :return:
-          Target supply voltage as an integer.
+        :return: Target supply voltage as an integer.
         """
         return self.VTarget
 
@@ -323,8 +361,8 @@ class JLinkGPIODescriptor(Structure):
     Definition for the structure that details the name and capabilities of a user-controllable GPIO.
 
     Attributes:
-      'acName': name of the GPIO.
-      'Caps': bitfield of capabilities.
+       acName: name of the GPIO.
+       Caps: bitfield of capabilities.
     """
     _fields_ = [
         ('acName', c_char * 32),
@@ -335,8 +373,7 @@ class JLinkGPIODescriptor(Structure):
         """
         Returns a string representation of the instance.
 
-        :returns:
-          String representation of the instance.
+        :returns: String representation of the instance.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
@@ -344,8 +381,7 @@ class JLinkGPIODescriptor(Structure):
         """
         Returns the GPIO name.
 
-        :returns:
-          GPIO name.
+        :returns: GPIO name.
         """
         return self.acName.decode()
 
@@ -355,10 +391,10 @@ class JLinkMemoryZone(Structure):
     Represents a CPU memory zone.
 
     Attributes:
-      'sName': initials of the memory zone.
-      'sDesc': name of the memory zone.
-      'VirtAddr': start address of the virtual address space of the memory zone.
-      'abDummy': reserved for future use.
+       sName: initials of the memory zone.
+       sDesc: name of the memory zone.
+       VirtAddr: start address of the virtual address space of the memory zone.
+       abDummy: reserved for future use.
     """
     _fields_ = [
         ('sName', c_char_p),
@@ -371,8 +407,7 @@ class JLinkMemoryZone(Structure):
         """
         Returns a string representation of the instance
 
-        :return:
-          String representation of the instance.
+        :return: String representation of the instance.
         """
         return '%s(%s)' % (self.__class__.__name__, self.__str__())
 
@@ -380,8 +415,7 @@ class JLinkMemoryZone(Structure):
         """
         Returns a formatted string describing the memory zone.
 
-        :return:
-          String representation of the memory zone.
+        :return: String representation of the memory zone.
         """
         return '%s <Desc. %s, VirtAddr. 0x%x>' % (self.sName, self.sDesc, self.VirtAddr)
 
@@ -390,8 +424,7 @@ class JLinkMemoryZone(Structure):
         """
         Alias for the memory zone name.
 
-        :return::
-          The memory zone name.
+        :return: The memory zone name.
         """
         return self.sName
 
@@ -404,10 +437,10 @@ class JLinkSpeedInfo(Structure):
     the base frequency by at least ``MinDiv``.
 
     Attributes:
-      'SizeOfStruct': the size of this structure.
-      'BaseFreq': Base frequency (in HZ) used to calculate supported speeds.
-      'MinDiv': minimum divider allowed to divide the base frequency.
-      'SupportAdaptive': ``1`` if emulator supports adaptive clocking, otherwise ``0``.
+       SizeOfStruct: the size of this structure.
+       BaseFreq: Base frequency (in HZ) used to calculate supported speeds.
+       MinDiv: minimum divider allowed to divide the base frequency.
+       SupportAdaptive: ``1`` if emulator supports adaptive clocking, otherwise ``0``.
     """
     _fields_ = [
         ('SizeOfStruct', c_uint32),
@@ -430,8 +463,7 @@ class JLinkSpeedInfo(Structure):
         """
         Returns a string representation of the instance.
 
-        :return:
-          String representation of the instance.
+        :return: String representation of the instance.
         """
         return self.__str__()
 
@@ -448,12 +480,11 @@ class JLinkSWOStartInfo(Structure):
     Represents configuration information for collecting Serial Wire Output (SWO) information.
 
     Attributes:
-      'SizeofStruct': size of the structure.
-      'Interface': the interface type used for SWO.
-      'Speed': the frequency used for SWO communication in Hz.
+       SizeofStruct: size of the structure.
+       Interface: the interface type used for SWO.
+       Speed: the frequency used for SWO communication in Hz.
 
-    :note:
-      You should *never* change ``.SizeofStruct`` or ``.Interface``.
+    :Note: You should *never* change ``.SizeofStruct`` or ``.Interface``.
     """
     _fields_ = [
         ('SizeofStruct', c_uint32),
@@ -473,8 +504,7 @@ class JLinkSWOStartInfo(Structure):
         """
         Returns a representation of this instance.
 
-        :return:
-          The string representation of this instance.
+        :return: The string representation of this instance.
         """
         return self.__str__()
 
@@ -482,8 +512,7 @@ class JLinkSWOStartInfo(Structure):
         """
         Returns a string representation of this instance.
 
-        :return:
-          The string representation of this instance.
+        :return: The string representation of this instance.
         """
         return '%s(Speed=%sHz)' % (self.__class__.__name__, self.Speed)
 
@@ -1026,7 +1055,7 @@ class JLinkRTTerminalStart(Structure):
     Structure used to configure an RTT instance.
 
     Attributes:
-      ConfigBlockAddress: Address of the RTT block.
+        ConfigBlockAddress: Address of the RTT block.
     """
     _fields_ = [
         ('ConfigBlockAddress', c_uint32),

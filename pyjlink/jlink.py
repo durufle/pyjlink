@@ -5062,7 +5062,7 @@ class JLink(object):
         return value
 
     @open_required
-    def cp15_register_write(self, cr_n:int, op_1:int, cr_m:int, op_2:int, value:int):
+    def cp15_register_write(self, cr_n: int, op_1: int, cr_m: int, op_2: int, value: int):
         """
         Writes value to specified coprocessor register.
 

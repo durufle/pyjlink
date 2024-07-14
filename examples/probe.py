@@ -14,7 +14,7 @@ except ImportError:
 import sys
 
 
-def main( device: str):
+def main(device: str):
     """
     Prints the core's information.
 
@@ -56,4 +56,3 @@ def main( device: str):
 
 if __name__ == '__main__':
     exit(main("CY8C5868XXXLP"))
-

@@ -10,3 +10,4 @@ pytest
 pytest-cov
 psutil >= 5.2.2
 six~=1.16.0
+bump2version

@@ -13,23 +13,18 @@ except ImportError:
     import io as StringIO
 
 
-def main(jlink_serial: int, device: str):
+def main(device: str):
     """
     Prints the core's information.
 
-    Args:
-      jlink_serial (str): the J-Link serial number
-      device (str): the target CPU
+    :param device: the target CPU
 
-    Returns:
-      Always returns ``0``.
-
-    Raises:
+    :raises:
       JLinkException: on error
     """
     buf = StringIO.StringIO()
     jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
-    jlink.open(serial_no=jlink_serial)
+    jlink.open()
 
     # Use Serial Wire Debug as the target interface.
     jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
@@ -40,11 +35,15 @@ def main(jlink_serial: int, device: str):
     print(f'Core Name                       : {jlink.core_name()}')
     print(f'Device Family                   : {jlink.device_family()}')
 
-    print(f'Read 16 bytes a address 0       : {list(map(hex,jlink.memory_read8(0,16)))}')
-    print(f'Read  8 half-word a address 0   : {list(map(hex,jlink.memory_read16(0,8)))}')
-    print(f'Read  4 word a address 0        : {list(map(hex,jlink.memory_read32(0,4)))}')
-    print(f'Read  2 double a address 0      : {list(map(hex,jlink.memory_read64(0,2)))}')
+    address = 0x54000E20
 
+    # print(f'Read 16 bytes a address {address}        : {list(map(hex, jlink.memory_read8(address, 16)))}')
+    # print(f'Read  8 half-word a address {address}    : {list(map(hex, jlink.memory_read16(address, 8)))}')
+    print(f'Read  4 word a address {address}         : {list(map(hex, jlink.memory_read32(address, 1)))}')
+    # print(f'Read  2 double a address {address}       : {list(map(hex, jlink.memory_read64(address, 2)))}')
+
+
+# NRF5340_XXAA_APP, CY8C6XX7_CM4, STM32L552ZE
 
 if __name__ == '__main__':
-    exit(main(504502376, "CY8C6XX7_CM4"))
+    exit(main("CORTEX-A35"))

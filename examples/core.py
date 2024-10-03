@@ -44,11 +44,14 @@ def main(device: str):
     print(f"etm supported           : {jlink.etm_supported}")
     print("Register list...")
 
-    regs = jlink.register_list()
-    for i in regs:
-        print(f"- {jlink.register_name(i)}")
+    regs = []
+    indexes = jlink.register_list()
+    for i in indexes:
+        regs.append(jlink.register_name(i))
+    print(f"Register :  {regs}")
 
+
+# NRF5340_XXAA_APP, CY8C6XX7_CM4, STM32L552ZE
 
 if __name__ == '__main__':
-    # CY8C6XX6_CM4
-    exit(main("STM32L552ZE"))
+    exit(main("CORTEX-A35"))

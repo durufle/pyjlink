@@ -95,7 +95,6 @@ ENV/
 
 # DLLs
 *.dll
-*.so
 *.dylib
 
 # C Build Artifacts
@@ -103,3 +102,5 @@ ENV/
 
 # Mac Artifacts
 **.DS_Store
+
+tests/functional/firmwares

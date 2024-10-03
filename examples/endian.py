@@ -40,5 +40,6 @@ def main(device: str):
     print('Target Endian Mode: %s Endian' % ('Big' if big_endian else 'Little'))
 
 
+# CORTEX-A35
 if __name__ == '__main__':
-    main("CY8C6XX7_CM4")
+    main("CORTEX-A35")

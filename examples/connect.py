@@ -24,7 +24,8 @@ def main(device: str):
     :raise:
       JLinkException: on error
     """
-    jlink = pyjlink.JLink()
+    buf = StringIO.StringIO()
+    jlink = pyjlink.JLink(log=buf.write, detailed_log=buf.write)
     print("-> Try to connect without open...")
     try:
         jlink.connect('device', verbose=True)
@@ -33,13 +34,18 @@ def main(device: str):
 
     print("-> Open then Try to connect...")
     jlink.open()
+    jlink.set_tif(pyjlink.enums.JLinkInterfaces.SWD)
+    if jlink.opened():
+        print(f"The jlink is opened.")
     try:
         jlink.connect(device)
+        print(f"Is connected ? : {jlink.connected()}")
+        print(f"Is halted ?    : {jlink.halted()}")
     except pyjlink.errors.JLinkException as e:
         print(e)
-    print(f"Is connected ? : {jlink.connected()}")
-    print(f"Is halted ?    : {jlink.halted()}")
 
 
+
+# CORTEX-A35
 if __name__ == '__main__':
-    main(device="CY8C6XX7_CM4")
+    main(device="CORTEX-A35")

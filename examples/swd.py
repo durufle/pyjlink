@@ -51,7 +51,7 @@ def main(device: str):
     sys.stdout.write('Reading data from port 0:\n\n')
 
     # Reset the core without halting so that it runs.
-    jlink.reset(ms=10, halt=False)
+    jlink.reset(ms=10, halt=True)
 
     # Use the `try` loop to catch a keyboard interrupt in order to stop logging
     # serial wire output.
@@ -84,5 +84,7 @@ def main(device: str):
     return 0
 
 
+# CORTEX-A35
+
 if __name__ == '__main__':
-    exit(main("CY8C6XX7_CM4"))
+    exit(main("CORTEX-A35"))

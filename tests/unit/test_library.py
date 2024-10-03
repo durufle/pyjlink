@@ -819,8 +819,10 @@ class TestLibrary(unittest.TestCase):
     @patch('tempfile.NamedTemporaryFile', new=Mock())
     @patch('ctypes.util.find_library')
     @patch('ctypes.cdll.LoadLibrary')
+    @patch('ctypes.CDLL')
     @patch('pyjlink.library.os')
-    def test_linux_6_10_0_64bit(self, mock_os, mock_load_library, mock_find_library, mock_open, mock_is_os_64bit):
+    def test_linux_6_10_0_64bit(self, mock_os, mock_cdll, mock_load_library, mock_find_library, mock_open,
+                                mock_is_os_64bit):
         """
         Tests finding the DLL on Linux through the SEGGER application for V6.0.0+ on 64 bits linux.
 
@@ -832,6 +834,7 @@ class TestLibrary(unittest.TestCase):
           mock_is_os_64bit (Mock): mock for mocking the call to ``is_os_64bit``, returns True
         """
         mock_find_library.return_value = None
+        mock_cdll.return_value = None
         directories = [
             '/opt/SEGGER/JLink_Linux_V610d_x86_64/libjlinkarm_x86.so.6.10',
             '/opt/SEGGER/JLink_Linux_V610d_x86_64/libjlinkarm.so.6.10',
@@ -896,8 +899,9 @@ class TestLibrary(unittest.TestCase):
     @patch('pyjlink.platform.libc_ver', return_value=('libc', '1.0'))
     @patch('ctypes.util.find_library', return_value='libjlinkarm.so.7')
     @patch('pyjlink.library.JLinkArmDlInfo.__init__')
+    @patch('ctypes.CDLL')
     @patch('ctypes.cdll.LoadLibrary')
-    def test_linux_glibc_unavailable(self, mock_load_library, mock_dlinfo_ctr, mock_find_library,
+    def test_linux_glibc_unavailable(self, mock_load_library, mock_cdll, mock_dlinfo_ctr, mock_find_library,
                                      mock_libc_ver, mock_is_os_64bit, mock_os, mock_open):
         """
         Confirms the whole JLinkArmDlInfo code path is not involved when GNU libc
@@ -911,6 +915,7 @@ class TestLibrary(unittest.TestCase):
           to the "search by file name" code path, aka find_library_linux()
         - and "successfully load" a mock library file from /opt/SEGGER/JLink
         """
+        mock_cdll.side_effect = None
         directories = [
             # Library.find_library_linux() should find this.
             '/opt/SEGGER/JLink/libjlinkarm.so.6'
@@ -936,8 +941,9 @@ class TestLibrary(unittest.TestCase):
     @patch('pyjlink.utils.Utils.is_os_64bit', return_value=True)
     @patch('pyjlink.platform.libc_ver', return_value=('glibc', '2.34'))
     @patch('ctypes.util.find_library')
+    @patch('ctypes.CDLL')
     @patch('ctypes.cdll.LoadLibrary')
-    def test_linux_dl_unavailable(self, mock_load_library, mock_find_library, mock_libc_ver,
+    def test_linux_dl_unavailable(self, mock_load_library, mock_cdll, mock_find_library, mock_libc_ver,
                                   mock_is_os_64bit, mock_os, mock_open):
         """
         Confirms we successfully fallback to the "search by file name" code path when libdl is
@@ -950,6 +956,7 @@ class TestLibrary(unittest.TestCase):
           to the "search by file name" code path, aka find_library_linux()
         - and "successfully load" a mock library file from /opt/SEGGER/JLink
         """
+        mock_cdll.side_effect = None
         mock_find_library.side_effect = [
             # find_library('jlinkarm')
             'libjlinkarm.so.6',

@@ -2180,7 +2180,7 @@ class JLink(object):
 
         return res
 
-    @connection_required
+    @open_required
     def reset_tap(self):
         """
         Resets the TAP controller via TRST.
@@ -2715,7 +2715,7 @@ class JLink(object):
         return self.flash_write(addr, data, 32)
 
     @connection_required
-    def code_memory_read(self, addr: int, num_bytes: int) -> list:
+    def code_memory_read(self, addr: int, num_bytes: int):
         """
         Reads bytes from code memory.
 
@@ -2871,20 +2871,18 @@ class JLink(object):
         return self.memory_read(addr, num_half_words, zone=zone, nbits=16)
 
     @connection_required
-    def memory_read32(self, addr, num_words, zone=None):
+    def memory_read32(self, addr: int, num_words: int, zone: str = None):
         """
         Reads memory from the target system in units of 32-bits.
 
-        Args:
-          self (JLink): the ``JLink`` instance
-          addr (int): start address to read from
-          num_words (int): number of words to read
-          zone (str): memory zone to read from
+        :param addr: start address to read from
+        :param num_words: number of words to read
+        :param zone: memory zone to read from
 
-        Returns:
+        :return:
           List of words read from the target system.
 
-        Raises:
+        :raise:
           JLinkException: if memory could not be read
         """
         return self.memory_read(addr, num_words, zone=zone, nbits=32)
@@ -5018,16 +5016,15 @@ class JLink(object):
         return res
 
     ###############################################################################
-    #
     # System control Co-Processor (CP15) API
-    #
     ###############################################################################
 
     @connection_required
     def cp15_present(self):
-        """Returns whether target has CP15 co-processor.
+        """
+        Returns whether target has CP15 co-processor.
 
-        Returns:
+        :return:
             ``True`` if the target has CP15 co-processor, otherwise ``False``.
         """
 
@@ -5037,19 +5034,19 @@ class JLink(object):
         return result
 
     @open_required
-    def cp15_register_read(self, cr_n, op_1, cr_m, op_2):
-        """Reads value from specified coprocessor register.
+    def cp15_register_read(self, cr_n: int,  op_1: int, cr_m: int, op_2: int):
+        """
+        Reads value from specified coprocessor register.
 
-        Args:
-          cr_n (int): CRn value
-          op_1 (int): Op1 value
-          cr_m (int): CRm value
-          op_2 (int): Op2 value
+        :param cr_n: CRn value
+        :param op_1: Op1 value
+        :param cr_m: CRm value
+        :param op_2: Op2 value
 
-        Returns:
+        :return:
           An integer containing the value of coprocessor register
 
-        Raises:
+        :raise:
           JLinkException: on error
         """
         value = ctypes.c_uint32(0)
@@ -5062,7 +5059,7 @@ class JLink(object):
         return value
 
     @open_required
-    def cp15_register_write(self, cr_n: int, op_1: int, cr_m: int, op_2: int, value: int):
+    def cp15_register_write(self, cr_n: int, op_1: int, cr_m:int, op_2:int, value:int):
         """
         Writes value to specified coprocessor register.
 

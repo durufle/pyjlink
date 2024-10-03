@@ -184,6 +184,44 @@ class EraseCommand(Command):
         print('Bytes Erased: %d' % erased)
 
 
+class MemoryCommand(Command):
+    """Defines the Memory command for memory access"""
+    name = 'mem'
+    description = 'Memory read access'
+    help = 'memory read '
+
+    def add_arguments(self, parser):
+        """Adds the Memory command arguments to the parser.
+
+        Args:
+          self (FlashCommand): the ``FlashCommand`` instance
+          parser (argparse.ArgumentParser): the parser to add the arguments to
+
+        Returns:
+          ``None``
+        """
+        parser.add_argument('-a', '--addr', type=str, help='memory address to read from in hex')
+        parser.add_argument('-u', '--unit', type=int, default=8, choices=[8, 16, 32, 64], help='Memory unit')
+        parser.add_argument('-n', '--num', type=int, default=1, help='number of unit to read')
+        return self.add_common_arguments(parser, True)
+
+    def run(self, args):
+        """Read memory values
+
+        Args:
+          self (MemoryCommand): the ``MemoryCommand`` instance
+          args (Namespace): the arguments passed on the command-line
+
+        Returns:
+          ``None``
+        """
+        address = int(args.addr, 16)
+        kwargs = {'addr': address, 'num_units': args.num, 'zone': None, 'nbits': args.unit}
+        jlink = self.create_jlink(args)
+        result = jlink.memory_read(**kwargs)
+        print(f'->  {[hex(n) for n in result]}')
+
+
 class FlashCommand(Command):
     """Defines the flash command for flashing a device."""
     name = 'flash'

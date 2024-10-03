@@ -6,7 +6,7 @@
 """
 pyjlink __init__ module
 """
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 __title__ = 'pyjlink'
 __author__ = 'ragnarok team'
 __author_email__ = 'laurent.woolcap@free.com'
